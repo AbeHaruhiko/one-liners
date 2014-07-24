@@ -10,8 +10,8 @@ angular.module('ParseServices', [])
     Parse.FacebookUtils.init({
 
       // pro-tip: swap App ID out for PROD App ID automatically on deploy using grunt-replace
-      appId: 481650395275919, // Facebook App ID
-      channelUrl: 'http://brandid.github.io/parse-angular-demo/channel.html', // Channel File
+      appId: 710106092393598, // Facebook App ID
+      channelUrl: '', // Channel File
       cookie: true, // enable cookies to allow Parse to access the session
       xfbml: true, // parse XFBML
       frictionlessRequests: true // recommended

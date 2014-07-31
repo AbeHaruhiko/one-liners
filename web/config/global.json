@@ -1,0 +1,14 @@
+{
+    "applications": {
+        "_default": {
+            "link": "one-liner"
+        }, 
+        "one-liner": {
+            "applicationId": "JMUkE2OUUNB6qud14tfuDZT7o0rHxlVYCdBmNbtT", 
+            "masterKey": "TWl0Dn6SFGypiinSvhhmBHGJy0xxC2ojuHoFHynm"
+        }
+    }, 
+    "global": {
+        "parseVersion": "1.2.19"
+    }
+}

@@ -1,6 +1,6 @@
 /*
  * This file is auto-generated.  DO NOT MODIFY.
- * Original file: /Users/abeharuhiko/project/s2mobile/one-liners/android/libraries/chromeview/src/main/aidl/com/googlecode/eyesfree/braille/selfbraille/ISelfBrailleService.aidl
+ * Original file: /Users/abe/projects/s2mobile/one-liners/android/libraries/chromeview/src/main/aidl/com/googlecode/eyesfree/braille/selfbraille/ISelfBrailleService.aidl
  */
 package com.googlecode.eyesfree.braille.selfbraille;
 /**

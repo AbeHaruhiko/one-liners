@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="guava_javalib">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/libraries/chromeview/libs/guava_javalib.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

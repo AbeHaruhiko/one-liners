@@ -7,6 +7,7 @@
 <body>
 	<canvas id="canvas" width="300" height="300" style="border:solid 1px black;">
 	</canvas>
+    <img id="image" style="border: solid 1px black;" width="300" height="300"/>
 	<script type="text/javascript">
 		// var context = canvas.getContext("2d");
 		// ctx.beginPath();
@@ -461,8 +462,14 @@
             var imgObj = new Image();
             imgObj.src = imageData;
             imgObj.onload = function(){
-                context.drawImage(imgObj, 0, 0, 300, 450);
+                context.drawImage(imgObj, 0, 0, imgObj.width, imgObj.height);
             }
+
+            // debug用画像確認
+            $('#image').style.border = "solid black 1px";
+            $('#image').style.width = imgObj.width;
+            $('#image').style.height = imgObj.height;
+            $('#image').src = imageData;
         }
 	</script>
 </body>

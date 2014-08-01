@@ -1,6 +1,6 @@
 /*
  * This file is auto-generated.  DO NOT MODIFY.
- * Original file: /Users/abe/projects/s2mobile/one-liners/android/libraries/chromeview/src/main/aidl/org/chromium/content/common/IChildProcessCallback.aidl
+ * Original file: /Users/abeharuhiko/project/s2mobile/one-liners/android/libraries/chromeview/src/main/aidl/org/chromium/content/common/IChildProcessCallback.aidl
  */
 package org.chromium.content.common;
 public interface IChildProcessCallback extends android.os.IInterface

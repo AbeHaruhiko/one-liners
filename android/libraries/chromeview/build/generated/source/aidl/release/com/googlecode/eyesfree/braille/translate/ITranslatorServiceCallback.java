@@ -1,6 +1,6 @@
 /*
  * This file is auto-generated.  DO NOT MODIFY.
- * Original file: /Users/abe/projects/s2mobile/one-liners/android/libraries/chromeview/src/main/aidl/com/googlecode/eyesfree/braille/translate/ITranslatorServiceCallback.aidl
+ * Original file: /Users/abeharuhiko/project/s2mobile/one-liners/android/libraries/chromeview/src/main/aidl/com/googlecode/eyesfree/braille/translate/ITranslatorServiceCallback.aidl
  */
 package com.googlecode.eyesfree.braille.translate;
 public interface ITranslatorServiceCallback extends android.os.IInterface

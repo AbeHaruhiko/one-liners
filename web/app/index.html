@@ -12,6 +12,7 @@
     <!-- build:css styles/vendor.css -->
     <!-- bower:css -->
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="bower_components/jquery-mobile/css/themes/default/jquery.mobile.css" />
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css({.tmp,app}) styles/main.css -->
@@ -24,7 +25,7 @@
     <![endif]-->
 
     <!-- Add your site or application content here -->
-    <div class="container" ng-view=""></div>
+    <div class="container" ng-view="" data-role="page"></div>
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
      <script>
@@ -51,6 +52,7 @@
     <script src="bower_components/angular-cookies/angular-cookies.js"></script>
     <script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
     <script src="bower_components/angular-route/angular-route.js"></script>
+    <script src="bower_components/jquery-mobile/js/jquery.mobile.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
@@ -60,6 +62,7 @@
         <script src="scripts/vendor/jquery.svg.js"></script>
         <script src="scripts/vendor/jquery.svgdom.js"></script>
         <script src="scripts/vendor/sketch.js"></script>
+        <script src="scripts/vendor/drag-and-drop.js"></script>
         <!-- endbuild -->
 </body>
 </html>

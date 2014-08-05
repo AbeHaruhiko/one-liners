@@ -339,6 +339,13 @@ module.exports = function (grunt) {
         singleRun: true
       }
     }
+
+    // 2014/08/05 追加 parseデプロイ
+    ,exec: {
+      parseDeploy: {
+        command: 'sh parse_deploy.sh'
+      }
+    }
   });
 
 
@@ -384,7 +391,8 @@ module.exports = function (grunt) {
     'uglify',
     'rev',
     'usemin',
-    'htmlmin'
+    'htmlmin',
+    'exec:parseDeploy' // 2014/08/05 追加
   ]);
 
   grunt.registerTask('default', [
@@ -392,4 +400,12 @@ module.exports = function (grunt) {
     'test',
     'build'
   ]);
+
+  // 2014/08/05 追加
+  grunt.registerTask('parse', [
+    'exec:parseDeploy'
+  ]);
+
+  // 2014/08/05 追加
+  grunt.loadNpmTasks('grunt-exec');
 };

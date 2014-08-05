@@ -11,7 +11,8 @@
     "angular-cookies": "1.2.15",
     "angular-sanitize": "1.2.15",
     "angular-route": "1.2.15",
-    "jquery-mobile": "~1.4.3"
+    "jquery-mobile": "~1.4.3",
+    "svg.js": "~1.0.0-rc.9"
   },
   "devDependencies": {
     "angular-mocks": "1.2.15",

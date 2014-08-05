@@ -3,24 +3,10 @@ var svgWrapper = null;
 var start = null; 
 var outline = null; 
 var offset = null; 
- 
-// $('#svgArea').svg({onLoad: function(svg) { 
-//         svgWrapper = svg; 
-//         var surface = svg.rect(0, 0, '100%', '100%', {id: 'surface', fill: 'white'}); 
-//         $(surface).mousedown(startDrag).mousemove(dragging).mouseup(endDrag); 
-//         resetSize(svg, '100%', '100%'); 
-//     } 
-// }); 
- 
+  
 /* Remember where we started */ 
 function startDrag(event) { 
-    // offset = ($.browser.msie ? {left: 0, top: 0} : $('#svgArea').offset()); 
-    offset = (!$.support.opacity ? {left: 0, top: 0} : $('#svgArea').offset()); 
-    // if (!$.browser.msie) { 
-    if ($.support.opacity) { 
-        offset.left -= document.documentElement.scrollLeft || document.body.scrollLeft; 
-        offset.top -= document.documentElement.scrollTop || document.body.scrollTop; 
-    } 
+    offset = $('#svgArea').offset(); 
     start = {X: event.clientX - offset.left, Y: event.clientY - offset.top}; 
     event.preventDefault(); 
 } 

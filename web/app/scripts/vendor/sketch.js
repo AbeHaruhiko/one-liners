@@ -41,7 +41,7 @@ function endDrag(event) {
     var end = {X: event.clientX - offset.left, Y:event.clientY - offset.top};
     if (start.X != end.X) {
         // 開始／終了の予定X座標が同じ場合はなにもしない（幅がない）
-        drawWave(start.X, start.Y, end.X, end.Y); 
+        drawLine(start.X, start.Y, end.X, end.Y); 
 
         // var $scope = angular.element('#content').scope();
         // if ($scope.conf.autoSave) {
@@ -54,7 +54,7 @@ function endDrag(event) {
 } 
  
 /* Draw the selected element on the canvas */ 
-function drawWave(x1, y1, x2, y2) { 
+function drawLine(x1, y1, x2, y2) { 
     var left = Math.min(x1, x2); 
     var top = Math.min(y1, y2); 
     var right = Math.max(x1, x2); 
@@ -80,7 +80,7 @@ function drawWave(x1, y1, x2, y2) {
     // }
 
     // settingsのデフォルト値（仮）
-    settings = {fill: null, stroke: 'red', strokeWidth: '1px'};
+    settings = {fill: null, stroke: 'red', strokeWidth: '4px'};
 
     // 直線以外も引けるようにするための分岐
     shape = 'line';

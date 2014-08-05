@@ -19,14 +19,39 @@ function dragging(event) {
         return; 
     } 
     if (!outline) { 
-        outline = svgWrapper.rect(0, 0, 0, 0, 
-            {fill: 'none', stroke: '#c0c0c0', strokeWidth: 1, strokeDashArray: '2,2'}); 
-        $(outline).mouseup(endDrag); 
+        // jquery.svg.jsバージョン
+        // outline = svgWrapper.rect(0, 0, 0, 0, 
+        //     {fill: 'none', stroke: '#c0c0c0', strokeWidth: 1, strokeDashArray: '2,2'}); 
+        // $(outline).mouseup(endDrag); 
+
+        // svg.jsバージョン
+        // outline = svgWrapper
+        //     .rect(0, 0)
+        //     .fill('none')
+        //     .stroke({color: '#c0c0c0', width: 1, dasharray: '2,2'})
+        //     .move(0, 0)
+        //     .mouseup(endDrag)
+        //     .touchend(endDrag);
+        outline = svgWrapper
+            .line()
+            .fill('none')
+            .stroke({color: '#c0c0c0', width: 2, dasharray: '2,2'})
+            .move(0, 0)
+            .mouseup(endDrag)
+            .touchend(endDrag);
+
     } 
-    svgWrapper.change(outline, {x: Math.min(event.clientX - offset.left, start.X), 
-        y: Math.min(event.clientY - offset.top, start.Y), 
-        width: Math.abs(event.clientX - offset.left - start.X), 
-        height: Math.abs(event.clientY - offset.top - start.Y)});
+    // jquery.svg.jsバージョン
+    // svgWrapper.change(outline, {x: Math.min(event.clientX - offset.left, start.X), 
+    //     y: Math.min(event.clientY - offset.top, start.Y), 
+    //     width: Math.abs(event.clientX - offset.left - start.X), 
+    //     height: Math.abs(event.clientY - offset.top - start.Y)});
+
+    // svg.jsバージョン
+    outline.x(Math.min(event.clientX - offset.left, start.X))
+        .y(Math.min(event.clientY - offset.top, start.Y))
+        .width(Math.abs(event.clientX - offset.left - start.X))
+        .height(Math.abs(event.clientY - offset.top - start.Y));
     event.preventDefault(); 
 } 
  
@@ -36,7 +61,12 @@ function endDrag(event) {
     if (!start) { 
         return; 
     } 
-    $(outline).remove(); 
+    // jquery.svg.jsバージョン
+    // $(outline).remove(); 
+
+    // svg.jsバージョン
+    outline.remove();
+
     outline = null; 
     var end = {X: event.clientX - offset.left, Y:event.clientY - offset.top};
     if (start.X != end.X) {
@@ -80,19 +110,28 @@ function drawLine(x1, y1, x2, y2) {
     // }
 
     // settingsのデフォルト値（仮）
-    settings = {fill: null, stroke: 'red', strokeWidth: '4px'};
+    // settings = {fill: null, stroke: 'red', strokeWidth: '4px'};
 
     // 直線以外も引けるようにするための分岐
     shape = 'line';
     if (shape == 'line') { 
-        node = svgWrapper.line(x1, y1, x2, y2, settings); 
+        // jquery.svg.jsバージョン  
+        // node = svgWrapper.line(x1, y1, x2, y2, settings); 
+
+        // svg.jsバージョン
+        node = svgWrapper.line(x1, y1, x2, y2)
+                .stroke({color: 'red', width: 2})
+                .draggable();
     } 
 
-    var makeSVGElementDraggable = svgDrag.setupCanvasForDragging();
-    makeSVGElementDraggable(node);
+    // drag-and-drop.jsバージョン
+    // var makeSVGElementDraggable = svgDrag.setupCanvasForDragging();
+    // makeSVGElementDraggable(node);
     // node.addEventListener("mouseup", $scope.export2canvas);
-    node.addEventListener("click", function() {$scope.selectMayuge($(node))});
-    node.addEventListener("dblclick", function() {$scope.removeMayuge($(node));});
+
+    // node.addEventListener("click", function() {$scope.selectMayuge($(node))});
+    // node.addEventListener("dblclick", function() {$scope.removeMayuge($(node));});
+
     // $scope.export2canvas();
     // if ($scope.conf.autoSave) {
     //   $scope.savePNG();

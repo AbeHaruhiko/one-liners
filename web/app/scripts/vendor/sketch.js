@@ -6,14 +6,15 @@ var offset = null;
   
 /* Remember where we started */ 
 function startDrag(event) {
+    event.preventDefault(); 
     event = getCoordinates(event);
     offset = $('#svgArea').offset(); 
     start = {X: event.clientX - offset.left, Y: event.clientY - offset.top}; 
-    event.preventDefault(); 
 } 
  
 /* Provide feedback as we drag */ 
 function dragging(event) { 
+    event.preventDefault(); 
     event = getCoordinates(event);
     if (!start) { 
         return; 
@@ -48,15 +49,23 @@ function dragging(event) {
     //     height: Math.abs(event.clientY - offset.top - start.Y)});
 
     // svg.jsバージョン
-    outline.x(Math.min(event.clientX - offset.left, start.X))
-        .y(Math.min(event.clientY - offset.top, start.Y))
-        .width(Math.abs(event.clientX - offset.left - start.X))
-        .height(Math.abs(event.clientY - offset.top - start.Y));
-    event.preventDefault(); 
+    // outline.x(Math.min(event.clientX - offset.left, start.X))
+    //     .y(Math.min(event.clientY - offset.top, start.Y))
+    //     .width(Math.abs(event.clientX - offset.left - start.X))
+    //     .height(Math.abs(event.clientY - offset.top - start.Y));
+
+    outline.plot(start.X, start.Y, event.clientX - offset.left, event.clientY - offset.top);
+
+    // debug
+    var $scope = angular.element('body').scope();
+    $scope.$apply(function() {
+        $scope.pt = {start: start, nowX: event.clientX - offset.left, nowY: event.clientY - offset.top};
+    });
 } 
  
 /* Draw where we finish */ 
 function endDrag(event) { 
+    event.preventDefault(); 
     event = getCoordinates(event);
     if (!start) { 
         return; 
@@ -79,8 +88,6 @@ function endDrag(event) {
         // }
     }
     start = null; 
-    event.preventDefault(); 
-
 } 
  
 /* Draw the selected element on the canvas */ 

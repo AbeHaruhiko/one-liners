@@ -6,10 +6,10 @@ var offset = null;
   
 /* Remember where we started */ 
 function startDrag(event) {
-    event.preventDefault(); 
     event = getCoordinates(event);
     offset = $('#svgArea').offset(); 
     start = {X: event.clientX - offset.left, Y: event.clientY - offset.top}; 
+    event.preventDefault(); 
 } 
  
 /* Provide feedback as we drag */ 
@@ -40,7 +40,6 @@ function dragging(event) {
             .move(0, 0)
             .mouseup(endDrag)
             .touchend(endDrag);
-
     } 
     // jquery.svg.jsバージョン
     // svgWrapper.change(outline, {x: Math.min(event.clientX - offset.left, start.X), 
@@ -65,7 +64,7 @@ function dragging(event) {
  
 /* Draw where we finish */ 
 function endDrag(event) { 
-    event.preventDefault(); 
+
     event = getCoordinates(event);
     if (!start) { 
         return; 
@@ -74,7 +73,7 @@ function endDrag(event) {
     // $(outline).remove(); 
 
     // svg.jsバージョン
-    outline.remove();
+    if (outline) outline.remove();
 
     outline = null; 
     var end = {X: event.clientX - offset.left, Y:event.clientY - offset.top};
@@ -88,6 +87,7 @@ function endDrag(event) {
         // }
     }
     start = null; 
+    event.preventDefault(); 
 } 
  
 /* Draw the selected element on the canvas */ 
@@ -120,7 +120,7 @@ function drawLine(x1, y1, x2, y2) {
     // settings = {fill: null, stroke: 'red', strokeWidth: '4px'};
 
     // 直線以外も引けるようにするための分岐
-    shape = 'line';
+    shape = 'wave';
     if (shape == 'line') { 
         // jquery.svg.jsバージョン  
         // node = svgWrapper.line(x1, y1, x2, y2, settings); 
@@ -129,7 +129,39 @@ function drawLine(x1, y1, x2, y2) {
         node = svgWrapper.line(x1, y1, x2, y2)
                 .stroke({color: 'red', width: 2})
                 .draggable();
-    } 
+    } else if (shape == 'wave') {
+
+        var waveLength = 10;    // 一周期の長さ
+        var theta=Math.PI*2/waveLength;
+        // for (i = left; i < right; i++) {
+        //     yy0=Math.sin(theta*i);
+        //     yy1=Math.sin(theta*(i+1));
+
+        //     svgWrapper.line(i, yy0, i + 1, yy1)
+        //         .stroke({color: 'red', width: 2});
+        // }
+
+        // 波線
+        var wave = svgWrapper.group();
+        wave.draggable();
+        // 二点間の距離
+        var distance = Math.sqrt(Math.pow(right - left, 2) + Math.pow(bottom - top, 2));
+        // 波線の角度
+        var p1 = new SVG.math.Point(x1, y1);
+        var p2 = new SVG.math.Point(x2, y2);
+        var angle = SVG.math.deg(SVG.math.angle(p1, p2));
+
+
+        for (var tmpX = 0; tmpX < distance; tmpX++) {
+            tmpY1 = Math.sin(theta * tmpX);
+            tmpY2 = Math.sin(theta * (tmpX + 1));
+
+            // 座標(0, 0)からのsin波になっているので、ドラッグ開始点(x1, y1)を起点にする（加算する）
+            wave.add(svgWrapper.line(tmpX + x1, tmpY1 + y1, tmpX + 1 + x1, tmpY2 + y1)
+                .stroke({color: 'red', width: 4}));
+        }
+        wave.rotate(angle, x1, y1).draggable();
+    }
 
     // drag-and-drop.jsバージョン
     // var makeSVGElementDraggable = svgDrag.setupCanvasForDragging();
@@ -172,7 +204,8 @@ $('#toSVG').click(function() {
 });
 
 function getCoordinates(event) {
-    event.clientX = event.clientX ? event.clientX : event.originalEvent.changedTouches[0].pageX;
-    event.clientY = event.clientY ? event.clientY : event.originalEvent.changedTouches[0].pageY;
+    // event.originalEvent.changedTouches[0]で取得するのはjqueryのeventオブジェクトのとき
+    event.clientX = event.clientX ? event.clientX : event.changedTouches[0].pageX;
+    event.clientY = event.clientY ? event.clientY : event.changedTouches[0].pageY;
     return event;
 }

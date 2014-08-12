@@ -91,7 +91,7 @@ function endDrag(event) {
 } 
  
 /* Draw the selected element on the canvas */ 
-function drawLine(x1, y1, x2, y2) { 
+function drawLine(x1, y1, x2, y2, lineType) { 
     var left = Math.min(x1, x2); 
     var top = Math.min(y1, y2); 
     var right = Math.max(x1, x2); 
@@ -99,7 +99,7 @@ function drawLine(x1, y1, x2, y2) {
     var settings = {fill: $('#fill').val(),
         stroke: $('#stroke').val(), 
         strokeWidth: $('#swidth').val()}; 
-    var shape = $('#shape').val(); 
+    // var shape = $('#shape').val(); 
     var node = null; 
 
 
@@ -120,8 +120,8 @@ function drawLine(x1, y1, x2, y2) {
     // settings = {fill: null, stroke: 'red', strokeWidth: '4px'};
 
     // 直線以外も引けるようにするための分岐
-    shape = 'wave';
-    if (shape == 'line') { 
+    lineType = lineType ? lineType : 'wave';
+    if (lineType == 'line') { 
         // jquery.svg.jsバージョン  
         // node = svgWrapper.line(x1, y1, x2, y2, settings); 
 
@@ -129,10 +129,10 @@ function drawLine(x1, y1, x2, y2) {
         node = svgWrapper.line(x1, y1, x2, y2)
                 .stroke({color: 'red', width: 2})
                 .draggable();
-    } else if (shape == 'wave') {
+    } else if (lineType == 'wave') {
 
         var waveLength = 10;    // 一周期の長さ
-        var theta=Math.PI*2/waveLength;
+        var theta = Math.PI * 2 / waveLength;
         // for (i = left; i < right; i++) {
         //     yy0=Math.sin(theta*i);
         //     yy1=Math.sin(theta*(i+1));
@@ -142,7 +142,7 @@ function drawLine(x1, y1, x2, y2) {
         // }
 
         // 波線
-        var wave = svgWrapper.group();
+        wave = svgWrapper.group();
         wave.draggable();
         // 二点間の距離
         var distance = Math.sqrt(Math.pow(right - left, 2) + Math.pow(bottom - top, 2));
@@ -158,9 +158,9 @@ function drawLine(x1, y1, x2, y2) {
 
             // 座標(0, 0)からのsin波になっているので、ドラッグ開始点(x1, y1)を起点にする（加算する）
             wave.add(svgWrapper.line(tmpX + x1, tmpY1 + y1, tmpX + 1 + x1, tmpY2 + y1)
-                .stroke({color: 'red', width: 4}));
+                .stroke({color: 'red', width: 2}));
         }
-        wave.rotate(angle, x1, y1).draggable();
+        wave.rotate(angle, x1, y1);
     }
 
     // drag-and-drop.jsバージョン

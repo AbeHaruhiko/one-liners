@@ -10,8 +10,8 @@
         var start, drag, end, startEvent, dragEvent, endEvent
         , element = this
         , parent  = this.parent._parent(SVG.Nested) || this._parent(SVG.Doc)
-      , isTouch = 'ontouchstart' in window || (navigator.msMaxTouchPoints && !navigator.msPointerEnabled )
-      , isiOS = navigator.userAgent.match(/(ip(hone|od|ad))/i) ? true : false
+        , isTouch = 'ontouchstart' in window || (navigator.msMaxTouchPoints && !navigator.msPointerEnabled )
+        , isiOS = navigator.userAgent.match(/(ip(hone|od|ad))/i) ? true : false
       
       /* remove draggable if already present */
       if (typeof this.fixed === 'function')
@@ -20,16 +20,16 @@
       /* ensure constraint object */
       constraint = constraint || {}
       
-    /* decide on event names based on touch support */
-    if (isTouch) {
-      startEvent = 'touchstart'
-      dragEvent = 'touchmove'
-      endEvent = 'touchend'
-    } else {
-      startEvent = 'mousedown'
-      dragEvent = 'mousemove'
-      endEvent = 'mouseup'      
-    }
+      /* decide on event names based on touch support */
+      if (isTouch) {
+        startEvent = 'touchstart'
+        dragEvent = 'touchmove'
+        endEvent = 'touchend'
+      } else {
+        startEvent = 'mousedown'
+        dragEvent = 'mousemove'
+        endEvent = 'mouseup'      
+      }
     
       /* start dragging */
       start = function(event) {

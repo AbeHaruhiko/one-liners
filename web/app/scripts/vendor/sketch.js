@@ -142,7 +142,7 @@ function drawLine(x1, y1, x2, y2, lineType) {
         // }
 
         // 波線
-        wave = svgWrapper.group();
+        var wave = svgWrapper.group();
         wave.draggable();
         // 二点間の距離
         var distance = Math.sqrt(Math.pow(right - left, 2) + Math.pow(bottom - top, 2));
@@ -153,8 +153,8 @@ function drawLine(x1, y1, x2, y2, lineType) {
 
 
         for (var tmpX = 0; tmpX < distance; tmpX++) {
-            tmpY1 = Math.sin(theta * tmpX);
-            tmpY2 = Math.sin(theta * (tmpX + 1));
+            var tmpY1 = Math.sin(theta * tmpX);
+            var tmpY2 = Math.sin(theta * (tmpX + 1));
 
             // 座標(0, 0)からのsin波になっているので、ドラッグ開始点(x1, y1)を起点にする（加算する）
             wave.add(svgWrapper.line(tmpX + x1, tmpY1 + y1, tmpX + 1 + x1, tmpY2 + y1)

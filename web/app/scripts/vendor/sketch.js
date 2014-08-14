@@ -124,7 +124,7 @@ function drawLine(x1, y1, x2, y2, lineType) {
     // settings = {fill: null, stroke: 'red', strokeWidth: '4px'};
 
     // 直線以外も引けるようにするための分岐
-    lineType = lineType ? lineType : 'wave';
+    lineType = lineType ? lineType : 'line';
     if (lineType === 'line') {
         // jquery.svg.jsバージョン 
         // node = svgWrapper.line(x1, y1, x2, y2, settings);

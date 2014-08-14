@@ -338,10 +338,10 @@ module.exports = function (grunt) {
         configFile: 'karma.conf.js',
         singleRun: true
       }
-    }
+    },
 
     // 2014/08/05 追加 parseデプロイ
-    ,exec: {
+    exec: {
       parseDeploy: {
         command: 'sh parse_deploy.sh'
       }

@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -87,11 +88,13 @@ public class bookDetailFragment extends Fragment {
         });
 
         mWebView = (WebView) rootView.findViewById(R.id.webView);
+        mWebView.setWebViewClient(new WebViewClient());
         mWebView.clearCache(true);
         mWebView.getSettings().setJavaScriptEnabled(true);
-//        webView.loadUrl("http://www.google.com");
+//        mWebView.loadUrl("http://www.google.com");
 //        mWebView.loadUrl("http://one-liners.parseapp.com");
-        mWebView.loadUrl("file:///android_asset/html/index.html");
+//        mWebView.loadUrl("file:///android_asset/html/index.html");
+        mWebView.loadUrl("file:///android_asset/a.html");
 
         return rootView;
     }

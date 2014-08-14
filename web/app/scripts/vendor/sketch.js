@@ -1,29 +1,31 @@
-var drawNodes = []; 
-var svgWrapper = null; 
-var start = null; 
-var outline = null; 
-var offset = null; 
-  
-/* Remember where we started */ 
+'use strict';
+
+var drawNodes = [];
+var svgWrapper = null;
+var start = null;
+var outline = null;
+var offset = null;
+
+/* Remember where we started */
 function startDrag(event) {
     event = getCoordinates(event);
-    offset = $('#svgArea').offset(); 
-    start = {X: event.clientX - offset.left, Y: event.clientY - offset.top}; 
-    event.preventDefault(); 
-} 
- 
-/* Provide feedback as we drag */ 
-function dragging(event) { 
-    event.preventDefault(); 
+    offset = $('#svgArea').offset();
+    start = {X: event.clientX - offset.left, Y: event.clientY - offset.top};
+    event.preventDefault();
+}
+
+/* Provide feedback as we drag */
+function dragging(event) {
+    event.preventDefault();
     event = getCoordinates(event);
-    if (!start) { 
-        return; 
-    } 
-    if (!outline) { 
+    if (!start) {
+        return;
+    }
+    if (!outline) {
         // jquery.svg.jsバージョン
-        // outline = svgWrapper.rect(0, 0, 0, 0, 
-        //     {fill: 'none', stroke: '#c0c0c0', strokeWidth: 1, strokeDashArray: '2,2'}); 
-        // $(outline).mouseup(endDrag); 
+        // outline = svgWrapper.rect(0, 0, 0, 0,
+        //     {fill: 'none', stroke: '#c0c0c0', strokeWidth: 1, strokeDashArray: '2,2'});
+        // $(outline).mouseup(endDrag);
 
         // svg.jsバージョン
         // outline = svgWrapper
@@ -34,17 +36,17 @@ function dragging(event) {
         //     .mouseup(endDrag)
         //     .touchend(endDrag);
         outline = svgWrapper
-            .line()
-            .fill('none')
-            .stroke({color: '#c0c0c0', width: 2, dasharray: '2,2'})
-            .move(0, 0)
-            .mouseup(endDrag)
-            .touchend(endDrag);
-    } 
+        .line()
+        .fill('none')
+        .stroke({color: '#c0c0c0', width: 2, dasharray: '2,2'})
+        .move(0, 0)
+        .mouseup(endDrag)
+        .touchend(endDrag);
+    }
     // jquery.svg.jsバージョン
-    // svgWrapper.change(outline, {x: Math.min(event.clientX - offset.left, start.X), 
-    //     y: Math.min(event.clientY - offset.top, start.Y), 
-    //     width: Math.abs(event.clientX - offset.left - start.X), 
+    // svgWrapper.change(outline, {x: Math.min(event.clientX - offset.left, start.X),
+    //     y: Math.min(event.clientY - offset.top, start.Y),
+    //     width: Math.abs(event.clientX - offset.left - start.X),
     //     height: Math.abs(event.clientY - offset.top - start.Y)});
 
     // svg.jsバージョン
@@ -60,47 +62,49 @@ function dragging(event) {
     $scope.$apply(function() {
         $scope.pt = {start: start, nowX: event.clientX - offset.left, nowY: event.clientY - offset.top};
     });
-} 
- 
-/* Draw where we finish */ 
-function endDrag(event) { 
+}
+
+/* Draw where we finish */
+function endDrag(event) {
 
     event = getCoordinates(event);
-    if (!start) { 
-        return; 
-    } 
+    if (!start) {
+        return;
+    }
     // jquery.svg.jsバージョン
-    // $(outline).remove(); 
+    // $(outline).remove();
 
     // svg.jsバージョン
-    if (outline) outline.remove();
+    if (outline) {
+        outline.remove();
+    }
 
-    outline = null; 
+    outline = null;
     var end = {X: event.clientX - offset.left, Y:event.clientY - offset.top};
-    if (start.X != end.X) {
+    if (start.X !== end.X) {
         // 開始／終了の予定X座標が同じ場合はなにもしない（幅がない）
-        drawLine(start.X, start.Y, end.X, end.Y); 
+        drawLine(start.X, start.Y, end.X, end.Y);
 
         // var $scope = angular.element('#content').scope();
         // if ($scope.conf.autoSave) {
         //   $scope.savePNG();
         // }
     }
-    start = null; 
-    event.preventDefault(); 
-} 
- 
-/* Draw the selected element on the canvas */ 
-function drawLine(x1, y1, x2, y2, lineType) { 
-    var left = Math.min(x1, x2); 
-    var top = Math.min(y1, y2); 
-    var right = Math.max(x1, x2); 
-    var bottom = Math.max(y1, y2); 
+    start = null;
+    event.preventDefault();
+}
+
+/* Draw the selected element on the canvas */
+function drawLine(x1, y1, x2, y2, lineType) {
+    var left = Math.min(x1, x2);
+    var top = Math.min(y1, y2);
+    var right = Math.max(x1, x2);
+    var bottom = Math.max(y1, y2);
     var settings = {fill: $('#fill').val(),
-        stroke: $('#stroke').val(), 
-        strokeWidth: $('#swidth').val()}; 
-    // var shape = $('#shape').val(); 
-    var node = null; 
+    stroke: $('#stroke').val(),
+    strokeWidth: $('#swidth').val()};
+    // var shape = $('#shape').val();
+    var node = null;
 
 
     // var scale = ((right - left)/95);
@@ -121,15 +125,15 @@ function drawLine(x1, y1, x2, y2, lineType) {
 
     // 直線以外も引けるようにするための分岐
     lineType = lineType ? lineType : 'wave';
-    if (lineType == 'line') { 
-        // jquery.svg.jsバージョン  
-        // node = svgWrapper.line(x1, y1, x2, y2, settings); 
+    if (lineType === 'line') {
+        // jquery.svg.jsバージョン 
+        // node = svgWrapper.line(x1, y1, x2, y2, settings);
 
         // svg.jsバージョン
         node = svgWrapper.line(x1, y1, x2, y2)
-                .stroke({color: 'red', width: 2})
-                .draggable();
-    } else if (lineType == 'wave') {
+        .stroke({color: 'red', width: 2})
+        .draggable();
+    } else if (lineType === 'wave') {
 
         var waveLength = 10;    // 一周期の長さ
         var theta = Math.PI * 2 / waveLength;
@@ -142,8 +146,12 @@ function drawLine(x1, y1, x2, y2, lineType) {
         // }
 
         // 波線
+        var waveBorder = svgWrapper.group();
         var wave = svgWrapper.group();
-        wave.draggable();
+        var waveSet = svgWrapper.group();
+        waveSet.add(waveBorder).add(wave);
+        waveSet.draggable();
+
         // 二点間の距離
         var distance = Math.sqrt(Math.pow(right - left, 2) + Math.pow(bottom - top, 2));
         // 波線の角度
@@ -157,10 +165,13 @@ function drawLine(x1, y1, x2, y2, lineType) {
             var tmpY2 = Math.sin(theta * (tmpX + 1));
 
             // 座標(0, 0)からのsin波になっているので、ドラッグ開始点(x1, y1)を起点にする（加算する）
+            waveBorder.add(svgWrapper.line(tmpX + x1, tmpY1 + y1, tmpX + 1 + x1, tmpY2 + y1)
+                .stroke({color: 'white', width: 4}));
             wave.add(svgWrapper.line(tmpX + x1, tmpY1 + y1, tmpX + 1 + x1, tmpY2 + y1)
                 .stroke({color: 'red', width: 2}));
         }
         wave.rotate(angle, x1, y1);
+        waveBorder.rotate(angle, x1, y1);
     }
 
     // drag-and-drop.jsバージョン
@@ -177,30 +188,30 @@ function drawLine(x1, y1, x2, y2, lineType) {
     // }
 
 
-    drawNodes[drawNodes.length] = node; 
-    // $(node).mousedown(startDrag).mousemove(dragging).mouseup(endDrag); 
-    $('#svgArea').focus(); 
-}; 
- 
-/* Remove the last drawn element */ 
-$('#undo').click(function() { 
-    if (!drawNodes.length) { 
-        return; 
-    } 
-    svgWrapper.remove(drawNodes[drawNodes.length - 1]); 
-    drawNodes.splice(drawNodes.length - 1, 1); 
-}); 
- 
-/* Clear the canvas */ 
-$('#clear2').click(function() { 
-    while (drawNodes.length) { 
-        $('#undo').trigger('click'); 
-    } 
-}); 
- 
-/* Convert to text */ 
-$('#toSVG').click(function() { 
-    alert(svgWrapper.toSVG()); 
+    drawNodes[drawNodes.length] = node;
+    // $(node).mousedown(startDrag).mousemove(dragging).mouseup(endDrag);
+    $('#svgArea').focus();
+};
+
+/* Remove the last drawn element */
+$('#undo').click(function() {
+    if (!drawNodes.length) {
+        return;
+    }
+    svgWrapper.remove(drawNodes[drawNodes.length - 1]);
+    drawNodes.splice(drawNodes.length - 1, 1);
+});
+
+/* Clear the canvas */
+$('#clear2').click(function() {
+    while (drawNodes.length) {
+        $('#undo').trigger('click');
+    }
+});
+
+/* Convert to text */
+$('#toSVG').click(function() {
+    alert(svgWrapper.toSVG());
 });
 
 function getCoordinates(event) {

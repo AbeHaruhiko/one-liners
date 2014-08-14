@@ -12,7 +12,6 @@
     "angular-sanitize": "1.2.15",
     "angular-route": "1.2.15",
     "svg.js": "~1.0.0-rc.9",
-    "svg.draggable.js": "~0.1.0",
     "svg.math.js": "~0.1.2"
   },
   "devDependencies": {

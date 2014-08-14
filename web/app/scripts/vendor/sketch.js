@@ -220,3 +220,9 @@ function getCoordinates(event) {
     event.clientY = event.clientY ? event.clientY : event.changedTouches[0].pageY;
     return event;
 }
+
+function setSvgImage(base64data) {
+  svgWrapper.image('data:image/jpeg;base64,' + base64data, 200, 200);
+}
+
+

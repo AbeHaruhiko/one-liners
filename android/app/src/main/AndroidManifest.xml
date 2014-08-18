@@ -11,6 +11,7 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme"
+        android:name="jp.caliconography.one_liners.one_liners"
         >
         <activity
             android:name=".bookListActivity"

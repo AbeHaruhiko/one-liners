@@ -3,12 +3,13 @@
     android:layout_height="fill_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <WebView
+    <view
+        class="us.costan.chrome.ChromeView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/webView"
-        android:layout_above="@+id/loadImage"></WebView>
+        android:layout_above="@+id/loadImage" />
 
     <Button
         android:layout_width="wrap_content"

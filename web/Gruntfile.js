@@ -396,7 +396,6 @@ module.exports = function (grunt) {
     'usemin',
     'htmlmin',
     'exec:parseDeploy', // 2014/08/05 追加
-    'exec:copyToAssets' // 2014/08/14 追加
   ]);
 
   grunt.registerTask('default', [

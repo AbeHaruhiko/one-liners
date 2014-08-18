@@ -1,32 +1,25 @@
 package jp.caliconography.one_liners;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.provider.MediaStore;
 import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
-
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 
 import jp.caliconography.one_liners.dummy.DummyContent;
+import us.costan.chrome.ChromeView;
 
 /**
  * A fragment representing a single book detail screen.
@@ -49,7 +42,7 @@ public class bookDetailFragment extends Fragment {
      */
     private DummyContent.DummyItem mItem;
 
-    private WebView mWebView;
+    private ChromeView mWebView;
     private Button mBtnLoadImage;
     private Uri mPictureUri;
 
@@ -87,14 +80,14 @@ public class bookDetailFragment extends Fragment {
             }
         });
 
-        mWebView = (WebView) rootView.findViewById(R.id.webView);
-        mWebView.setWebViewClient(new WebViewClient());
+        mWebView = (ChromeView) rootView.findViewById(R.id.webView);
+//        mWebView.setWebViewClient(new WebViewClient());
         mWebView.clearCache(true);
         mWebView.getSettings().setJavaScriptEnabled(true);
 //        mWebView.loadUrl("http://www.google.com");
-//        mWebView.loadUrl("http://one-liners.parseapp.com");
+        mWebView.loadUrl("http://one-liners.parseapp.com");
 //        mWebView.loadUrl("file:///android_asset/html/index.html");
-        mWebView.loadUrl("file:///android_asset/a.html");
+//        mWebView.loadUrl("file:///android_asset/a.html");
 
         return rootView;
     }

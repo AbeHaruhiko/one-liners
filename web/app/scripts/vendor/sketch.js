@@ -7,6 +7,7 @@ var outline = null;
 var offset = null;
 var selectedLineObject = null;
 
+
 /* Remember where we started */
 function startDrag(event) {
     event = getCoordinates(event);
@@ -221,6 +222,13 @@ $('#clear2').click(function() {
 $('#toSVG').click(function() {
     alert(svgWrapper.toSVG());
 });
+
+/* remove line */
+var removeLine = function() {
+    if (selectedLineObject) {
+        selectedLineObject.remove();
+    }
+}
 
 function getCoordinates(event) {
     // event.originalEvent.changedTouches[0]で取得するのはjqueryのeventオブジェクトのとき

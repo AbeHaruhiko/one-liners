@@ -38,7 +38,11 @@ angular.module('one-linsersApp')
       }
 
       svgWrapper.on(startEvent, startDrag).on(dragEvent, dragging).on(endEvent, endDrag);
-     };
+    };
+
+    // 削除ボタン
+    // sketch.jsのグローバル変数（関数オブジェクト）を代入。
+    $scope.removeLine = removeLine;
 
     // 画面初期化実行
     $scope.init();

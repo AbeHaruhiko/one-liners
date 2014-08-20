@@ -125,15 +125,20 @@ function drawLine(x1, y1, x2, y2, lineType) {
     // settings = {fill: null, stroke: 'red', strokeWidth: '4px'};
 
     // 直線以外も引けるようにするための分岐
-    lineType = lineType ? lineType : 'wave';
+    lineType = lineType ? lineType : 'line';
     if (lineType === 'line') {
         // jquery.svg.jsバージョン 
         // node = svgWrapper.line(x1, y1, x2, y2, settings);
 
         // svg.jsバージョン
-        node = svgWrapper.line(x1, y1, x2, y2)
-        .stroke({color: 'red', width: 2})
-        .draggable();
+        var lineBorder = svgWrapper.line(x1, y1, x2, y2)
+                    .stroke({color: 'white', width: 4});
+        var line = svgWrapper.line(x1, y1, x2, y2)
+                    .stroke({color: 'red', width: 2});
+        var lineSet = svgWrapper.group();
+        lineSet.add(lineBorder).add(line);
+        lineSet.selectable(x1, y1, x2, y2);
+
     } else if (lineType === 'wave') {
 
         var waveLength = 10;    // 一周期の長さ
@@ -152,37 +157,8 @@ function drawLine(x1, y1, x2, y2, lineType) {
         var waveSet = svgWrapper.group();
         waveSet.add(waveBorder).add(wave);
         // waveSet.draggable();
-        waveSet.selectable(function(target) {
-            if (selectedLineObject) {
-                // 今クリックされたオブジェクトの前に選択されていたオブジェクト
-
-                // ドラッグできなくする。
-                selectedLineObject.fixed();
-                
-                // markerを削除する。
-                var arrayInLine = selectedLineObject.children();
-                for(var arrayIndex = arrayInLine.length - 1; arrayIndex >= 0; arrayIndex--) {
-                    if (arrayInLine[arrayIndex].hasClass('marker')) {
-                        arrayInLine[arrayIndex].remove();
-                    }
-                }
-            }
-
-            // 今クリックされたオブジェクトにmarkerを表示する。
-            selectedLineObject = target;
-            selectedLineObject.draggable();
-            console.dir(selectedLineObject);
-            var marker1 = svgWrapper
-                            .rect(3, 3)
-                            .stroke({ color: 'black', width: 1})
-                            .fill('white')
-                            .move(x1, y1)
-                            .addClass('marker');
-            var marker2 = marker1.clone().move(x2, y2).addClass('marker');
-            selectedLineObject
-                .add(marker1)
-                .add(marker2);
-        });
+        // waveSet.selectable(setMarker);
+        waveSet.selectable(x1, y1, x2, y2);
 
         // 二点間の距離
         var distance = Math.sqrt(Math.pow(right - left, 2) + Math.pow(bottom - top, 2));
@@ -257,8 +233,41 @@ function setSvgImage(base64data) {
   svgWrapper.image('data:image/jpeg;base64,' + base64data, 200, 200);
 }
 
-SVG.extend(SVG.G, {
-    selectable: function(actionFn) {
+function setMarker(target, x1, y1, x2, y2) {
+    if (selectedLineObject) {
+        // 今クリックされたオブジェクトの前に選択されていたオブジェクト
+
+        // ドラッグできなくする。
+        selectedLineObject.fixed();
+        
+        // markerを削除する。
+        var arrayInLine = selectedLineObject.children();
+        for(var arrayIndex = arrayInLine.length - 1; arrayIndex >= 0; arrayIndex--) {
+            if (arrayInLine[arrayIndex].hasClass('marker')) {
+                arrayInLine[arrayIndex].remove();
+            }
+        }
+    }
+
+    // 今クリックされたオブジェクトにmarkerを表示する。
+    selectedLineObject = target;
+    selectedLineObject.draggable();
+    console.dir(selectedLineObject);
+    var marker1 = svgWrapper
+                    .rect(3, 3)
+                    .stroke({ color: 'black', width: 1})
+                    .fill('white')
+                    .move(x1, y1)
+                    .addClass('marker');
+    var marker2 = marker1.clone().move(x2, y2).addClass('marker');
+    selectedLineObject
+        .add(marker1)
+        .add(marker2);
+}
+
+var selectableFunc = {
+    // selectable: function(actionFn) {
+    selectable: function(x1, y1, x2, y2) {
         var touchStartedWithoutMove = false;
 
         var startEvent, dragEvent, endEvent;
@@ -279,9 +288,11 @@ SVG.extend(SVG.G, {
                     if (touchStartedWithoutMove) {
                       // 発火させたいイベントを発火させる。
                       // 引数に対象DOMを指す要素を渡す。
-                      actionFn(this);
+                      setMarker(this, x1, y1, x2, y2);
                     }
                 });
     }
-})
+}
+SVG.extend(SVG.G, selectableFunc);
+// SVG.extend(SVG.Shape, selectableFunc);
 

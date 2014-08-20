@@ -21,8 +21,8 @@ angular.module('one-linsersApp')
 
       // svg.jsバージョン
       svgWrapper = SVG('svgArea');
-      console.log($('#svgArea')[0].clientWidth);
-      console.log($('#svgArea')[0].clientHeight);
+      // console.log($('#svgArea')[0].clientWidth);
+      // console.log($('#svgArea')[0].clientHeight);
       // mousedouwn等とtouchstart等は同時にセットするとうまく動かなかった。
       var startEvent, dragEvent, endEvent;
       var isTouch = 'ontouchstart' in window || (navigator.msMaxTouchPoints && !navigator.msPointerEnabled );

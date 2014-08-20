@@ -5,6 +5,7 @@ var svgWrapper = null;
 var start = null;
 var outline = null;
 var offset = null;
+var selectedLineObject = null;
 
 /* Remember where we started */
 function startDrag(event) {
@@ -124,7 +125,7 @@ function drawLine(x1, y1, x2, y2, lineType) {
     // settings = {fill: null, stroke: 'red', strokeWidth: '4px'};
 
     // 直線以外も引けるようにするための分岐
-    lineType = lineType ? lineType : 'line';
+    lineType = lineType ? lineType : 'wave';
     if (lineType === 'line') {
         // jquery.svg.jsバージョン 
         // node = svgWrapper.line(x1, y1, x2, y2, settings);
@@ -150,7 +151,38 @@ function drawLine(x1, y1, x2, y2, lineType) {
         var wave = svgWrapper.group();
         var waveSet = svgWrapper.group();
         waveSet.add(waveBorder).add(wave);
-        waveSet.draggable();
+        // waveSet.draggable();
+        waveSet.selectable(function(target) {
+            if (selectedLineObject) {
+                // 今クリックされたオブジェクトの前に選択されていたオブジェクト
+
+                // ドラッグできなくする。
+                selectedLineObject.fixed();
+                
+                // markerを削除する。
+                var arrayInLine = selectedLineObject.children();
+                for(var arrayIndex = arrayInLine.length - 1; arrayIndex >= 0; arrayIndex--) {
+                    if (arrayInLine[arrayIndex].hasClass('marker')) {
+                        arrayInLine[arrayIndex].remove();
+                    }
+                }
+            }
+
+            // 今クリックされたオブジェクトにmarkerを表示する。
+            selectedLineObject = target;
+            selectedLineObject.draggable();
+            console.dir(selectedLineObject);
+            var marker1 = svgWrapper
+                            .rect(3, 3)
+                            .stroke({ color: 'black', width: 1})
+                            .fill('white')
+                            .move(x1, y1)
+                            .addClass('marker');
+            var marker2 = marker1.clone().move(x2, y2).addClass('marker');
+            selectedLineObject
+                .add(marker1)
+                .add(marker2);
+        });
 
         // 二点間の距離
         var distance = Math.sqrt(Math.pow(right - left, 2) + Math.pow(bottom - top, 2));
@@ -225,4 +257,31 @@ function setSvgImage(base64data) {
   svgWrapper.image('data:image/jpeg;base64,' + base64data, 200, 200);
 }
 
+SVG.extend(SVG.G, {
+    selectable: function(actionFn) {
+        var touchStartedWithoutMove = false;
+
+        var startEvent, dragEvent, endEvent;
+        var isTouch = 'ontouchstart' in window || (navigator.msMaxTouchPoints && !navigator.msPointerEnabled );
+        if (isTouch) {
+            startEvent = 'touchstart';
+            dragEvent = 'touchmove';
+            endEvent = 'touchend';
+        } else {
+            startEvent = 'mousedown';
+            dragEvent = 'mousemove';
+            endEvent = 'mouseup';
+        }
+
+        return this.on(startEvent, function() { touchStartedWithoutMove = true; })
+                .on(dragEvent, function() { touchStartedWithoutMove = false; })
+                .on(endEvent, function() {
+                    if (touchStartedWithoutMove) {
+                      // 発火させたいイベントを発火させる。
+                      // 引数に対象DOMを指す要素を渡す。
+                      actionFn(this);
+                    }
+                });
+    }
+})
 

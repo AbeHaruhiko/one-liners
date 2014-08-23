@@ -162,7 +162,7 @@ angular.module('one-linsersApp')
 	        var lineBorder = svgWrapper.line(x1, y1, x2, y2)
 	                    .stroke({color: 'white', width: 4});
 	        var line = svgWrapper.line(x1, y1, x2, y2)
-	                    .stroke({color: 'red', width: 2});
+	                    .stroke({color: lineColor, width: 2});
 	        var lineSet = svgWrapper.group();
 	        lineSet.add(lineBorder).add(line);
 	        lineSet.selectable(x1, y1, x2, y2);

@@ -81,7 +81,7 @@ body {
 
 .tools {
     clear: both;
-    width: 600px;
+    /*width: 600px;*/
 }
 .color {
     -moz-border-radius: 0 50px 50px 50px;

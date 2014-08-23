@@ -36,13 +36,13 @@ angular.module('one-linsersApp')
       // }
 
       // svgWrapper.on(startEvent, Drawingservice.startDrag).on(dragEvent, Drawingservice.dragging).on(endEvent, Drawingservice.endDrag);
+
+      Drawingservice.init();
     };
 
     // 削除ボタン
-    // sketch.jsのグローバル変数（関数オブジェクト）を代入。
     $scope.removeLine = Drawingservice.removeLine;
 
     // 画面初期化実行
-    // $scope.init();
-    Drawingservice.init();
+    $scope.init();
   });

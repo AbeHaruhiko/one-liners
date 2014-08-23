@@ -1,9 +1,13 @@
 'use strict';
 
+/*	参考
+	http://keith-wood.name/svg.html
+	http://www.slideshare.net/tonosamart/e-semi-2720130123
+*/
+
 angular.module('one-linsersApp')
   .service('Drawingservice', function Drawingservice() {
     // AngularJS will instantiate a singleton by calling "new" on this function
-
 
 	var svgWrapper = null;
     var drawNodes = [];
@@ -37,10 +41,10 @@ angular.module('one-linsersApp')
 
 	/* Remember where we started */
 	this.startDrag = function(event) {
+	    event.preventDefault();
 	    event = getCoordinates(event);
 	    offset = $('#svgArea').offset();
 	    startPoint = {X: event.clientX - offset.left, Y: event.clientY - offset.top};
-	    event.preventDefault();
 	};
 
 	/* Provide feedback as we drag */
@@ -95,7 +99,7 @@ angular.module('one-linsersApp')
 
 	/* Draw where we finish */
 	this.endDrag = function(event) {
-
+	    event.preventDefault();
 	    event = getCoordinates(event);
 	    if (!startPoint) {
 	        return;
@@ -120,7 +124,6 @@ angular.module('one-linsersApp')
 	        // }
 	    }
 	    startPoint = null;
-	    event.preventDefault();
 	}
 
 	/* Draw the selected element on the canvas */
@@ -153,7 +156,7 @@ angular.module('one-linsersApp')
 	    // settings = {fill: null, stroke: 'red', strokeWidth: '4px'};
 
 	    // 直線以外も引けるようにするための分岐
-	    lineType = lineType ? lineType : 'line';
+	    lineType = lineType ? lineType : 'wave';
 	    if (lineType === 'line') {
 	        // jquery.svg.jsバージョン 
 	        // node = svgWrapper.line(x1, y1, x2, y2, settings);
@@ -194,7 +197,6 @@ angular.module('one-linsersApp')
 	        var p1 = new SVG.math.Point(x1, y1);
 	        var p2 = new SVG.math.Point(x2, y2);
 	        var angle = SVG.math.deg(SVG.math.angle(p1, p2));
-
 
 	        for (var tmpX = 0; tmpX < distance; tmpX++) {
 	            var tmpY1 = Math.sin(theta * tmpX);

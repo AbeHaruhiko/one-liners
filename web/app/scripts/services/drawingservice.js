@@ -114,15 +114,12 @@ angular.module('one-linsersApp')
 
 	    outline = null;
 	    var end = {X: event.clientX - offset.left, Y:event.clientY - offset.top};
-	    if (startPoint.X !== end.X) {
-	        // 開始／終了の予定X座標が同じ場合はなにもしない（幅がない）
-	        drawLine(startPoint.X, startPoint.Y, end.X, end.Y);
+        drawLine(startPoint.X, startPoint.Y, end.X, end.Y);
 
-	        // var $scope = angular.element('#content').scope();
-	        // if ($scope.conf.autoSave) {
-	        //   $scope.savePNG();
-	        // }
-	    }
+        // var $scope = angular.element('#content').scope();
+        // if ($scope.conf.autoSave) {
+        //   $scope.savePNG();
+        // }
 	    startPoint = null;
 	}
 

@@ -15,6 +15,7 @@ angular.module('one-linsersApp')
     var outline = null;
     var offset = null;
 	var selectedLineObject = null;
+	var lineColor = null;
 
     /* init svg */
     this.init = function() {
@@ -203,7 +204,7 @@ angular.module('one-linsersApp')
 	            waveBorder.add(svgWrapper.line(tmpX + x1, tmpY1 + y1, tmpX + 1 + x1, tmpY2 + y1)
 	                .stroke({color: 'white', width: 4}));
 	            wave.add(svgWrapper.line(tmpX + x1, tmpY1 + y1, tmpX + 1 + x1, tmpY2 + y1)
-	                .stroke({color: 'red', width: 2}));
+	                .stroke({color: lineColor, width: 2}));
 	        }
 	        wave.rotate(angle, x1, y1);
 	        waveBorder.rotate(angle, x1, y1);
@@ -266,7 +267,7 @@ angular.module('one-linsersApp')
 	    // 今クリックされたオブジェクトにmarkerを表示する。
 	    selectedLineObject = target;
 	    selectedLineObject.draggable();
-	    console.dir(selectedLineObject);
+
 	    var marker1 = svgWrapper
 	                    .rect(3, 3)
 	                    .stroke({ color: 'black', width: 1})
@@ -307,6 +308,12 @@ angular.module('one-linsersApp')
 	                });
 	    }
 	}
+
+	angular.element('.color').on('click', function() {
+	    lineColor = angular.element(this).css('background-color');
+	    angular.element('.color').removeClass('select');
+	    angular.element(this).addClass('select');
+	});
 
 	SVG.extend(SVG.G, selectableFunc);
 

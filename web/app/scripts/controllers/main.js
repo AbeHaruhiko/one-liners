@@ -43,6 +43,9 @@ angular.module('one-linsersApp')
     // 削除ボタン
     $scope.removeLine = Drawingservice.removeLine;
 
+    // 画像セット
+    $scope.setSvgImage = Drawingservice.setSvgImage;
+
     // 画面初期化実行
     $scope.init();
   });

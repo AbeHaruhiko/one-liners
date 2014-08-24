@@ -3,5 +3,6 @@
 
     <string name="app_name">one-liners</string>
     <string name="title_book_detail">book Detail</string>
+    <string name="set_svg_image_script">javascript:var $scope = angular.element(\'#content\').scope();console.dir($scope);$scope.setSvgImage(\'%s\');</string>
 
 </resources>

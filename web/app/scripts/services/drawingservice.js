@@ -20,7 +20,7 @@ angular.module('one-linsersApp')
     /* init svg */
     this.init = function() {
 		// svg.jsバージョン
-		svgWrapper = SVG('svgArea');
+		svgWrapper = SVG('svgArea').width(200).height(200);
 		// mousedouwn等とtouchstart等は同時にセットするとうまく動かなかった。
 		var startEvent, dragEvent, endEvent;
 		var isTouch = 'ontouchstart' in window || (navigator.msMaxTouchPoints && !navigator.msPointerEnabled );
@@ -244,7 +244,7 @@ angular.module('one-linsersApp')
 	    return event;
 	}
 
-	function setSvgImage(base64data) {
+	this.setSvgImage = function(base64data) {
 	  svgWrapper.image('data:image/jpeg;base64,' + base64data, 200, 200);
 	}
 
@@ -309,6 +309,7 @@ angular.module('one-linsersApp')
 	    }
 	}
 
+	/* 色選択 */
 	angular.element('.color').on('click', function() {
 	    lineColor = angular.element(this).css('background-color');
 	    angular.element('.color').removeClass('select');
@@ -317,7 +318,9 @@ angular.module('one-linsersApp')
 
 	SVG.extend(SVG.G, selectableFunc);
 
-
+	$scope.log = function(message) {
+		console.log(message);
+	};
 
 
   });

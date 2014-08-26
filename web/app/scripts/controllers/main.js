@@ -45,6 +45,7 @@ angular.module('one-linsersApp')
 
     // 画像セット
     $scope.setSvgImage = Drawingservice.setSvgImage;
+    $scope.setImg = Drawingservice.setImg;
 
     $scope.consoleLog = Drawingservice.consoleLog;
 

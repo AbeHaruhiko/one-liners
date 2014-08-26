@@ -309,6 +309,6 @@ function hoge() {
     var targetScope = angular.element('#content').scope();
     targetScope.$apply(function() {
         targetScope.consoleLog('hoge');
-        targetScope.setSvgImage('%s');
+        targetScope.setImg(1, '%s');
     });
 }

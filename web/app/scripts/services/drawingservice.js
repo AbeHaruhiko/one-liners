@@ -245,9 +245,19 @@ angular.module('one-linsersApp')
 	    return event;
 	}
 
-	this.setSvgImage = function(base64data) {
-	  svgWrapper.image('data:image/jpeg;base64,' + base64data, 200, 200);
-	}
+	function setSvgImage(base64data) {
+	  svgWrapper.image('data:image/jpeg;base64,' + base64data);
+	};
+
+	var base64data = "";
+    this.setImg = function(count,data) {
+	    base64data+=data;
+	    if(count==0){
+	        setSvgImage(base64data);
+	     }else{
+	        androidApp.getNextImgData(count+1);
+	    }
+	};
 
 	function setMarker(target, x1, y1, x2, y2) {
 	    if (selectedLineObject) {

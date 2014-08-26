@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.view.Display;
@@ -22,6 +23,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import jp.caliconography.one_liners.dummy.DummyContent;
+import us.costan.chrome.ChromeJavascriptInterface;
 import us.costan.chrome.ChromeView;
 import us.costan.chrome.ChromeViewClient;
 
@@ -51,6 +53,7 @@ public class bookDetailFragment extends Fragment {
     private Button mBtnLoadImage;
     private Uri mPictureUri;
     private int inSampleSize;
+    private Handler mHandler = new Handler();
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -91,6 +94,7 @@ public class bookDetailFragment extends Fragment {
         mWebView.setChromeViewClient(new ChromeViewClient());
         mWebView.clearCache(true);
         mWebView.getSettings().setJavaScriptEnabled(true);
+        mWebView.addJavascriptInterface(new JsInterface(), "androidApp");
 //        mWebView.loadUrl("http://www.google.com");
         mWebView.loadUrl("http://one-liners.parseapp.com");
 //        mWebView.loadUrl("file:///android_asset/html/index.html");
@@ -199,7 +203,9 @@ public class bookDetailFragment extends Fragment {
 
             String image64 = stringifyBitmap(bitmap);
 
-            setSvgImage(image64, options.outWidth, options.outHeight);
+            callbackPhoto(image64, options.outWidth, options.outHeight);
+
+//            setSvgImage(image64, options.outWidth, options.outHeight);
 
             mPictureUri = null;
         }
@@ -232,6 +238,40 @@ public class bookDetailFragment extends Fragment {
     private String stringifyBitmap(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayBitmapStream);
-        return Base64.encodeToString(byteArrayBitmapStream.toByteArray(), Base64.DEFAULT);
+        return Base64.encodeToString(byteArrayBitmapStream.toByteArray(), Base64.NO_WRAP);
+    }
+
+    private String[] imagedata;
+    private int maxDataLength = 100;
+
+    private void callbackPhoto(String image64, int width, int height) {
+        int datalength = image64.length();
+        imagedata = new String[(int) Math.ceil((double) datalength / (double) maxDataLength)];
+        for (int i = 0; i < imagedata.length; i++) {
+            int start = maxDataLength * i;
+            int limit = Math.min(start + maxDataLength, datalength);
+            imagedata[i] = image64.substring(start, limit);
+        }
+        mWebView.loadUrl(String.format("javascript:var scope = angular.element('#content').scope();console.log('ho');scope.init(%2$d, %3$d);console.log('ge');scope.setImg(1, '%1$s');", imagedata[0], width, height));
+    }
+
+
+    private void callbackPhoto2Next(int count) {
+        int id = count;
+        if (imagedata.length == count) {
+            id = 0;
+        }
+        mWebView.loadUrl(String.format("javascript:angular.element('#content').scope().setImg(%1$d, '%2$s')", id, imagedata[count - 1]));
+    }
+
+    public class JsInterface {
+        @ChromeJavascriptInterface
+        public void getNextImgData(final int count) {
+            mHandler.post(new Runnable() {
+                public void run() {
+                    callbackPhoto2Next(count);
+                }
+            });
+        }
     }
 }

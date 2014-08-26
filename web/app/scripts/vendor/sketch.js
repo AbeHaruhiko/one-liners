@@ -304,3 +304,11 @@ $('#toSVG').click(function() {
 // SVG.extend(SVG.G, selectableFunc);
 // SVG.extend(SVG.Shape, selectableFunc);
 
+function hoge() {
+    console.log('hoge');
+    var targetScope = angular.element('#content').scope();
+    targetScope.$apply(function() {
+        targetScope.consoleLog('hoge');
+        targetScope.setSvgImage('%s');
+    });
+}

@@ -18,9 +18,10 @@ angular.module('one-linsersApp')
 	var lineColor = null;
 
     /* init svg */
-    this.init = function() {
+    this.init = function(width, height) {
+    	angular.element('#svgArea').css("width", width + "px").css("height", height + "px");
 		// svg.jsバージョン
-		svgWrapper = SVG('svgArea').width(200).height(200);
+		svgWrapper = SVG('svgArea').width(width).height(height);
 		// mousedouwn等とtouchstart等は同時にセットするとうまく動かなかった。
 		var startEvent, dragEvent, endEvent;
 		var isTouch = 'ontouchstart' in window || (navigator.msMaxTouchPoints && !navigator.msPointerEnabled );
@@ -161,7 +162,7 @@ angular.module('one-linsersApp')
 
 	        // svg.jsバージョン
 	        var lineBorder = svgWrapper.line(x1, y1, x2, y2)
-	                    .stroke({color: 'white', width: 4});
+	                    .stroke({color: 'white', width: 0});
 	        var line = svgWrapper.line(x1, y1, x2, y2)
 	                    .stroke({color: lineColor, width: 2});
 	        var lineSet = svgWrapper.group();
@@ -202,7 +203,7 @@ angular.module('one-linsersApp')
 
 	            // 座標(0, 0)からのsin波になっているので、ドラッグ開始点(x1, y1)を起点にする（加算する）
 	            waveBorder.add(svgWrapper.line(tmpX + x1, tmpY1 + y1, tmpX + 1 + x1, tmpY2 + y1)
-	                .stroke({color: 'white', width: 4}));
+	                .stroke({color: 'white', width: 0}));
 	            wave.add(svgWrapper.line(tmpX + x1, tmpY1 + y1, tmpX + 1 + x1, tmpY2 + y1)
 	                .stroke({color: lineColor, width: 2}));
 	        }
@@ -318,7 +319,7 @@ angular.module('one-linsersApp')
 
 	SVG.extend(SVG.G, selectableFunc);
 
-	$scope.log = function(message) {
+	this.consoleLog = function(message) {
 		console.log(message);
 	};
 

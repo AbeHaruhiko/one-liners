@@ -4,7 +4,7 @@ angular.module('one-linsersApp')
   .controller('MainCtrl', function ($scope, Drawingservice) {
 
     // 画面初期化
-    $scope.init = function() {
+    $scope.init = function(width, height) {
 
       // jquery.svg.jsバージョン
 	    // $("#svgArea").width(600).height(600);
@@ -37,7 +37,7 @@ angular.module('one-linsersApp')
 
       // svgWrapper.on(startEvent, Drawingservice.startDrag).on(dragEvent, Drawingservice.dragging).on(endEvent, Drawingservice.endDrag);
 
-      Drawingservice.init();
+      Drawingservice.init(width, height);
     };
 
     // 削除ボタン
@@ -46,6 +46,8 @@ angular.module('one-linsersApp')
     // 画像セット
     $scope.setSvgImage = Drawingservice.setSvgImage;
 
+    $scope.consoleLog = Drawingservice.consoleLog;
+
     // 画面初期化実行
-    $scope.init();
+    // $scope.init();
   });

@@ -133,12 +133,12 @@ body {
 .select {
     border-color: #66F !important;
 }
-.delete {
+.delete, .line-type {
     -moz-border-radius:20px;
     -webkit-border-radius:20px;
     border-radius:20px
 }
-#delete {
+#delete, #line-type {
     background-color:#555;
     font-size:10px!important
 }

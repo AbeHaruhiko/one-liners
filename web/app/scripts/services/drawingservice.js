@@ -16,6 +16,7 @@ angular.module('one-linsersApp')
     var offset = null;
 	var selectedLineObject = null;
 	var lineColor = null;
+	var lineType = 'line';
 
     /* init svg */
     this.init = function(width, height) {
@@ -72,8 +73,7 @@ angular.module('one-linsersApp')
 	        //     .touchend(endDrag);
 	        outline = svgWrapper
 	        .line()
-	        .fill('none')
-	        .stroke({color: '#c0c0c0', width: 2, dasharray: '2,2'})
+	        .attr({stroke: '#c0c0c0', 'stroke-width': 2, 'stroke-dasharray': '2,2'})
 	        .move(0, 0)
 	        .mouseup(this.endDrag)
 	        .touchend(this.endDrag);
@@ -89,14 +89,7 @@ angular.module('one-linsersApp')
 	    //     .y(Math.min(event.clientY - offset.top, startPoint.Y))
 	    //     .width(Math.abs(event.clientX - offset.left - startPoint.X))
 	    //     .height(Math.abs(event.clientY - offset.top - startPoint.Y));
-
 	    outline.plot(startPoint.X, startPoint.Y, event.clientX - offset.left, event.clientY - offset.top);
-
-	    // debug
-	    var $scope = angular.element('body').scope();
-	    $scope.$apply(function() {
-	        $scope.pt = {start: startPoint, nowX: event.clientX - offset.left, nowY: event.clientY - offset.top};
-	    });
 	}
 
 	/* Draw where we finish */
@@ -126,7 +119,7 @@ angular.module('one-linsersApp')
 	}
 
 	/* Draw the selected element on the canvas */
-	var drawLine = function(x1, y1, x2, y2, lineType) {
+	var drawLine = function(x1, y1, x2, y2) {
 	    var left = Math.min(x1, x2);
 	    var top = Math.min(y1, y2);
 	    var right = Math.max(x1, x2);
@@ -155,16 +148,16 @@ angular.module('one-linsersApp')
 	    // settings = {fill: null, stroke: 'red', strokeWidth: '4px'};
 
 	    // 直線以外も引けるようにするための分岐
-	    lineType = lineType ? lineType : 'wave';
+	    lineType = lineType ? lineType : 'line';
 	    if (lineType === 'line') {
 	        // jquery.svg.jsバージョン 
 	        // node = svgWrapper.line(x1, y1, x2, y2, settings);
 
 	        // svg.jsバージョン
 	        var lineBorder = svgWrapper.line(x1, y1, x2, y2)
-	                    .stroke({color: 'white', width: 0});
+	                    .attr({stroke: 'white', 'stroke-width': 0});
 	        var line = svgWrapper.line(x1, y1, x2, y2)
-	                    .stroke({color: lineColor, width: 2});
+	                    .attr({stroke: lineColor, 'stroke-width': 2});
 	        var lineSet = svgWrapper.group();
 	        lineSet.add(lineBorder).add(line);
 	        lineSet.selectable(x1, y1, x2, y2);
@@ -318,6 +311,10 @@ angular.module('one-linsersApp')
 	                    }
 	                });
 	    }
+	}
+
+	this.setLineType = function(val) {
+		lineType = val;
 	}
 
 	/* 色選択 */

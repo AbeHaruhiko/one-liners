@@ -38,6 +38,8 @@ angular.module('one-linsersApp')
       // svgWrapper.on(startEvent, Drawingservice.startDrag).on(dragEvent, Drawingservice.dragging).on(endEvent, Drawingservice.endDrag);
 
       Drawingservice.init(width, height);
+  
+      $scope.lineType = 'line';
     };
 
     // 削除ボタン
@@ -46,8 +48,18 @@ angular.module('one-linsersApp')
     // 画像セット
     $scope.setSvgImage = Drawingservice.setSvgImage;
     $scope.setImg = Drawingservice.setImg;
+    $scope.toggleLineType = function(currentLineType) {
+      if (currentLineType === 'line') {
+        $scope.lineType = 'wave';
+      } else {
+        $scope.lineType = 'line';
+      }
+      Drawingservice.setLineType($scope.lineType);
+    };
 
     $scope.consoleLog = Drawingservice.consoleLog;
+
+
 
     // 画面初期化実行
     // $scope.init();

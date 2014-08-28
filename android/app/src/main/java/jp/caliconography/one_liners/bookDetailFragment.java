@@ -16,6 +16,9 @@ import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.JavascriptInterface;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 
 import java.io.ByteArrayOutputStream;
@@ -23,9 +26,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import jp.caliconography.one_liners.dummy.DummyContent;
-import us.costan.chrome.ChromeJavascriptInterface;
-import us.costan.chrome.ChromeView;
-import us.costan.chrome.ChromeViewClient;
 
 /**
  * A fragment representing a single book detail screen.
@@ -49,7 +49,7 @@ public class bookDetailFragment extends Fragment {
      */
     private DummyContent.DummyItem mItem;
 
-    private ChromeView mWebView;
+    private WebView mWebView;
     private Button mBtnLoadImage;
     private Uri mPictureUri;
     private int inSampleSize;
@@ -89,9 +89,9 @@ public class bookDetailFragment extends Fragment {
             }
         });
 
-        mWebView = (ChromeView) rootView.findViewById(R.id.webView);
-//        mWebView.setWebViewClient(new WebViewClient());
-        mWebView.setChromeViewClient(new ChromeViewClient());
+        mWebView = (WebView) rootView.findViewById(R.id.webView);
+        mWebView.setWebViewClient(new WebViewClient());
+//        mWebView.setChromeViewClient(new ChromeViewClient());
         mWebView.clearCache(true);
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.addJavascriptInterface(new JsInterface(), "androidApp");
@@ -265,7 +265,8 @@ public class bookDetailFragment extends Fragment {
     }
 
     public class JsInterface {
-        @ChromeJavascriptInterface
+//        @ChromeJavascriptInterface
+        @JavascriptInterface
         public void getNextImgData(final int count) {
             mHandler.post(new Runnable() {
                 public void run() {

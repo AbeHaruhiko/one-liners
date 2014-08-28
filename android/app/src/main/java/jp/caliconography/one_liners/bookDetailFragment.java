@@ -96,7 +96,7 @@ public class bookDetailFragment extends Fragment {
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.addJavascriptInterface(new JsInterface(), "androidApp");
 //        mWebView.loadUrl("http://www.google.com");
-        mWebView.loadUrl("http://one-liners.parseapp.com");
+        mWebView.loadUrl(getActivity().getString(R.string.drawing_service_url));
 //        mWebView.loadUrl("file:///android_asset/html/index.html");
 //        mWebView.loadUrl("file:///android_asset/a.html");
 

@@ -196,12 +196,20 @@ angular.module('one-linsersApp')
 
 	            // 座標(0, 0)からのsin波になっているので、ドラッグ開始点(x1, y1)を起点にする（加算する）
 	            waveBorder.add(svgWrapper.line(tmpX + x1, tmpY1 + y1, tmpX + 1 + x1, tmpY2 + y1)
-	                .stroke({color: 'white', width: 0}));
+	                .attr({stroke: 'white', 'stroke-width': 0}));
 	            wave.add(svgWrapper.line(tmpX + x1, tmpY1 + y1, tmpX + 1 + x1, tmpY2 + y1)
-	                .stroke({color: lineColor, width: 2}));
+	                .attr({stroke: lineColor, 'stroke-width': 2}));
 	        }
-	        wave.rotate(angle, x1, y1);
-	        waveBorder.rotate(angle, x1, y1);
+            wave.transform({
+                rotation: angle
+                , cx: x1
+                , cy: y1
+            });
+            waveBorder.transform({
+                rotation: angle
+                , cx: x1
+                , cy: y1
+            });
 	    }
 
 	    // drag-and-drop.jsバージョン

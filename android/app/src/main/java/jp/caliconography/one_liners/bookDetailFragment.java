@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
@@ -42,7 +43,7 @@ public class bookDetailFragment extends Fragment {
      */
     public static final String ARG_ITEM_ID = "item_id";
     public static final int IMAGE_CHOOSER_RESULTCODE = 0;
-    public static final int IMG_MAX_LENGTH = 600;
+    public static final int IMG_MAX_LENGTH = 400;
 
     /**
      * The dummy content this fragment is presenting.
@@ -165,8 +166,8 @@ public class bookDetailFragment extends Fragment {
                 // InputStreamは1回クローズする(もう中身が無い為、再利用は出来無い)
                 in.close();
 
-                int width = 1;
-                int height = 1;
+                int widthScale = 1;
+                int heightScale = 1;
                 if (options.outWidth > IMG_MAX_LENGTH || options.outHeight > IMG_MAX_LENGTH) {
                     // 長辺が600pxを超えているので600pxに収まるように縮小する
                     // Displayに収まるサイズに調整するための割合を取得
@@ -174,21 +175,31 @@ public class bookDetailFragment extends Fragment {
                     Point displaySize = new Point();
                     display.getSize(displaySize);
                     if (displaySize.x > IMG_MAX_LENGTH || displaySize.y > IMG_MAX_LENGTH) {
-                        width = options.outWidth / IMG_MAX_LENGTH;
-                        height = options.outHeight / IMG_MAX_LENGTH;
+                        widthScale = Math.round((float)options.outWidth / (float)IMG_MAX_LENGTH);
+                        heightScale = Math.round((float)options.outHeight / (float)IMG_MAX_LENGTH);
                     } else {
-                        width = options.outWidth / displaySize.x;
-                        height = options.outHeight / displaySize.y;
+                        widthScale = Math.round((float)options.outWidth / (float)displaySize.x);
+                        heightScale = Math.round((float)options.outHeight / (float)displaySize.y);
                     }
                 }
                 // 画像を 1 / Math.max(width, height) のサイズで取得するように調整
-                inSampleSize = Math.max(width, height);
+                inSampleSize = Math.max(widthScale, heightScale);
                 // 実際に画像を読み込ませる
                 options.inJustDecodeBounds = false;
+                options.inSampleSize = inSampleSize;
                 // もう1回InputStreamを取得
                 in = getActivity().getContentResolver().openInputStream(result);
                 // Bitmapの取得
                 bitmap = BitmapFactory.decodeStream(in, null, options);
+
+                int bitmapWidth = bitmap.getWidth();
+                int bitmapHeight = bitmap.getHeight();
+                float scale = Math.min((float) IMG_MAX_LENGTH / bitmapWidth, (float) IMG_MAX_LENGTH / bitmapHeight);
+                // 最終的なサイズにするための縮小率を求める
+                Matrix matrix = new Matrix();
+                matrix.postScale(scale, scale);
+                // 画像変形用のオブジェクトに拡大・縮小率をセットし
+                bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmapWidth, bitmapHeight, matrix, true);
             } catch (java.io.IOException e) {
                 e.printStackTrace();
             } finally {

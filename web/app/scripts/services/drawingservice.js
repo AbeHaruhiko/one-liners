@@ -15,7 +15,7 @@ angular.module('one-linsersApp')
     var outline = null;
     var offset = null;
 	var selectedLineObject = null;
-	var lineColor = null;
+	var lineColor = 'red';
 	var lineType = 'line';
 
     /* init svg */
@@ -158,7 +158,7 @@ angular.module('one-linsersApp')
 	                    .attr({stroke: 'white', 'stroke-width': 0});
 	        var line = svgWrapper.line(x1, y1, x2, y2)
 	                    .attr({stroke: lineColor, 'stroke-width': 2});
-	        var lineSet = svgWrapper.group();
+	        var lineSet = svgWrapper.group().draggable();
 	        lineSet.add(lineBorder).add(line);
 	        lineSet.selectable(x1, y1, x2, y2);
 
@@ -282,8 +282,8 @@ angular.module('one-linsersApp')
 
 	    var marker1 = svgWrapper
 	                    .rect(3, 3)
-	                    .stroke({ color: 'black', width: 1})
-	                    .fill('white')
+	                    .attr({ stroke: 'black', 'stroke-width': 1 })
+	                    .attr({ fill: 'white' })
 	                    .move(x1, y1)
 	                    .addClass('marker');
 	    var marker2 = marker1.clone().move(x2, y2).addClass('marker');

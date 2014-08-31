@@ -395,7 +395,7 @@ module.exports = function (grunt) {
     'rev',
     'usemin',
     'htmlmin',
-    'exec:parseDeploy', // 2014/08/05 追加
+//    'exec:parseDeploy', // 2014/08/05 追加
   ]);
 
   grunt.registerTask('default', [

@@ -23,7 +23,7 @@
 
     <fragment
         android:id="@+id/book_list"
-        android:name="jp.caliconography.one_liners.bookListFragment"
+        android:name="jp.caliconography.one_liners.BookListFragment"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"

@@ -1,8 +1,8 @@
 package jp.caliconography.one_liners;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.app.Activity;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 
@@ -11,12 +11,12 @@ import android.view.MenuItem;
  * An activity representing a single book detail screen. This
  * activity is only used on handset devices. On tablet-size devices,
  * item details are presented side-by-side with a list of items
- * in a {@link bookListActivity}.
+ * in a {@link BookListActivity}.
  * <p>
  * This activity is mostly just a 'shell' activity containing nothing
- * more than a {@link bookDetailFragment}.
+ * more than a {@link BookDetailFragment}.
  */
-public class bookDetailActivity extends Activity {
+public class BookDetailActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,9 +39,9 @@ public class bookDetailActivity extends Activity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(bookDetailFragment.ARG_ITEM_ID,
-                    getIntent().getStringExtra(bookDetailFragment.ARG_ITEM_ID));
-            bookDetailFragment fragment = new bookDetailFragment();
+            arguments.putString(BookDetailFragment.ARG_ITEM_ID,
+                    getIntent().getStringExtra(BookDetailFragment.ARG_ITEM_ID));
+            BookDetailFragment fragment = new BookDetailFragment();
             fragment.setArguments(arguments);
             getFragmentManager().beginTransaction()
                     .add(R.id.book_detail_container, fragment)
@@ -60,7 +60,7 @@ public class bookDetailActivity extends Activity {
             //
             // http://developer.android.com/design/patterns/navigation.html#up-vs-back
             //
-            NavUtils.navigateUpTo(this, new Intent(this, bookListActivity.class));
+            NavUtils.navigateUpTo(this, new Intent(this, BookListActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);

@@ -30,13 +30,12 @@ import jp.caliconography.one_liners.dummy.DummyContent;
 
 /**
  * A fragment representing a single book detail screen.
- * This fragment is either contained in a {@link bookListActivity}
- * in two-pane mode (on tablets) or a {@link bookDetailActivity}
+ * This fragment is either contained in a {@link BookListActivity}
+ * in two-pane mode (on tablets) or a {@link BookDetailActivity}
  * on handsets.
  */
-public class bookDetailFragment extends Fragment {
+public class BookDetailFragment extends Fragment {
 
-    static final String TAG = bookDetailFragment.class.getSimpleName();
     /**
      * The fragment argument representing the item ID that this fragment
      * represents.
@@ -44,7 +43,7 @@ public class bookDetailFragment extends Fragment {
     public static final String ARG_ITEM_ID = "item_id";
     public static final int IMAGE_CHOOSER_RESULTCODE = 0;
     public static final int IMG_MAX_LENGTH = 320;
-
+    static final String TAG = BookDetailFragment.class.getSimpleName();
     /**
      * The dummy content this fragment is presenting.
      */
@@ -55,12 +54,14 @@ public class bookDetailFragment extends Fragment {
     private Uri mPictureUri;
     private int inSampleSize;
     private Handler mHandler = new Handler();
+    private String[] imagedata;
+    private int maxDataLength = 100;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
      * fragment (e.g. upon screen orientation changes).
      */
-    public bookDetailFragment() {
+    public BookDetailFragment() {
     }
 
     @Override
@@ -177,11 +178,11 @@ public class bookDetailFragment extends Fragment {
                     Point displaySize = new Point();
                     display.getSize(displaySize);
                     if (displaySize.x > IMG_MAX_LENGTH || displaySize.y > IMG_MAX_LENGTH) {
-                        widthScale = Math.round((float)options.outWidth / (float)IMG_MAX_LENGTH);
-                        heightScale = Math.round((float)options.outHeight / (float)IMG_MAX_LENGTH);
+                        widthScale = Math.round((float) options.outWidth / (float) IMG_MAX_LENGTH);
+                        heightScale = Math.round((float) options.outHeight / (float) IMG_MAX_LENGTH);
                     } else {
-                        widthScale = Math.round((float)options.outWidth / (float)displaySize.x);
-                        heightScale = Math.round((float)options.outHeight / (float)displaySize.y);
+                        widthScale = Math.round((float) options.outWidth / (float) displaySize.x);
+                        heightScale = Math.round((float) options.outHeight / (float) displaySize.y);
                     }
                 }
                 // 画像を 1 / Math.max(width, height) のサイズで取得するように調整
@@ -208,10 +209,10 @@ public class bookDetailFragment extends Fragment {
                 if (in != null) {
                     try {
                         in.close();
-                    } catch (IOException e) {}
+                    } catch (IOException e) {
+                    }
                 }
             }
-
 
 
             String image64 = stringifyBitmap(bitmap);
@@ -243,7 +244,7 @@ public class bookDetailFragment extends Fragment {
         // ギャラリー選択のIntentでcreateChooser()
         Intent chooserIntent = Intent.createChooser(i, "Pick Image");
         // EXTRA_INITIAL_INTENTS にカメラ撮影のIntentを追加
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[] { i2 });
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{i2});
 
         startActivityForResult(chooserIntent, IMAGE_CHOOSER_RESULTCODE);
     }
@@ -253,9 +254,6 @@ public class bookDetailFragment extends Fragment {
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, byteArrayBitmapStream);
         return Base64.encodeToString(byteArrayBitmapStream.toByteArray(), Base64.NO_WRAP);
     }
-
-    private String[] imagedata;
-    private int maxDataLength = 100;
 
     private void callbackPhoto(String image64, int width, int height) {
         int datalength = image64.length();
@@ -278,7 +276,7 @@ public class bookDetailFragment extends Fragment {
     }
 
     public class JsInterface {
-//        @ChromeJavascriptInterface
+        //        @ChromeJavascriptInterface
         @JavascriptInterface
         public void getNextImgData(final int count) {
             mHandler.post(new Runnable() {

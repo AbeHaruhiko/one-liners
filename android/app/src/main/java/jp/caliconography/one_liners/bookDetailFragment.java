@@ -43,7 +43,7 @@ public class bookDetailFragment extends Fragment {
      */
     public static final String ARG_ITEM_ID = "item_id";
     public static final int IMAGE_CHOOSER_RESULTCODE = 0;
-    public static final int IMG_MAX_LENGTH = 400;
+    public static final int IMG_MAX_LENGTH = 320;
 
     /**
      * The dummy content this fragment is presenting.
@@ -95,6 +95,8 @@ public class bookDetailFragment extends Fragment {
 //        mWebView.setChromeViewClient(new ChromeViewClient());
         mWebView.clearCache(true);
         mWebView.getSettings().setJavaScriptEnabled(true);
+        mWebView.getSettings().setLoadWithOverviewMode(true);
+        mWebView.getSettings().setUseWideViewPort(true);
         mWebView.addJavascriptInterface(new JsInterface(), "androidApp");
 //        mWebView.loadUrl("http://www.google.com");
         mWebView.loadUrl(getActivity().getString(R.string.drawing_service_url));

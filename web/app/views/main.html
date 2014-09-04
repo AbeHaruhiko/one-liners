@@ -39,16 +39,24 @@
 
 <div id="svgArea" style="border:solid 1px gray;"></div>
 <div class="tools">
-  <div class="color select" id="color1"></div>
-  <div class="color" id="color2"></div>
-  <div class="color" id="color3"></div>
-  <div class="color" id="color4"></div>
-  <div class="color" id="color5"></div>
-  <div class="color" id="color6"></div>
-  <div class="color" id="color7"></div>
-  <div class="color" id="color8"></div>
-  <div class="color" id="color9"></div>
   <div class="line-type" id="line-type" ng-click="toggleLineType(lineType)">{{lineType}}</div>
   <div class="delete" id="delete" ng-click="removeLine()">DEL</div>
   <div><button onclick="javascript:hoge()"></button></div>
+
 </div>
+  <div style="height:200px;"></div>
+  <div id="color-box" style="position:relative;border:solid gray 1px;width:20px;height:20px;">
+    <div id="color-box-base" style="position:0;width:20px;height:20px;" ng-click="slideToggleColor()"></div>
+    <div id="color-list" style="position:0;width:20px;height:200px;bottom:0;display:none;">
+      <div class="color select" id="color1" style="width:20px;height:20px;"></div>
+      <div class="color" id="color2" style="width:20px;height:20px;"></div>
+      <div class="color" id="color2" style="width:20px;height:20px;"></div>
+      <div class="color" id="color3" style="width:20px;height:20px;"></div>
+      <div class="color" id="color4" style="width:20px;height:20px;"></div>
+      <div class="color" id="color5" style="width:20px;height:20px;"></div>
+      <div class="color" id="color6" style="width:20px;height:20px;"></div>
+      <div class="color" id="color7" style="width:20px;height:20px;"></div>
+      <div class="color" id="color8" style="width:20px;height:20px;"></div>
+      <div class="color" id="color9" style="width:20px;height:20px;"></div>
+    </div>
+  </div>

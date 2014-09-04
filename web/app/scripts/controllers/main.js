@@ -45,6 +45,9 @@ angular.module('one-linsersApp')
     // 削除ボタン
     $scope.removeLine = Drawingservice.removeLine;
 
+    // 色リスト
+    $scope.slideToggleColor = Drawingservice.slideToggleColor;
+
     // 画像セット
     $scope.setSvgImage = Drawingservice.setSvgImage;
     $scope.setImg = Drawingservice.setImg;

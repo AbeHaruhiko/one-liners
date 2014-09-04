@@ -332,6 +332,11 @@ angular.module('one-linsersApp')
 	    angular.element(this).addClass('select');
 	});
 
+	/* 色選択スライドアップ・ダウン　*/
+	this.slideToggleColor = function() {
+		angular.element('#color-list').slideToggle();
+	};
+
 	SVG.extend(SVG.G, selectableFunc);
 
 	this.consoleLog = function(message) {

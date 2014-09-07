@@ -334,7 +334,7 @@ angular.module('one-linsersApp')
 
 	/* 色選択スライドアップ・ダウン　*/
 	this.slideToggleColor = function() {
-		angular.element('#color-list').slideToggle();
+		angular.element('#color-list').toggle("slide", {direction: 'down', easing: 'easeOutElastic'}, 1000);
 	};
 
 	SVG.extend(SVG.G, selectableFunc);

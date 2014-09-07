@@ -84,25 +84,25 @@ body {
     /*width: 600px;*/
 }
 .color {
-    -moz-border-radius: 0 50px 50px 50px;
-    -webkit-border-radius: 0 50px 50px 50px;
-    border-radius: 0 50px 50px 50px;
+    -moz-border-radius: 10px;
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
 }
-.tools div {
+.tools .tool {
   float: left;
   font-size: 40px;
   font-weight: bolder;
   color: #fff;
-  margin: 10px;
-  width: 50px;
-  height: 50px;
+  /*margin: 10px;*/
+  width: 20px;
+  height: 20px;
   text-align: center;
   line-height: 50px;
-  border: 5px solid #fff;
-  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.3);
+  border: 2px solid #eee;
+/*  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.3);
   -moz-box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.3);
   -webkit-box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.3);
-}
+*/}
 #color1 {
     background-color: #F00;
 }

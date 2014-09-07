@@ -1,7 +1,28 @@
-<com.etsy.android.grid.StaggeredGridView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/grid_view"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:caliconography="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    app:item_margin="8dp"
-    app:column_count="@integer/grid_column_count" />
+    android:layout_height="match_parent">
+
+    <com.etsy.android.grid.StaggeredGridView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/grid_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:item_margin="8dp"
+        app:column_count="@integer/grid_column_count" />
+
+    <view
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        class="jp.caliconography.android.widget.CustomFontButton"
+        android:id="@+id/create_book"
+        android:layout_gravity="right|bottom"
+        android:text="&#xf055;"
+        caliconography:customFont="fontawesome-webfont.ttf"
+        android:background="@drawable/btn_common_back"
+        android:textSize="40sp"
+        android:layout_margin="16dp" />
+
+
+</FrameLayout>

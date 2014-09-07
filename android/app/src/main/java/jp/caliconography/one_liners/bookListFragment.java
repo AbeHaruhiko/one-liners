@@ -2,6 +2,7 @@ package jp.caliconography.one_liners;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -80,6 +82,7 @@ public class BookListFragment extends Fragment implements
 
 
     private StaggeredGridView mGridView;
+    private Button mCreateBook;
     private boolean mHasRequestedMore;
 
 //    @Override
@@ -198,6 +201,17 @@ public class BookListFragment extends Fragment implements
         mGridView.setAdapter(mAdapter);
         mGridView.setOnScrollListener(this);
         mGridView.setOnItemClickListener(this);
+
+        // 新規登録ボタン
+        mCreateBook = (Button) getView().findViewById(R.id.create_book);
+        mCreateBook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent detailIntent = new Intent(getActivity(), BookEditActivity.class);
+                startActivity(detailIntent);
+            }
+        });
+
     }
 
     @Override

@@ -33,8 +33,10 @@ angular.module('one-linsersApp')
     $scope.toggleLineType = function(currentLineType) {
       if (currentLineType === 'line') {
         $scope.lineType = 'wave';
-      } else {
-        $scope.lineType = 'line';
+      } else if (currentLineType === 'wave'){
+        $scope.lineType = 'rect';
+      } else if (currentLineType === 'rect'){
+        $scope.lineType = 'line';        
       }
       Drawingservice.setLineType($scope.lineType);
     };

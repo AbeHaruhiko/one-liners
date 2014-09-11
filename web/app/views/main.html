@@ -1,4 +1,4 @@
-<div id="main-view" style="background-color:#555;">
+<!-- <div id="main-view" style="background-color:#555;">
   <div id="svg-area"></div>
   <div class="tools">
     <ul id="tool-list">
@@ -25,6 +25,30 @@
     <div id="tool-base" class="color tool" ng-click="slideToggleTools()"></div>
 
   </div>
+</div>
+ -->
+<div id="main-view" style="background-color:#eee;">
+<div id="svg-area" style="border:solid 1px gray;"></div>
+<div class="tools" style="/*height:20px;*/">
+   <div id="color-box" style="position:relative;">
+    <div id="color-box-base" class="color tool" style="position:0;" ng-click="slideToggleColor()"></div>
+    <div id="color-list" style="position:0;width:20px;height:200px;bottom:0;display:none;">
+      <div class="color tool select" id="color1" style=""></div>
+      <div class="color tool" id="color2" style=""></div>
+      <div class="color tool" id="color3" style=""></div>
+      <div class="color tool" id="color4" style=""></div>
+      <div class="color tool" id="color5" style=""></div>
+      <div class="color tool" id="color6" style=""></div>
+      <div class="color tool" id="color7" style=""></div>
+      <div class="color tool" id="color8" style=""></div>
+      <div class="color tool" id="color9" style=""></div>
+    </div>
+  </div>
+
+</div>
+<div class="line-type tool" id="line-type" ng-click="toggleLineType(lineType)">{{lineType}}</div>
+<div class="delete tool" id="delete" ng-click="removeLine()">DEL</div>
+<div><button onclick="javascript:hoge()"></button></div>
 <!--   <div style="height:200px;border:gray 1px solid;"></div>
--->
+ -->
 </div>

@@ -155,7 +155,7 @@ angular.module('one-linsersApp')
 	    // settings = {fill: null, stroke: 'red', strokeWidth: '4px'};
 
 	    // 直線以外も引けるようにするための分岐
-	    lineType = lineType ? lineType : 'line';
+	    lineType = lineType ? lineType : 'rect';
 	    if (lineType === 'line') {
 	        // jquery.svg.jsバージョン 
 	        // node = svgWrapper.line(x1, y1, x2, y2, settings);
@@ -165,7 +165,7 @@ angular.module('one-linsersApp')
 	                    .attr({stroke: 'white', 'stroke-width': 0});
 	        var line = svgWrapper.line(x1, y1, x2, y2)
 	                    .attr({stroke: lineColor, 'stroke-width': 2});
-	        var lineSet = svgWrapper.group().draggable();
+	        var lineSet = svgWrapper.group();
 	        lineSet.add(lineBorder).add(line);
 	        lineSet.selectable(x1, y1, x2, y2);
 
@@ -217,6 +217,17 @@ angular.module('one-linsersApp')
                 , cx: x1
                 , cy: y1
             });
+	    } else if (lineType === 'rect') {
+
+	        var rectBorder = svgWrapper.rect(Math.abs(x1 - x2), Math.abs(y1 - y2))
+	                    .attr({stroke: 'white', 'stroke-width': 0, 'fill-opacity': 0})
+	                    .move(Math.min(x1, x2), Math.min(y1, y2));
+	        var rect = svgWrapper.rect(Math.abs(x1 - x2), Math.abs(y1 - y2))
+	                    .attr({stroke: lineColor, 'stroke-width': 2, 'fill-opacity': 0})
+	                    .move(Math.min(x1, x2), Math.min(y1, y2));
+	        var lineSet = svgWrapper.group();
+	        lineSet.add(rectBorder).add(rect);
+	        lineSet.selectable(x1, y1, x2, y2);
 	    }
 
 	    // drag-and-drop.jsバージョン

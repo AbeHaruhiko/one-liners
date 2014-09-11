@@ -1,10 +1,17 @@
 'use strict';
 
-/*	参考
-	http://keith-wood.name/svg.html
-	http://www.slideshare.net/tonosamart/e-semi-2720130123
+/*     参考
+       http://keith-wood.name/svg.html
+       http://www.slideshare.net/tonosamart/e-semi-2720130123
 */
 
+/**
+ * @ngdoc service
+ * @name tempApp.Drawingservice
+ * @description
+ * # Drawingservice
+ * Service in the tempApp.
+ */
 angular.module('one-linsersApp')
   .service('Drawingservice', function Drawingservice() {
     // AngularJS will instantiate a singleton by calling "new" on this function
@@ -342,6 +349,5 @@ angular.module('one-linsersApp')
 	this.consoleLog = function(message) {
 		console.log(message);
 	};
-
 
   });

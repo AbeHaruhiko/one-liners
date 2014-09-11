@@ -1,18 +1,18 @@
 'use strict';
 
-describe('Service: drawingService', function () {
+describe('Service: Drawingservice', function () {
 
   // load the service's module
-  beforeEach(module('publicApp'));
+  beforeEach(module('tempApp'));
 
   // instantiate service
-  var drawingService;
-  beforeEach(inject(function (_drawingService_) {
-    drawingService = _drawingService_;
+  var Drawingservice;
+  beforeEach(inject(function (_Drawingservice_) {
+    Drawingservice = _Drawingservice_;
   }));
 
   it('should do something', function () {
-    expect(!!drawingService).toBe(true);
+    expect(!!Drawingservice).toBe(true);
   });
 
 });

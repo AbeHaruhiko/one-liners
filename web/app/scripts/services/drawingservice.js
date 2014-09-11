@@ -65,19 +65,7 @@ angular.module('one-linsersApp')
 	        return;
 	    }
 	    if (!outline) {
-	        // jquery.svg.jsバージョン
-	        // outline = svgWrapper.rect(0, 0, 0, 0,
-	        //     {fill: 'none', stroke: '#c0c0c0', strokeWidth: 1, strokeDashArray: '2,2'});
-	        // $(outline).mouseup(endDrag);
 
-	        // svg.jsバージョン
-	        // outline = svgWrapper
-	        //     .rect(0, 0)
-	        //     .fill('none')
-	        //     .stroke({color: '#c0c0c0', width: 1, dasharray: '2,2'})
-	        //     .move(0, 0)
-	        //     .mouseup(endDrag)
-	        //     .touchend(endDrag);
 	        outline = svgWrapper
 	        .line()
 	        .attr({stroke: '#c0c0c0', 'stroke-width': 2, 'stroke-dasharray': '2,2'})
@@ -85,17 +73,7 @@ angular.module('one-linsersApp')
 	        .mouseup(this.endDrag)
 	        .touchend(this.endDrag);
 	    }
-	    // jquery.svg.jsバージョン
-	    // svgWrapper.change(outline, {x: Math.min(event.clientX - offset.left, startPoint.X),
-	    //     y: Math.min(event.clientY - offset.top, startPoint.Y),
-	    //     width: Math.abs(event.clientX - offset.left - startPoint.X),
-	    //     height: Math.abs(event.clientY - offset.top - startPoint.Y)});
 
-	    // svg.jsバージョン
-	    // outline.x(Math.min(event.clientX - offset.left, startPoint.X))
-	    //     .y(Math.min(event.clientY - offset.top, startPoint.Y))
-	    //     .width(Math.abs(event.clientX - offset.left - startPoint.X))
-	    //     .height(Math.abs(event.clientY - offset.top - startPoint.Y));
 	    outline.plot(startPoint.X, startPoint.Y, event.clientX - offset.left, event.clientY - offset.top);
 	}
 
@@ -106,10 +84,7 @@ angular.module('one-linsersApp')
 	    if (!startPoint) {
 	        return;
 	    }
-	    // jquery.svg.jsバージョン
-	    // $(outline).remove();
 
-	    // svg.jsバージョン
 	    if (outline) {
 	        outline.remove();
 	    }
@@ -138,21 +113,6 @@ angular.module('one-linsersApp')
 	    var node = null;
 
 
-	    // var scale = ((right - left)/95);
-	    // var $scope = angular.element('#content').scope();
-	    // var mayugeColor = $('select[name="colorpicker4mayuge"]').val();
-	    // var rinkakuColor = $('select[name="colorpicker4rinkaku"]').val();
-	    // var rinkakuWidth = $('select[name="rinkakuWidth"]').val();
-	    // if ($scope.conf.optionsLR == "r") {
-	    //     node = svgWrapper.group({class_: "draggable", transform: "translate(" + right + "," + bottom + ")"});
-	    //     svgWrapper.use(node, "#path-r-mayuge-" + $scope.conf.mayugeType, {fill: mayugeColor, transform: "scale(" + scale + ")", stroke: rinkakuColor, strokeWidth: rinkakuWidth});
-	    // } else {
-	    //     node = svgWrapper.group({class_: "draggable", transform: "translate(" + (right - (right - left)) + "," + bottom + ")"});
-	    //     svgWrapper.use(node, "#path-r-mayuge-" + $scope.conf.mayugeType, {fill: mayugeColor, transform: "scale(-" + scale + "," + scale + ")", stroke: rinkakuColor, strokeWidth: rinkakuWidth});
-	    // }
-
-	    // settingsのデフォルト値（仮）
-	    // settings = {fill: null, stroke: 'red', strokeWidth: '4px'};
 
 	    // 直線以外も引けるようにするための分岐
 	    lineType = lineType ? lineType : 'rect';
@@ -173,13 +133,6 @@ angular.module('one-linsersApp')
 
 	        var waveLength = 10;    // 一周期の長さ
 	        var theta = Math.PI * 2 / waveLength;
-	        // for (i = left; i < right; i++) {
-	        //     yy0=Math.sin(theta*i);
-	        //     yy1=Math.sin(theta*(i+1));
-
-	        //     svgWrapper.line(i, yy0, i + 1, yy1)
-	        //         .stroke({color: 'red', width: 2});
-	        // }
 
 	        // 波線
 	        var waveBorder = svgWrapper.group();
@@ -229,20 +182,6 @@ angular.module('one-linsersApp')
 	        lineSet.add(rectBorder).add(rect);
 	        lineSet.selectable(x1, y1, x2, y2);
 	    }
-
-	    // drag-and-drop.jsバージョン
-	    // var makeSVGElementDraggable = svgDrag.setupCanvasForDragging();
-	    // makeSVGElementDraggable(node);
-	    // node.addEventListener("mouseup", $scope.export2canvas);
-
-	    // node.addEventListener("click", function() {$scope.selectMayuge($(node))});
-	    // node.addEventListener("dblclick", function() {$scope.removeMayuge($(node));});
-
-	    // $scope.export2canvas();
-	    // if ($scope.conf.autoSave) {
-	    //   $scope.savePNG();
-	    // }
-
 
 	    drawNodes[drawNodes.length] = node;
 	    

@@ -10,10 +10,17 @@
   padding: 0.2em 0;
 }
 
+html,
+body,
+#content,
+#main-view {
+  height: 100%;
+}
+
 /* Space out content a bit */
 body {
   padding-top: 20px;
-  padding-bottom: 20px;
+  // padding-bottom: 20px;
 }
 
 /* Responsive: Portrait tablets and up */
@@ -30,25 +37,22 @@ body {
 
 .tools {
     clear: both;
-    /*width: 600px;*/
+    position: absolute;
+    bottom: 0px;
   .tool {
     float: left;
     font-size: 40px;
     font-weight: bolder;
     color: #fff;
-    /*margin: 10px;*/
-    width: 20px;
-    height: 20px;
+    width: 32px;
+    height: 32px;
     text-align: center;
     line-height: 50px;
     border: 2px solid #eee;
-  /*  box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.3);
-    -moz-box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.3);
-    -webkit-box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.3);
-  */}
+  }
 }
 .color {
-    @include border-radius(10px);
+    @include border-radius(16px);
 }
 #color1 {
     background-color: #F00;
@@ -81,10 +85,23 @@ body {
     border-color: #66F !important;
 }
 .delete, .line-type {
-    @include border-radius(20px);
+    @include border-radius(16px);
 }
 #delete, #line-type {
     background-color:#555;
     font-size:10px!important
 }
 
+#svg-area {
+  // position:relative;
+}
+#color-list {
+  list-style-type: none;
+  // margin: 0;
+  padding: 0;
+  height: 300px;  // ここがリストの高さより小さかったり、指定しなかったり、100%だとアニメーションしない。
+  width: 36px;
+  display: none;
+  z-index: 999;
+  // @include box-sizing(border-box);
+}

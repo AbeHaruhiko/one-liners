@@ -27,9 +27,9 @@ angular.module('one-linsersApp')
 
     /* init svg */
     this.init = function(width, height) {
-    	angular.element('#svgArea').css("width", width + "px").css("height", height + "px");
+    	angular.element('#svg-area').css("width", width + "px").css("height", height + "px");
 		// svg.jsバージョン
-		svgWrapper = SVG('svgArea').width(width).height(height);
+		svgWrapper = SVG('svg-area').width(width).height(height);
 		// mousedouwn等とtouchstart等は同時にセットするとうまく動かなかった。
 		var startEvent, dragEvent, endEvent;
 		var isTouch = 'ontouchstart' in window || (navigator.msMaxTouchPoints && !navigator.msPointerEnabled );
@@ -53,7 +53,7 @@ angular.module('one-linsersApp')
 	this.startDrag = function(event) {
 	    event.preventDefault();
 	    event = getCoordinates(event);
-	    offset = $('#svgArea').offset();
+	    offset = $('#svg-area').offset();
 	    startPoint = {X: event.clientX - offset.left, Y: event.clientY - offset.top};
 	};
 
@@ -236,7 +236,7 @@ angular.module('one-linsersApp')
 	    drawNodes[drawNodes.length] = node;
 	    
 	    // $(node).mousedown(startDrag).mousemove(dragging).mouseup(endDrag);
-	    $('#svgArea').focus();
+	    $('#svg-area').focus();
 	};
 
 	/* remove line */

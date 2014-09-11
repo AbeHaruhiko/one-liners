@@ -66,16 +66,30 @@ angular.module('one-linsersApp')
 	    }
 	    if (!outline) {
 
-	        outline = svgWrapper
-	        .line()
-	        .attr({stroke: '#c0c0c0', 'stroke-width': 2, 'stroke-dasharray': '2,2'})
-	        .move(0, 0)
-	        .mouseup(this.endDrag)
-	        .touchend(this.endDrag);
+	    	if (lineType === 'line' || lineType === 'wave') {
+		        outline = svgWrapper
+			        .line()
+			        .attr({stroke: '#c0c0c0', 'stroke-width': 2, 'stroke-dasharray': '2,2'})
+			        .move(0, 0)
+			        .mouseup(this.endDrag)
+			        .touchend(this.endDrag);
+		    } else if (lineType === 'rect') {
+		        outline = svgWrapper
+		            .rect(0, 0)
+		            .attr({stroke: '#c0c0c0', 'stroke-width': 1, 'stroke-dasharray': '2,2', fill: 'none'})
+		            .mouseup(this.endDrag)
+		            .touchend(this.endDrag);	
+		    }
 	    }
 
-	    outline.plot(startPoint.X, startPoint.Y, event.clientX - offset.left, event.clientY - offset.top);
-	}
+    	if (lineType === 'line' || lineType === 'wave') {
+		    outline.plot(startPoint.X, startPoint.Y, event.clientX - offset.left, event.clientY - offset.top);
+	    } else if (lineType === 'rect') {
+	    	outline
+	    		.size(Math.abs(startPoint.X - (event.clientX - offset.left)),  Math.abs(startPoint.Y - (event.clientY - offset.top)))
+	            .move(Math.min(startPoint.X, event.clientX - offset.left),  Math.min(startPoint.Y, event.clientY - offset.top));
+	    }
+	}	
 
 	/* Draw where we finish */
 	this.endDrag = function(event) {
@@ -173,10 +187,10 @@ angular.module('one-linsersApp')
 	    } else if (lineType === 'rect') {
 
 	        var rectBorder = svgWrapper.rect(Math.abs(x1 - x2), Math.abs(y1 - y2))
-	                    .attr({stroke: 'white', 'stroke-width': 0, 'fill-opacity': 0})
+	                    .attr({stroke: 'white', 'stroke-width': 0, fill: 'none'})
 	                    .move(Math.min(x1, x2), Math.min(y1, y2));
 	        var rect = svgWrapper.rect(Math.abs(x1 - x2), Math.abs(y1 - y2))
-	                    .attr({stroke: lineColor, 'stroke-width': 2, 'fill-opacity': 0})
+	                    .attr({stroke: lineColor, 'stroke-width': 2, fill: 'none'})
 	                    .move(Math.min(x1, x2), Math.min(y1, y2));
 	        var lineSet = svgWrapper.group();
 	        lineSet.add(rectBorder).add(rect);

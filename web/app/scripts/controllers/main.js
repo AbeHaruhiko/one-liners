@@ -24,6 +24,9 @@ angular.module('one-linsersApp')
     // 色リスト
     $scope.slideToggleColor = Drawingservice.slideToggleColor;
 
+    // Tools表示・非表示
+    $scope.slideToggleTools = Drawingservice.slideToggleTools;
+
     // 画像セット
     $scope.setSvgImage = Drawingservice.setSvgImage;
     $scope.setImg = Drawingservice.setImg;

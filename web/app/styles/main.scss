@@ -36,11 +36,11 @@ body {
 
 
 .tools {
-    clear: both;
+    width: 100%;
     position: absolute;
     bottom: 0px;
   .tool {
-    float: left;
+    float: right;
     font-size: 40px;
     font-weight: bolder;
     color: #fff;
@@ -95,11 +95,23 @@ body {
 #svg-area {
   // position:relative;
 }
+
 #color-list {
   list-style-type: none;
   // margin: 0;
   padding: 0;
-  height: 300px;  // ここがリストの高さより小さかったり、指定しなかったり、100%だとアニメーションしない。
+  height: 36px;
+  width: 300px;
+  display: none;
+  z-index: 999;
+  // @include box-sizing(border-box);
+}
+
+#tool-list {
+  list-style-type: none;
+  // margin: 0;
+  padding: 0;
+  height: 90px;  // ここがリストの高さより小さかったり、指定しなかったり、100%だとアニメーションしない。
   width: 36px;
   display: none;
   z-index: 999;

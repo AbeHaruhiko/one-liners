@@ -341,7 +341,12 @@ angular.module('one-linsersApp')
 
 	/* 色選択スライドアップ・ダウン　*/
 	this.slideToggleColor = function() {
-		angular.element('#color-list').toggle("slide", {direction: 'down', easing: 'easeOutElastic'}, 1000);
+		angular.element('#color-list').toggle("slide", {direction: 'left', easing: 'easeOutElastic'}, 1000);
+	};
+
+	/* Toolsスライドアップ・ダウン　*/
+	this.slideToggleTools = function() {
+		angular.element('#tool-list').toggle("slide", {direction: 'down', easing: 'easeOutElastic'}, 1000);
 	};
 
 	SVG.extend(SVG.G, selectableFunc);

@@ -1,20 +1,28 @@
-<div id="main-view" style="background-color:#eee;">
+<div id="main-view" style="background-color:#555;">
   <div id="svg-area"></div>
   <div class="tools">
-    <div id="color-box">
-      <ul id="color-list">
-        <li id="color1" class="color tool select"></li>
-        <li id="color2" class="color tool"></li>
-        <li id="color3" class="color tool"></li>
-        <li id="color4" class="color tool"></li>
-        <li id="color5" class="color tool"></li>
-        <li id="color6" class="color tool"></li>
-        <li id="color7" class="color tool"></li>
-        <li id="color8" class="color tool"></li>
-        <li id="color9" class="color tool"></li>
-      </ul>
-    </div>
-    <div id="color-box-base" class="color tool" ng-click="slideToggleColor()"></div>
+    <ul id="tool-list">
+      <li ng-click="slideToggleColor()" class="color tool">
+        <ul id="color-list">
+          <li id="color1" class="color tool select"></li>
+          <li id="color2" class="color tool"></li>
+          <li id="color3" class="color tool"></li>
+          <li id="color4" class="color tool"></li>
+          <li id="color5" class="color tool"></li>
+          <li id="color6" class="color tool"></li>
+          <li id="color7" class="color tool"></li>
+          <li id="color8" class="color tool"></li>
+          <li id="color9" class="color tool"></li>
+        </ul>
+      </li>
+      <li>
+        <ul id="line-type-list">
+          <li id="line-type-line" class="color tool select"></li>
+          <li id="line-type-wave" class="color tool"></li>
+        </ul>
+      </li>
+    </ul>
+    <div id="tool-base" class="color tool" ng-click="slideToggleTools()"></div>
 
   </div>
 <!--   <div style="height:200px;border:gray 1px solid;"></div>

@@ -21,11 +21,14 @@ angular.module('one-linsersApp')
     // 削除ボタン
     $scope.removeLine = Drawingservice.removeLine;
 
+    // Tools表示・非表示
+    $scope.slideToggleTools = Drawingservice.slideToggleTools;
+
     // 色リスト
     $scope.slideToggleColor = Drawingservice.slideToggleColor;
 
-    // Tools表示・非表示
-    $scope.slideToggleTools = Drawingservice.slideToggleTools;
+    // 線リスト
+    $scope.slideToggleLineType = Drawingservice.slideToggleLineType;
 
     // 画像セット
     $scope.setSvgImage = Drawingservice.setSvgImage;

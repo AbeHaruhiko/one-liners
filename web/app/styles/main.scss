@@ -40,8 +40,8 @@ body {
     position: absolute;
     bottom: 0px;
   .tool {
-    float: right;
-    font-size: 40px;
+    float: left;
+    font-size: 10px;
     font-weight: bolder;
     color: #fff;
     width: 32px;
@@ -49,10 +49,11 @@ body {
     text-align: center;
     line-height: 50px;
     border: 2px solid #eee;
+    background-color: #fff;
+    @include border-radius(16px);
   }
 }
 .color {
-    @include border-radius(16px);
 }
 #color1 {
     background-color: #F00;
@@ -103,8 +104,17 @@ body {
   height: 36px;
   width: 300px;
   display: none;
-  z-index: 999;
-  // @include box-sizing(border-box);
+  margin-left: 36px;
+}
+
+#line-type-list {
+  list-style-type: none;
+  // margin: 0;
+  padding: 0;
+  height: 36px;
+  width: 100px;
+  display: none;
+  margin-left: 36px;
 }
 
 #tool-list {
@@ -114,6 +124,5 @@ body {
   height: 90px;  // ここがリストの高さより小さかったり、指定しなかったり、100%だとアニメーションしない。
   width: 36px;
   display: none;
-  z-index: 999;
   // @include box-sizing(border-box);
 }

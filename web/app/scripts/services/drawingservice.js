@@ -296,22 +296,29 @@ angular.module('one-linsersApp')
 		lineType = val;
 	}
 
-	/* 色選択 */
-	angular.element('.color').on('click', function() {
-	    lineColor = angular.element(this).css('background-color');
-	    angular.element('.color').removeClass('select');
-	    angular.element(this).addClass('select');
-	});
+	/* Toolsスライドアップ・ダウン　*/
+	this.slideToggleTools = function() {
+		angular.element('#tool-list').toggle("slide", {direction: 'down', easing: 'swing'}, 200);
+		this.slideToggleColor();
+		this.slideToggleLineType();
+	};
 
 	/* 色選択スライドアップ・ダウン　*/
 	this.slideToggleColor = function() {
 		angular.element('#color-list').toggle("slide", {direction: 'left', easing: 'easeOutElastic'}, 1000);
 	};
 
-	/* Toolsスライドアップ・ダウン　*/
-	this.slideToggleTools = function() {
-		angular.element('#tool-list').toggle("slide", {direction: 'down', easing: 'easeOutElastic'}, 1000);
+	/* 線選択スライドアップ・ダウン　*/
+	this.slideToggleLineType = function() {
+		angular.element('#line-type-list').toggle("slide", {direction: 'left', easing: 'easeOutElastic'}, 1000);
 	};
+
+	/* 色選択 */
+	angular.element('.color').on('click', function() {
+	    lineColor = angular.element(this).css('background-color');
+	    angular.element('.color').removeClass('select');
+	    angular.element(this).addClass('select');
+	});
 
 	SVG.extend(SVG.G, selectableFunc);
 

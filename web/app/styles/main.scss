@@ -15,6 +15,7 @@ body,
 #content,
 #main-view {
   height: 100%;
+  padding: 0 !important;
 }
 
 /* Space out content a bit */
@@ -39,90 +40,98 @@ body {
     width: 100%;
     position: absolute;
     bottom: 0px;
-  .tool {
-    float: left;
-    font-size: 10px;
-    font-weight: bolder;
-    color: #fff;
-    width: 32px;
-    height: 32px;
-    text-align: center;
-    line-height: 50px;
-    border: 2px solid #eee;
-    background-color: #fff;
-    @include border-radius(16px);
-  }
+}
+.tool {
+  float: right;
+  font-size: 20px;
+  font-weight: bolder;
+  color: #555;
+  width: 32px;
+  height: 32px;
+  text-align: center;
+  border: 2px solid #555;
+  background-color: #eee;
+  margin-bottom: 16px;
+  margin-left: 8px;
+  @include border-radius(16px);
 }
 .color {
 }
-#color1 {
+.line-type {
+  width: auto !important;
+  padding: 0 8px;
+}
+.color-red {
     background-color: #F00;
 }
-#color2 {
-    background-color: #F9C;
+.color-blue {
+    background-color: #33F;
 }
-#color3 {
-    background-color: #FF0;
+.color-green {
+    background-color: #BFFF00;
 }
-#color4 {
-    background-color: #FFF;
-}
-#color5 {
-    background-color: #00F;
-}
-#color6 {
-    background-color: #0F0;
-}
-#color7 {
-    background-color: #060;
-}
-#color8 {
-    background-color: #000;
-}
-#color9 {
-    background-color: #8D4B15;
-}
-.select {
-    border-color: #66F !important;
+// #color4 {
+//     background-color: #FFF;
+// }
+// #color5 {
+//     background-color: #00F;
+// }
+// #color6 {
+//     background-color: #0F0;
+// }
+// #color7 {
+//     background-color: #060;
+// }
+// #color8 {
+//     background-color: #000;
+// }
+// #color9 {
+//     background-color: #8D4B15;
+// }
+.selected {
+    // border-color: !important;
+    border: solid 2px #66F !important;
 }
 .delete, .line-type {
     @include border-radius(16px);
 }
 #delete, #line-type {
     background-color:#555;
-    font-size:10px!important
+    font-size:10px !important;
 }
 
 #svg-area {
   // position:relative;
 }
 
-#color-list {
-  list-style-type: none;
-  // margin: 0;
-  padding: 0;
-  height: 36px;
-  width: 300px;
-  display: none;
-  margin-left: 36px;
-}
-
-#line-type-list {
-  list-style-type: none;
-  // margin: 0;
-  padding: 0;
-  height: 36px;
-  width: 100px;
-  display: none;
-  margin-left: 36px;
+.tool-base {
+  float: right;
+  margin: 16px;
 }
 
 #tool-list {
   list-style-type: none;
-  // margin: 0;
   padding: 0;
-  height: 90px;  // ここがリストの高さより小さかったり、指定しなかったり、100%だとアニメーションしない。
+  height: 90px;
   width: 36px;
+  margin-right: 16px;
+  margin-left: auto;
   display: none;
-  // @include box-sizing(border-box);
+}
+
+.tool-list-item {
+  list-style-type: none;
+  padding: 0;
+  display: none;
+  position: absolute;
+  right: 72px;
+}
+#color-list {
+  height: 32px;
+  width: 300px;
+}
+
+#line-type-list {
+  height: 32px;
+  width: 300px;
 }

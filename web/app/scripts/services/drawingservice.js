@@ -305,12 +305,12 @@ angular.module('one-linsersApp')
 
 	/* 色選択スライドアップ・ダウン　*/
 	this.slideToggleColor = function() {
-		angular.element('#color-list').toggle("slide", {direction: 'left', easing: 'easeOutElastic'}, 1000);
+		angular.element('#color-list').toggle("slide", {direction: 'right', easing: 'easeOutElastic'}, 1000);
 	};
 
 	/* 線選択スライドアップ・ダウン　*/
 	this.slideToggleLineType = function() {
-		angular.element('#line-type-list').toggle("slide", {direction: 'left', easing: 'easeOutElastic'}, 1000);
+		angular.element('#line-type-list').toggle("slide", {direction: 'right', easing: 'easeOutElastic'}, 1000);
 	};
 
 	/* 色選択 */
@@ -319,6 +319,7 @@ angular.module('one-linsersApp')
 	    angular.element('.color').removeClass('select');
 	    angular.element(this).addClass('select');
 	});
+
 
 	SVG.extend(SVG.G, selectableFunc);
 

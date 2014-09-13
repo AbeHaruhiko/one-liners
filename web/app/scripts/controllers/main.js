@@ -13,9 +13,16 @@ angular.module('one-linsersApp')
     // 画面初期化
     $scope.init = function(width, height) {
 
-      Drawingservice.init(width, height);
+      // Drawingservice.init(width, height);
   
-      $scope.lineType = 'line';
+      // $scope.lineType = 'line';
+      $scope.lineTypeList = ['line', 'wave', 'rect'];
+      $scope.colorList = ['red', 'blue', 'green'];
+    };
+
+    // svgエリア初期化
+    $scope.initSVG = function(width, height) {
+      Drawingservice.init(width, height);
     };
 
     // 削除ボタン
@@ -33,17 +40,35 @@ angular.module('one-linsersApp')
     // 画像セット
     $scope.setSvgImage = Drawingservice.setSvgImage;
     $scope.setImg = Drawingservice.setImg;
-    $scope.toggleLineType = function(currentLineType) {
-      if (currentLineType === 'line') {
-        $scope.lineType = 'wave';
-      } else if (currentLineType === 'wave'){
-        $scope.lineType = 'rect';
-      } else if (currentLineType === 'rect'){
-        $scope.lineType = 'line';        
-      }
+    // $scope.toggleLineType = function(currentLineType) {
+    //   if (currentLineType === 'line') {
+    //     $scope.lineType = 'wave';
+    //   } else if (currentLineType === 'wave'){
+    //     $scope.lineType = 'rect';
+    //   } else if (currentLineType === 'rect'){
+    //     $scope.lineType = 'line';        
+    //   }
+    //   Drawingservice.setLineType($scope.lineType);
+    // };
+    $scope.selectColor = function(color) {
+      $scope.color = color;
+      // Drawingservice.setLineType($scope.lineType);
+    };
+
+    $scope.selectLineType = function(lineType) {
+      $scope.lineType = lineType;
       Drawingservice.setLineType($scope.lineType);
     };
 
+    $scope.isSelectedColor = function(color) {
+      return $scope.color === color;
+    }
+
+    $scope.isSelectedLineType = function(lineType) {
+      return $scope.lineType === lineType;
+    }
+
     $scope.consoleLog = Drawingservice.consoleLog;
 
+    $scope.init();
   });

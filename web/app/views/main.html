@@ -2,30 +2,25 @@
   <div id="svg-area"></div>
   <div class="tools">
     <ul id="tool-list">
-      <li ng-click="slideToggleColor()" class="tool">
-        <ul id="color-list">
-          <li id="color1" class="color tool select"></li>
+      <li id="color-list-base" class="tool tool-list-base">
+        <ul id="color-list" class="tool-list-item">
+<!--           <li id="color1" class="color tool selected"></li>
           <li id="color2" class="color tool"></li>
-          <li id="color3" class="color tool"></li>
-          <li id="color4" class="color tool"></li>
-          <li id="color5" class="color tool"></li>
-          <li id="color6" class="color tool"></li>
-          <li id="color7" class="color tool"></li>
-          <li id="color8" class="color tool"></li>
-          <li id="color9" class="color tool"></li>
+          <li id="color3" class="color tool"></li> -->
+          <li class="tool color color-{{color}}" ng-class="{'selected': isSelectedColor(color)}" ng-repeat="color in colorList" ng-click="selectColor(color)"></li>
         </ul>
       </li>
-      <li class="tool">
-        <ul id="line-type-list">
-          <li id="line-type-line" class="tool"></li>
-          <li id="line-type-wave" class="tool"></li>
+      <li id="line-type-list-base" class="tool tool-list-base">
+        <ul id="line-type-list" class="tool-list-item">
+          <li class="tool line-type" ng-class="{'selected': isSelectedLineType(lineType)}" ng-repeat="lineType in lineTypeList" ng-click="selectLineType(lineType)">{{lineType}}</li>
         </ul>
       </li>
     </ul>
-    <div id="tool-base" class="color tool" ng-click="slideToggleTools()"></div>
+    <div id="tool-base" class="tool tool-base" ng-click="slideToggleTools()"></div>
 
   </div>
 </div>
+<div><button onclick="javascript:hoge()"></button></div>
 
 <!-- <div id="main-view" style="background-color:#eee;">
 <div id="svg-area" style="border:solid 1px gray;"></div>

@@ -40,19 +40,9 @@ angular.module('one-linsersApp')
     // 画像セット
     $scope.setSvgImage = Drawingservice.setSvgImage;
     $scope.setImg = Drawingservice.setImg;
-    // $scope.toggleLineType = function(currentLineType) {
-    //   if (currentLineType === 'line') {
-    //     $scope.lineType = 'wave';
-    //   } else if (currentLineType === 'wave'){
-    //     $scope.lineType = 'rect';
-    //   } else if (currentLineType === 'rect'){
-    //     $scope.lineType = 'line';        
-    //   }
-    //   Drawingservice.setLineType($scope.lineType);
-    // };
-    $scope.selectColor = function(color) {
+    $scope.selectColor = function(color, $event) {
       $scope.color = color;
-      // Drawingservice.setLineType($scope.lineType);
+      Drawingservice.setLineColor(angular.element($event.target).css('background-color'));
     };
 
     $scope.selectLineType = function(lineType) {

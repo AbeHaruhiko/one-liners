@@ -292,6 +292,10 @@ angular.module('one-linsersApp')
 	    }
 	}
 
+	this.setLineColor = function(val) {
+		lineColor = val;
+	}
+
 	this.setLineType = function(val) {
 		lineType = val;
 	}

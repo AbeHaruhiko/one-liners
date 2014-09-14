@@ -32,14 +32,15 @@ angular.module('one-linsersApp')
     $scope.slideToggleTools = Drawingservice.slideToggleTools;
 
     // 色リスト
-    $scope.slideToggleColor = Drawingservice.slideToggleColor;
+    // $scope.slideToggleColor = Drawingservice.slideToggleColor;
 
     // 線リスト
-    $scope.slideToggleLineType = Drawingservice.slideToggleLineType;
+    // $scope.slideToggleLineType = Drawingservice.slideToggleLineType;
 
     // 画像セット
     $scope.setSvgImage = Drawingservice.setSvgImage;
     $scope.setImg = Drawingservice.setImg;
+    
     $scope.selectColor = function(color, $event) {
       $scope.color = color;
       Drawingservice.setLineColor(angular.element($event.target).css('background-color'));

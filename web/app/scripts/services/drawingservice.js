@@ -302,28 +302,33 @@ angular.module('one-linsersApp')
 
 	/* Toolsスライドアップ・ダウン　*/
 	this.slideToggleTools = function() {
-		angular.element('#tool-list').toggle("slide", {direction: 'down', easing: 'swing'}, 200);
-		this.slideToggleColor();
-		this.slideToggleLineType();
+		// 2014/09/14 4.3以前のwebviewで表示がおかしい
+		// angular.element('#tool-list').toggle("slide", {direction: 'down', easing: 'swing'}, 200);
+		if (angular.element('#tool-list').is(':visible')) {
+			slideToggleItem(200);
+			angular.element('#tool-list').slideToggle(200, 'swing');
+		} else {
+			angular.element('#tool-list').slideToggle(50, 'swing', slideToggleItem);
+		}
 	};
+
+	/* 色選択と線選択のトグル */
+	var slideToggleItem = function(duration) {
+		// slideToggleColor(duration);
+		// slideToggleLineType(duration);
+		angular.element('#color-list').toggle("slide", {direction: 'right', easing: 'easeOutElastic'}, duration || 1000);
+		angular.element('#line-type-list').toggle("slide", {direction: 'right', easing: 'easeOutElastic'}, duration || 1000);
+	}
 
 	/* 色選択スライドアップ・ダウン　*/
-	this.slideToggleColor = function() {
-		angular.element('#color-list').toggle("slide", {direction: 'right', easing: 'easeOutElastic'}, 1000);
-	};
+	// var slideToggleColor = function(duration) {
+	// 	angular.element('#color-list').toggle("slide", {direction: 'right', easing: 'easeOutElastic'}, duration || 1000);
+	// };
 
 	/* 線選択スライドアップ・ダウン　*/
-	this.slideToggleLineType = function() {
-		angular.element('#line-type-list').toggle("slide", {direction: 'right', easing: 'easeOutElastic'}, 1000);
-	};
-
-	/* 色選択 */
-	angular.element('.color').on('click', function() {
-	    lineColor = angular.element(this).css('background-color');
-	    angular.element('.color').removeClass('select');
-	    angular.element(this).addClass('select');
-	});
-
+	// var slideToggleLineType = function(duration) {
+	// 	angular.element('#line-type-list').toggle("slide", {direction: 'right', easing: 'easeOutElastic'}, duration || 1000);
+	// };
 
 	SVG.extend(SVG.G, selectableFunc);
 

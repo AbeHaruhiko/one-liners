@@ -4,9 +4,6 @@
     <ul id="tool-list">
       <li id="color-list-base" class="tool tool-list-base">
         <ul id="color-list" class="tool-list-item">
-<!--           <li id="color1" class="color tool selected"></li>
-          <li id="color2" class="color tool"></li>
-          <li id="color3" class="color tool"></li> -->
           <li class="tool color color-{{color}}" ng-class="{'selected': isSelectedColor(color)}" ng-repeat="color in colorList" ng-click="selectColor(color, $event)"></li>
         </ul>
       </li>

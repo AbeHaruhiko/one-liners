@@ -263,7 +263,7 @@ public class BookEditFragment extends Fragment {
             int limit = Math.min(start + maxDataLength, datalength);
             imagedata[i] = image64.substring(start, limit);
         }
-        mWebView.loadUrl(String.format("javascript:var scope = angular.element('#content').scope();console.log('ho');scope.init(%2$d, %3$d);console.log('ge');scope.setImg(1, '%1$s');", imagedata[0], width, height));
+        mWebView.loadUrl(String.format("javascript:var scope = angular.element('#content').scope();console.log('ho');scope.initSVG(%2$d, %3$d);console.log('ge');scope.setImg(1, '%1$s');", imagedata[0], width, height));
     }
 
 

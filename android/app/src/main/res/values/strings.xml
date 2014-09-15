@@ -3,7 +3,7 @@
 
     <string name="app_name">one-liners</string>
     <string name="title_book_detail">book Detail</string>
-    <string name="set_svg_image_script">javascript:var scope = angular.element(\'#content\').scope();scope.init(\'%2$s\', \'%3$s\');scope.setSvgImage(\'%1$s\');</string>
+    <string name="set_svg_image_script">javascript:var scope = angular.element(\'#content\').scope();scope.initSVG(\'%2$s\', \'%3$s\');scope.setSvgImage(\'%1$s\');</string>
     <!--<string name="drawing_service_url">http://one-liners.parseapp.com</string>-->
     <string name="drawing_service_url">http://10.0.3.2:9000</string>
 

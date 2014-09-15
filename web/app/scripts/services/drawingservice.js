@@ -73,7 +73,7 @@ angular.module('one-linsersApp')
 			        .move(0, 0)
 			        .mouseup(this.endDrag)
 			        .touchend(this.endDrag);
-		    } else if (lineType === 'rect') {
+		    } else if (lineType === 'rect' || lineType === 'rect-filled') {
 		        outline = svgWrapper
 		            .rect(0, 0)
 		            .attr({stroke: '#c0c0c0', 'stroke-width': 1, 'stroke-dasharray': '2,2', fill: 'none'})
@@ -84,7 +84,7 @@ angular.module('one-linsersApp')
 
     	if (lineType === 'line' || lineType === 'wave') {
 		    outline.plot(startPoint.X, startPoint.Y, event.clientX - offset.left, event.clientY - offset.top);
-	    } else if (lineType === 'rect') {
+	    } else if (lineType === 'rect' || lineType === 'rect-filled') {
 	    	outline
 	    		.size(Math.abs(startPoint.X - (event.clientX - offset.left)),  Math.abs(startPoint.Y - (event.clientY - offset.top)))
 	            .move(Math.min(startPoint.X, event.clientX - offset.left),  Math.min(startPoint.Y, event.clientY - offset.top));
@@ -135,11 +135,12 @@ angular.module('one-linsersApp')
 	        // node = svgWrapper.line(x1, y1, x2, y2, settings);
 
 	        // svg.jsバージョン
-	        var lineBorder = svgWrapper.line(x1, y1, x2, y2)
-	                    .attr({stroke: 'white', 'stroke-width': 0});
+	        // var lineBorder = svgWrapper.line(x1, y1, x2, y2)
+	        //             .attr({stroke: 'white', 'stroke-width': 0});
 	        var line = svgWrapper.line(x1, y1, x2, y2)
 	                    .attr({stroke: lineColor, 'stroke-width': 2, 'stroke-opacity': 0.6});
 	        var lineSet = svgWrapper.group();
+	        // lineSet.add(lineBorder).add(line);
 	        lineSet.add(lineBorder).add(line);
 	        lineSet.selectable(x1, y1, x2, y2);
 
@@ -169,8 +170,8 @@ angular.module('one-linsersApp')
 	            var tmpY2 = Math.sin(theta * (tmpX + 1));
 
 	            // 座標(0, 0)からのsin波になっているので、ドラッグ開始点(x1, y1)を起点にする（加算する）
-	            waveBorder.add(svgWrapper.line(tmpX + x1, tmpY1 + y1, tmpX + 1 + x1, tmpY2 + y1)
-	                .attr({stroke: 'white', 'stroke-width': 0}));
+	            // waveBorder.add(svgWrapper.line(tmpX + x1, tmpY1 + y1, tmpX + 1 + x1, tmpY2 + y1)
+	            //     .attr({stroke: 'white', 'stroke-width': 0}));
 	            wave.add(svgWrapper.line(tmpX + x1, tmpY1 + y1, tmpX + 1 + x1, tmpY2 + y1)
 	                .attr({stroke: lineColor, 'stroke-width': 2, 'stroke-opacity': 0.6}));
 	        }
@@ -179,21 +180,30 @@ angular.module('one-linsersApp')
                 , cx: x1
                 , cy: y1
             });
-            waveBorder.transform({
-                rotation: angle
-                , cx: x1
-                , cy: y1
-            });
-	    } else if (lineType === 'rect') {
+            // waveBorder.transform({
+            //     rotation: angle
+            //     , cx: x1
+            //     , cy: y1
+            // });
+	    } else if (lineType === 'rect' || lineType === 'rect-filled') {
 
-	        var rectBorder = svgWrapper.rect(Math.abs(x1 - x2), Math.abs(y1 - y2))
-	                    .attr({stroke: 'white', 'stroke-width': 0, fill: 'none'})
-	                    .move(Math.min(x1, x2), Math.min(y1, y2));
+	    	if (lineType === 'rect') {
+		    	var fillColor = 'none'; 
+		    	var lineWidth = 2; 
+	    	} else {
+		    	var fillColor = lineColor;
+		    	var lineWidth = 0; 
+	    	}
+
+	        // var rectBorder = svgWrapper.rect(Math.abs(x1 - x2), Math.abs(y1 - y2))
+	        //             .attr({stroke: 'white', 'stroke-width': 0, fill: fillColor})
+	        //             .move(Math.min(x1, x2), Math.min(y1, y2));
 	        var rect = svgWrapper.rect(Math.abs(x1 - x2), Math.abs(y1 - y2))
-	                    .attr({stroke: lineColor, 'stroke-width': 2, fill: 'none', 'stroke-opacity': 0.6})
+	                    .attr({stroke: lineColor, 'stroke-width': lineWidth, 'stroke-opacity': 0.6, fill: fillColor, 'fill-opacity': 0.6})
 	                    .move(Math.min(x1, x2), Math.min(y1, y2));
 	        var lineSet = svgWrapper.group();
-	        lineSet.add(rectBorder).add(rect);
+	        // lineSet.add(rectBorder).add(rect);
+	        lineSet.add(rect);
 	        lineSet.selectable(x1, y1, x2, y2);
 	    }
 

@@ -16,7 +16,7 @@ angular.module('one-linsersApp')
       // Drawingservice.init(width, height);
   
       // $scope.lineType = 'line';
-      $scope.lineTypeList = ['line', 'wave', 'rect'];
+      $scope.lineTypeList = ['line', 'wave', 'rect', 'rect-filled'];
       $scope.colorList = ['red', 'blue', 'green'];
     };
 

@@ -138,7 +138,7 @@ angular.module('one-linsersApp')
 	        var lineBorder = svgWrapper.line(x1, y1, x2, y2)
 	                    .attr({stroke: 'white', 'stroke-width': 0});
 	        var line = svgWrapper.line(x1, y1, x2, y2)
-	                    .attr({stroke: lineColor, 'stroke-width': 2});
+	                    .attr({stroke: lineColor, 'stroke-width': 2, 'stroke-opacity': 0.6});
 	        var lineSet = svgWrapper.group();
 	        lineSet.add(lineBorder).add(line);
 	        lineSet.selectable(x1, y1, x2, y2);
@@ -172,7 +172,7 @@ angular.module('one-linsersApp')
 	            waveBorder.add(svgWrapper.line(tmpX + x1, tmpY1 + y1, tmpX + 1 + x1, tmpY2 + y1)
 	                .attr({stroke: 'white', 'stroke-width': 0}));
 	            wave.add(svgWrapper.line(tmpX + x1, tmpY1 + y1, tmpX + 1 + x1, tmpY2 + y1)
-	                .attr({stroke: lineColor, 'stroke-width': 2}));
+	                .attr({stroke: lineColor, 'stroke-width': 2, 'stroke-opacity': 0.6}));
 	        }
             wave.transform({
                 rotation: angle
@@ -190,7 +190,7 @@ angular.module('one-linsersApp')
 	                    .attr({stroke: 'white', 'stroke-width': 0, fill: 'none'})
 	                    .move(Math.min(x1, x2), Math.min(y1, y2));
 	        var rect = svgWrapper.rect(Math.abs(x1 - x2), Math.abs(y1 - y2))
-	                    .attr({stroke: lineColor, 'stroke-width': 2, fill: 'none'})
+	                    .attr({stroke: lineColor, 'stroke-width': 2, fill: 'none', 'stroke-opacity': 0.6})
 	                    .move(Math.min(x1, x2), Math.min(y1, y2));
 	        var lineSet = svgWrapper.group();
 	        lineSet.add(rectBorder).add(rect);

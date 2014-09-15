@@ -2,7 +2,7 @@
   <div id="svg-area"></div>
   <div class="tools">
     <ul id="tool-list">
-      <li id="color-list-base" class="tool tool-list-base">
+      <li id="color-list-base" class="tool tool-list-base" ng-style="{'background-color': colorHEX}">
         <ul id="color-list" class="tool-list-item">
           <li class="tool color color-{{color}}" ng-class="{'selected': isSelectedColor(color)}" ng-repeat="color in colorList" ng-click="selectColor(color, $event)"></li>
         </ul>

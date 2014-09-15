@@ -43,7 +43,8 @@ angular.module('one-linsersApp')
     
     $scope.selectColor = function(color, $event) {
       $scope.color = color;
-      Drawingservice.setLineColor(angular.element($event.target).css('background-color'));
+      $scope.colorHEX = angular.element($event.target).css('background-color');
+      Drawingservice.setLineColor($scope.colorHEX);
     };
 
     $scope.selectLineType = function(lineType) {

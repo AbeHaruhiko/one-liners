@@ -16,10 +16,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.etsy.android.grid.StaggeredGridView;
-import com.etsy.android.sample.SampleAdapter;
-import com.etsy.android.sample.SampleData;
+import com.etsy.android.sample.*;
 
 import java.util.ArrayList;
+
+import jp.caliconography.one_liners.dummy.DummyContent;
 
 /**
  * A list fragment representing a list of books. This fragment
@@ -107,7 +108,7 @@ public class BookListFragment extends Fragment implements
 //            setActivatedPosition(savedInstanceState.getInt(STATE_ACTIVATED_POSITION));
 //        }
 //    }
-    private SampleAdapter mAdapter;
+    private BookListAdapter mAdapter;
     private ArrayList<String> mData;
 
 //    @Override
@@ -187,11 +188,11 @@ public class BookListFragment extends Fragment implements
         }
 
         if (mAdapter == null) {
-            mAdapter = new SampleAdapter(getActivity(), R.id.txt_line1);
+            mAdapter = new BookListAdapter(getActivity(), R.id.img_photo);
         }
 
         if (mData == null) {
-            mData = SampleData.generateSampleData();
+            mData = BookListData.generateSampleData();
         }
 
         for (String data : mData) {
@@ -207,7 +208,7 @@ public class BookListFragment extends Fragment implements
         mCreateBook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent detailIntent = new Intent(getActivity(), BookEditActivity.class);
+                Intent detailIntent = new Intent(getActivity(), BookDetailActivity.class);
                 startActivity(detailIntent);
             }
         });
@@ -236,7 +237,7 @@ public class BookListFragment extends Fragment implements
     }
 
     private void onLoadMoreItems() {
-        final ArrayList<String> sampleData = SampleData.generateSampleData();
+        final ArrayList<String> sampleData = BookListData.generateSampleData();
         for (String data : sampleData) {
             mAdapter.add(data);
         }
@@ -250,6 +251,11 @@ public class BookListFragment extends Fragment implements
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
         Toast.makeText(getActivity(), "Item Clicked: " + position, Toast.LENGTH_SHORT).show();
+
+        // Notify the active callbacks interface (the activity, if the
+        // fragment is attached to one) that an item has been selected.
+        mCallbacks.onItemSelected(DummyContent.ITEMS.get(position).id);
+
     }
 
     /**

@@ -54,9 +54,9 @@ public class SampleAdapter extends ArrayAdapter<String> {
 
         ViewHolder vh;
         if (convertView == null) {
-            convertView = mLayoutInflater.inflate(R.layout.list_item_sample, parent, false);
+            convertView = mLayoutInflater.inflate(R.layout.list_item, parent, false);
             vh = new ViewHolder();
-            vh.txtLineOne = (DynamicHeightTextView) convertView.findViewById(R.id.txt_line1);
+            vh.txtLineOne = (DynamicHeightTextView) convertView.findViewById(R.id.img_photo);
             vh.btnGo = (Button) convertView.findViewById(R.id.btn_go);
 
             convertView.setTag(vh);

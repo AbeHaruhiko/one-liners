@@ -16,7 +16,7 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         class="jp.caliconography.android.widget.CustomFontButton"
-        android:id="@+id/create_book"
+        android:id="@+id/create"
         android:layout_gravity="right|bottom"
         android:text="&#xf055;"
         caliconography:customFont="fontawesome-webfont.ttf"

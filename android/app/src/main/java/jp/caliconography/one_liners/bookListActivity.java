@@ -5,7 +5,7 @@ import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 
-
+import it.gmariotti.cardslib.demo.extras.fragment.StaggeredGridFragment;
 
 
 /**
@@ -61,7 +61,8 @@ public class BookListActivity extends Activity
 
         // Create the list fragment and add it as our sole content.
         if (fm.findFragmentById(android.R.id.content) == null) {
-            final BookListFragment fragment = new BookListFragment();
+//            final BookListFragment fragment = new BookListFragment();
+            final StaggeredGridFragment fragment = new StaggeredGridFragment();
             fm.beginTransaction().add(android.R.id.content, fragment).commit();
         }
     }

@@ -204,14 +204,14 @@ public class BookListFragment extends Fragment implements
         mGridView.setOnItemClickListener(this);
 
         // 新規登録ボタン
-        mCreateBook = (Button) getView().findViewById(R.id.create_book);
-        mCreateBook.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent detailIntent = new Intent(getActivity(), BookDetailActivity.class);
-                startActivity(detailIntent);
-            }
-        });
+//        mCreateBook = (Button) getView().findViewById(R.id.create_book);
+//        mCreateBook.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent detailIntent = new Intent(getActivity(), BookDetailActivity.class);
+//                startActivity(detailIntent);
+//            }
+//        });
 
     }
 

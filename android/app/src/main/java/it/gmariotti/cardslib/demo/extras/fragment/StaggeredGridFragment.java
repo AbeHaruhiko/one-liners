@@ -101,7 +101,6 @@ public class StaggeredGridFragment extends BaseListFragment {
             FloatingActionButton floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.button_floating_action);
             floatingActionButton.attachToListView(staggeredView);
 
-            // 新規登録ボタン
             floatingActionButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

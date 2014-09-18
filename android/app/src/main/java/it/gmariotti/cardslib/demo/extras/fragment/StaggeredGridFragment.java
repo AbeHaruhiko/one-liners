@@ -20,6 +20,7 @@ package it.gmariotti.cardslib.demo.extras.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -28,8 +29,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.melnykov.fab.FloatingActionButton;
+
 import java.util.ArrayList;
 
+import jp.caliconography.one_liners.BookDetailActivity;
 import jp.caliconography.one_liners.R;
 import it.gmariotti.cardslib.demo.extras.staggered.DynamicHeightPicassoCardThumbnailView;
 import it.gmariotti.cardslib.demo.extras.staggered.data.Image;
@@ -91,6 +95,23 @@ public class StaggeredGridFragment extends BaseListFragment {
 
         //Staggered grid view
         CardGridStaggeredView staggeredView = (CardGridStaggeredView) getActivity().findViewById(R.id.carddemo_extras_grid_stag);
+
+        // 2014/09/18 安部追加
+        if (staggeredView != null) {
+            FloatingActionButton floatingActionButton = (FloatingActionButton) getActivity().findViewById(R.id.button_floating_action);
+            floatingActionButton.attachToListView(staggeredView);
+
+            // 新規登録ボタン
+            floatingActionButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent detailIntent = new Intent(getActivity(), BookDetailActivity.class);
+                    startActivity(detailIntent);
+                }
+            });
+
+        }
+        // 2014/09/18 安部追加
 
         //Set the empty view
         staggeredView.setEmptyView(getActivity().findViewById(android.R.id.empty));

@@ -91,8 +91,8 @@ public class BookDetailFragment extends Fragment {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SearchView searchView = (SearchView) getActivity().findViewById(R.id.searchView);
-                searchView.setIconified(false);
+                Intent intent = new Intent(getActivity(), BookSearchResultListActivity.class);
+                startActivity(intent);
             }
         });
 

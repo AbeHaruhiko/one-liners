@@ -24,8 +24,7 @@ import it.gmariotti.cardslib.demo.extras.fragment.StaggeredGridFragment;
  * {@link BookListFragment.Callbacks} interface
  * to listen for item selections.
  */
-public class BookListActivity extends Activity
-        implements BookListFragment.Callbacks {
+public class BookListActivity extends Activity {
 
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -67,30 +66,4 @@ public class BookListActivity extends Activity
         }
     }
 
-    /**
-     * Callback method from {@link BookListFragment.Callbacks}
-     * indicating that the item with the given ID was selected.
-     */
-    @Override
-    public void onItemSelected(String id) {
-        if (mTwoPane) {
-            // In two-pane mode, show the detail view in this activity by
-            // adding or replacing the detail fragment using a
-            // fragment transaction.
-            Bundle arguments = new Bundle();
-            arguments.putString(BookDetailFragment.ARG_ITEM_ID, id);
-            BookDetailFragment fragment = new BookDetailFragment();
-            fragment.setArguments(arguments);
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.book_detail_container, fragment)
-                    .commit();
-
-        } else {
-            // In single-pane mode, simply start the detail activity
-            // for the selected item ID.
-            Intent detailIntent = new Intent(this, BookDetailActivity.class);
-            detailIntent.putExtra(BookDetailFragment.ARG_ITEM_ID, id);
-            startActivity(detailIntent);
-        }
-    }
 }

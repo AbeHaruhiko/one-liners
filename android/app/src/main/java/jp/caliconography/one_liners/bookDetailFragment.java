@@ -15,12 +15,17 @@ import android.provider.MediaStore;
 import android.util.Base64;
 import android.view.Display;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.SearchView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -82,7 +87,15 @@ public class BookDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_book_detail, container, false);
 
+        ImageButton searchButton = (ImageButton) rootView.findViewById(R.id.btn_search_book);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SearchView searchView = (SearchView) getActivity().findViewById(R.id.searchView);
+                searchView.setIconified(false);
+            }
+        });
+
         return rootView;
     }
-
 }

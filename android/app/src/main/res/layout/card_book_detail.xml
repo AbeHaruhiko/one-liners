@@ -40,7 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="4dp"
-                android:id="@+id/imageButton"
+                android:id="@+id/btn_search_book"
                 android:src="@android:drawable/ic_menu_search"
                 android:background="@drawable/btn_common_back"/>
 

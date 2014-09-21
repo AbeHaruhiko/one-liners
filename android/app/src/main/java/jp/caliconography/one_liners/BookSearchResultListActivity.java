@@ -5,7 +5,6 @@ import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.SearchView;
@@ -96,7 +95,7 @@ public class BookSearchResultListActivity extends Activity {
         getMenuInflater().inflate(R.menu.book_search, menu);
 
         // SearchViewを取得する
-        MenuItem searchItem = menu.findItem(R.id.searchView);
+        MenuItem searchItem = menu.findItem(R.id.search_view);
         final SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setQueryHint("タイトル/著者名/ISBN/JAN");
         searchView.setIconified(false);

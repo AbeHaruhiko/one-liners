@@ -24,7 +24,11 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
@@ -35,6 +39,9 @@ import com.nhaarman.listviewanimations.appearance.AnimationAdapter;
 import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import it.gmariotti.cardslib.demo.extras.cards.PicassoCard;
 import it.gmariotti.cardslib.demo.extras.fragment.BaseListFragment;
@@ -49,6 +56,10 @@ import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
 import it.gmariotti.cardslib.library.internal.CardThumbnail;
 import it.gmariotti.cardslib.library.view.CardListView;
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * This example uses a staggered card with different different photos and text.
@@ -74,6 +85,13 @@ public class BookSearchResultListFragment extends BaseListFragment {
         return R.string.carddemo_extras_title_staggered;
     }
 
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // FragmentでMenuを表示する為に必要
+        this.setHasOptionsMenu(true);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -114,8 +132,53 @@ public class BookSearchResultListFragment extends BaseListFragment {
         new LoaderAsyncTask().execute();
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
 
-    //-------------------------------------------------------------------------------------------------------------
+        MenuItem menuItem = menu.findItem(R.id.search_view);
+        SearchView searchView = (SearchView) menuItem.getActionView();
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+
+                RestAdapter restAdapter = new RestAdapter.Builder()
+                        .setEndpoint("https://app.rakuten.co.jp/")
+                        .build();
+
+                GitHubService service = restAdapter.create(GitHubService.class);
+
+                Map<String, String> paramMap = new HashMap<String, String>();
+                paramMap.put("applicationId", "1014192012049542780");
+                paramMap.put("title", "テスト");
+                paramMap.put("format", "json");
+                paramMap.put("booksGenreId", "001004008");
+
+tiR                service.searchBook(paramMap, new Callback<GitHubService.BookSearchResult>() {
+                    @Override
+                    public void success(GitHubService.BookSearchResult result, Response response) {
+                        Log.d("", result.toString());
+                        Log.d("", response.toString());
+                    }
+
+                    @Override
+                    public void failure(RetrofitError retrofitError) {
+                        Log.e("", null, retrofitError);
+                    }
+                });
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return false;
+            }
+        });
+    }
+
+        //-------------------------------------------------------------------------------------------------------------
     // Images loader
     //-------------------------------------------------------------------------------------------------------------
 

@@ -1,5 +1,6 @@
 package jp.caliconography.one_liners;
 
+import java.net.URI;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
@@ -14,11 +15,12 @@ public interface GitHubService {
   @GET("/services/api/BooksBook/Search/20130522")
   void searchBook(@QueryMap Map<String, String> options, Callback<BookSearchResult> callback);
 
+    /* Gsonはクラス名は自由、変数名をJSONのKeyにすること */
     static class BookSearchResult {
         int count;
-        List<Item> Items;
+        List<ItemHolder> Items;
 
-        static class Item {
+        static class ItemHolder {
             ItemProperties Item;
 
             static class ItemProperties {
@@ -26,8 +28,9 @@ public interface GitHubService {
                 String author;
                 String publisherName;
                 String salesDate;
-                URL itemUrl;
-                URL smallImageUrl;
+                URI itemUrl;
+                URI smallImageUrl;
+                URI mediumImageUrl;
             }
         }
     }

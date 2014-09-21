@@ -19,6 +19,7 @@
 package it.gmariotti.cardslib.demo.extras.cards;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -26,6 +27,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
+
+import java.net.URI;
+import java.net.URL;
 
 import jp.caliconography.one_liners.R;
 import it.gmariotti.cardslib.library.internal.Card;
@@ -43,19 +47,19 @@ public class PicassoCard extends Card {
     protected String mSecondaryTitle;
     protected int count;
 
-    public PicassoCard(Context context) {
-        this(context, R.layout.carddemo_extra_picasso_inner_content);
+    public PicassoCard(Context context, Uri thumbnailUri) {
+        this(context, R.layout.carddemo_extra_picasso_inner_content, thumbnailUri);
     }
 
-    public PicassoCard(Context context, int innerLayout) {
+    public PicassoCard(Context context, int innerLayout, Uri thumbnailUri) {
         super(context, innerLayout);
-        init();
+        init(thumbnailUri);
     }
 
-    private void init() {
+    private void init(Uri thumbnailUri) {
 
         //Add thumbnail
-        PicassoCardThumbnail cardThumbnail = new PicassoCardThumbnail(mContext);
+        PicassoCardThumbnail cardThumbnail = new PicassoCardThumbnail(mContext, thumbnailUri);
         //It must be set to use a external library!
         cardThumbnail.setExternalUsage(true);
         addCardThumbnail(cardThumbnail);
@@ -94,8 +98,11 @@ public class PicassoCard extends Card {
      */
     class PicassoCardThumbnail extends CardThumbnail {
 
-        public PicassoCardThumbnail(Context context) {
+        Uri mThumbnailUri;
+
+        public PicassoCardThumbnail(Context context, Uri thumbnailUri) {
             super(context);
+            mThumbnailUri = thumbnailUri;
         }
 
         @Override
@@ -114,7 +121,7 @@ public class PicassoCard extends Card {
             if (((PicassoCard) getParentCard()).getCount() % 2 == 0) {
                 Picasso.with(getContext()).setIndicatorsEnabled(true);  //only for debug tests
                 Picasso.with(getContext())
-                        .load("https://lh5.googleusercontent.com/-squZd7FxR8Q/UyN5UrsfkqI/AAAAAAAAbAo/VoDHSYAhC_E/s96/new%2520profile%2520%25282%2529.jpg")
+                        .load(mThumbnailUri)
                         .error(R.drawable.ic_error_loadingsmall)
                         .into((ImageView) viewImage);
             } else {

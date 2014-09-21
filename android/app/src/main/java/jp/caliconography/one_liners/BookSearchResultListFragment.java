@@ -21,6 +21,7 @@ package jp.caliconography.one_liners;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -129,7 +130,7 @@ public class BookSearchResultListFragment extends BaseListFragment {
         }
 
         //Load cards
-        new LoaderAsyncTask().execute();
+//        new LoaderAsyncTask().execute();
     }
 
     @Override
@@ -155,11 +156,16 @@ public class BookSearchResultListFragment extends BaseListFragment {
                 paramMap.put("format", "json");
                 paramMap.put("booksGenreId", "001004008");
 
-tiR                service.searchBook(paramMap, new Callback<GitHubService.BookSearchResult>() {
+                service.searchBook(paramMap, new Callback<GitHubService.BookSearchResult>() {
                     @Override
                     public void success(GitHubService.BookSearchResult result, Response response) {
                         Log.d("", result.toString());
                         Log.d("", response.toString());
+
+                        ArrayList<Card> cards = initCard(result);
+                        updateAdapter(cards);
+                        displayList();
+
                     }
 
                     @Override
@@ -178,7 +184,23 @@ tiR                service.searchBook(paramMap, new Callback<GitHubService.BookS
         });
     }
 
-        //-------------------------------------------------------------------------------------------------------------
+    private ArrayList<Card> initCard(GitHubService.BookSearchResult result) {
+
+        ArrayList<Card> cards = new ArrayList<Card>();
+        for (GitHubService.BookSearchResult.ItemHolder itemHolder: result.Items) {
+
+            PicassoCard card = new PicassoCard(this.getActivity(), Uri.parse(itemHolder.Item.mediumImageUrl.toString()));
+            card.setTitle(itemHolder.Item.title);
+            card.setSecondaryTitle(itemHolder.Item.author + " / " + itemHolder.Item.publisherName);
+
+            cards.add(card);
+        }
+
+        return cards;
+//        return null;
+    }
+
+    //-------------------------------------------------------------------------------------------------------------
     // Images loader
     //-------------------------------------------------------------------------------------------------------------
 
@@ -237,7 +259,7 @@ tiR                service.searchBook(paramMap, new Callback<GitHubService.BookS
         ArrayList<Card> cards = new ArrayList<Card>();
         for (int i = 0; i < 100; i++) {
 
-            PicassoCard card = new PicassoCard(this.getActivity());
+            PicassoCard card = new PicassoCard(this.getActivity(), null);
             card.setTitle("A simple card loaded with Picasso " + i);
             card.setSecondaryTitle("Simple text..." + i);
 

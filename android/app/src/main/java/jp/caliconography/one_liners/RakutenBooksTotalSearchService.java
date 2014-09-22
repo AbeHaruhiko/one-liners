@@ -11,8 +11,8 @@ import retrofit.http.Path;
 import retrofit.http.Query;
 import retrofit.http.QueryMap;
 
-public interface GitHubService {
-  @GET("/services/api/BooksBook/Search/20130522")
+public interface RakutenBooksTotalSearchService {
+  @GET("/services/api/BooksTotal/Search/20130522")
   void searchBook(@QueryMap Map<String, String> options, Callback<BookSearchResult> callback);
 
     /* Gsonはクラス名は自由、変数名をJSONのKeyにすること */

@@ -20,7 +20,6 @@ package jp.caliconography.one_liners;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -33,29 +32,21 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
-import android.widget.TextView;
 
-import com.melnykov.fab.FloatingActionButton;
 import com.nhaarman.listviewanimations.appearance.AnimationAdapter;
 import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import it.gmariotti.cardslib.demo.extras.cards.PicassoCard;
 import it.gmariotti.cardslib.demo.extras.fragment.BaseListFragment;
-import it.gmariotti.cardslib.demo.extras.staggered.DynamicHeightPicassoCardThumbnailView;
-import it.gmariotti.cardslib.demo.extras.staggered.data.Image;
 import it.gmariotti.cardslib.demo.extras.staggered.data.MockImageLoader;
 import it.gmariotti.cardslib.demo.extras.staggered.data.Section;
 import it.gmariotti.cardslib.demo.extras.staggered.data.ServerDatabase;
-import it.gmariotti.cardslib.library.extra.staggeredgrid.internal.CardGridStaggeredArrayAdapter;
-import it.gmariotti.cardslib.library.extra.staggeredgrid.view.CardGridStaggeredView;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
-import it.gmariotti.cardslib.library.internal.CardThumbnail;
 import it.gmariotti.cardslib.library.view.CardListView;
 import retrofit.Callback;
 import retrofit.RestAdapter;
@@ -138,27 +129,35 @@ public class BookSearchResultListFragment extends BaseListFragment {
         super.onCreateOptionsMenu(menu, inflater);
 
         MenuItem menuItem = menu.findItem(R.id.search_view);
-        SearchView searchView = (SearchView) menuItem.getActionView();
+        final SearchView searchView = (SearchView) menuItem.getActionView();
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
 
+                mCardArrayAdapter.clear();
+
+                searchView.clearFocus();
+
                 RestAdapter restAdapter = new RestAdapter.Builder()
                         .setEndpoint("https://app.rakuten.co.jp/")
                         .build();
 
-                GitHubService service = restAdapter.create(GitHubService.class);
+                RakutenBooksTotalSearchService service = restAdapter.create(RakutenBooksTotalSearchService.class);
 
                 Map<String, String> paramMap = new HashMap<String, String>();
                 paramMap.put("applicationId", "1014192012049542780");
-                paramMap.put("title", "テスト");
                 paramMap.put("format", "json");
-                paramMap.put("booksGenreId", "001004008");
+                paramMap.put("booksGenreId", "000");
+//                if (s.matches("¥¥d{13}")) {
+//                    paramMap.put("isbnjan", s);
+//                } else {
+                    paramMap.put("keyword", s);
+//                }
 
-                service.searchBook(paramMap, new Callback<GitHubService.BookSearchResult>() {
+                service.searchBook(paramMap, new Callback<RakutenBooksTotalSearchService.BookSearchResult>() {
                     @Override
-                    public void success(GitHubService.BookSearchResult result, Response response) {
+                    public void success(RakutenBooksTotalSearchService.BookSearchResult result, Response response) {
                         Log.d("", result.toString());
                         Log.d("", response.toString());
 
@@ -184,10 +183,10 @@ public class BookSearchResultListFragment extends BaseListFragment {
         });
     }
 
-    private ArrayList<Card> initCard(GitHubService.BookSearchResult result) {
+    private ArrayList<Card> initCard(RakutenBooksTotalSearchService.BookSearchResult result) {
 
         ArrayList<Card> cards = new ArrayList<Card>();
-        for (GitHubService.BookSearchResult.ItemHolder itemHolder: result.Items) {
+        for (RakutenBooksTotalSearchService.BookSearchResult.ItemHolder itemHolder: result.Items) {
 
             PicassoCard card = new PicassoCard(this.getActivity(), Uri.parse(itemHolder.Item.mediumImageUrl.toString()));
             card.setTitle(itemHolder.Item.title);

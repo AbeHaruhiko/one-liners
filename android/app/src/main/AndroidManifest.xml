@@ -30,12 +30,12 @@
                 android:value=".bookListActivity" />
         </activity>
         <activity
-            android:name=".BookEditActivity"
-            android:label="@string/title_book_detail"
-            android:parentActivityName=".BookListActivity">
+            android:name=".PhotoDetailActivity"
+            android:label="@string/title_photo_detail"
+            android:parentActivityName=".BookDetailActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".bookListActivity" />
+                android:value=".BookDetailActivity" />
         </activity>
         <activity
             android:name=".BookSearchResultListActivity"

@@ -20,6 +20,7 @@ package jp.caliconography.one_liners;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -31,6 +32,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.SearchView;
 
 import com.nhaarman.listviewanimations.appearance.AnimationAdapter;
@@ -118,6 +120,19 @@ public class BookSearchResultListFragment extends BaseListFragment {
             AnimationAdapter animCardArrayAdapter = new AlphaInAnimationAdapter(mCardArrayAdapter);
             animCardArrayAdapter.setAbsListView(cardListView);
             cardListView.setExternalAdapter(animCardArrayAdapter,mCardArrayAdapter);
+
+            // 何故か動作しない...
+//            cardListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                @Override
+//                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                    PicassoCard clickedCard = (PicassoCard) mCardArrayAdapter.getItem(position);
+//                    Intent intent = new Intent();
+//                    intent.putExtra("title", clickedCard.getTitle());
+//                    intent.putExtra("author", clickedCard.getSecondaryTitle());
+//                    getActivity().setResult(Activity.RESULT_OK, intent);
+//                    getActivity().finish();
+//                }
+//            });
         }
 
         //Load cards
@@ -189,6 +204,18 @@ public class BookSearchResultListFragment extends BaseListFragment {
         for (RakutenBooksTotalSearchService.BookSearchResult.ItemHolder itemHolder: result.Items) {
 
             PicassoCard card = new PicassoCard(this.getActivity(), Uri.parse(itemHolder.Item.mediumImageUrl.toString()));
+            card.setOnClickListener(new Card.OnCardClickListener() {
+
+                @Override
+                public void onClick(Card card, View view) {
+                    PicassoCard picassoCard = (PicassoCard) card;
+                    Intent intent = new Intent();
+                    intent.putExtra("title", picassoCard.getTitle());
+                    intent.putExtra("author", picassoCard.getSecondaryTitle());
+                    getActivity().setResult(Activity.RESULT_OK, intent);
+                    getActivity().finish();
+                }
+            });
             card.setTitle(itemHolder.Item.title);
             card.setSecondaryTitle(itemHolder.Item.author + " / " + itemHolder.Item.publisherName);
 

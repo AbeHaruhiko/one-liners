@@ -20,7 +20,7 @@
         android:layout_gravity="right|bottom"
         android:text="&#xf055;"
         caliconography:customFont="fontawesome-webfont.ttf"
-        android:background="@drawable/btn_common_back"
+        android:background="@drawable/btn_oval_common_back"
         android:textSize="40sp"
         android:layout_margin="16dp" />
 

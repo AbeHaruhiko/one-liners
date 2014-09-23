@@ -65,13 +65,13 @@ public class PicassoCard extends Card {
         addCardThumbnail(cardThumbnail);
 
         //Add ClickListener
-        setOnClickListener(new OnCardClickListener() {
-            @Override
-            public void onClick(Card card, View view) {
-                String cardTitle= mId!=null? mId: mTitle;
-                Toast.makeText(getContext(), "Click Listener card="+cardTitle, Toast.LENGTH_SHORT).show();
-            }
-        });
+//        setOnClickListener(new OnCardClickListener() {
+//            @Override
+//            public void onClick(Card card, View view) {
+//                String cardTitle= mId!=null? mId: mTitle;
+//                Toast.makeText(getContext(), "Click Listener card="+cardTitle, Toast.LENGTH_SHORT).show();
+//            }
+//        });
     }
 
     @Override

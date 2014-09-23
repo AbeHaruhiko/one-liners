@@ -26,11 +26,15 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.SearchView;
+import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import it.gmariotti.cardslib.library.view.CardView;
 import jp.caliconography.one_liners.dummy.DummyContent;
 
 /**
@@ -49,6 +53,8 @@ public class BookDetailFragment extends Fragment {
     public static final int IMAGE_CHOOSER_RESULTCODE = 0;
     public static final int IMG_MAX_LENGTH = 320;
     static final String TAG = BookDetailFragment.class.getSimpleName();
+    private static final int REQ_CODE_BOOK_SEARCH = 0;
+    private static final int REQ_CODE_PHOTO_DETAIL = 1;
     /**
      * The dummy content this fragment is presenting.
      */
@@ -61,6 +67,8 @@ public class BookDetailFragment extends Fragment {
     private Handler mHandler = new Handler();
     private String[] imagedata;
     private int maxDataLength = 100;
+    private TextView mTxtTitle;
+    private TextView mTxtAuthor;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -87,15 +95,34 @@ public class BookDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_book_detail, container, false);
 
+        mTxtTitle = (TextView) rootView.findViewById(R.id.txt_title);
+        mTxtAuthor = (TextView) rootView.findViewById(R.id.txt_author);
+        Button bookPhoto = (Button) rootView.findViewById(R.id.book_photo);
+
+        bookPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), PhotoDetailActivity.class);
+                startActivityForResult(intent, REQ_CODE_PHOTO_DETAIL);
+            }
+        });
+
         ImageButton searchButton = (ImageButton) rootView.findViewById(R.id.btn_search_book);
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), BookSearchResultListActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, REQ_CODE_BOOK_SEARCH);
             }
         });
 
         return rootView;
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent intent){
+        if(requestCode == REQ_CODE_BOOK_SEARCH && resultCode == Activity.RESULT_OK){
+            mTxtTitle.setText(intent.getCharSequenceExtra("title"));
+            mTxtAuthor.setText(intent.getCharSequenceExtra("author"));
+        }
     }
 }

@@ -29,7 +29,13 @@ angular.module('one-linsersApp')
     this.init = function(width, height) {
     	angular.element('#svg-area').css("width", width + "px").css("height", height + "px");
 		// svg.jsバージョン
-		svgWrapper = SVG('svg-area').width(width).height(height);
+		svgWrapper = SVG('svg-area').width(400).height(400);
+
+		// zoom-pan
+
+		svgWrapper = svgWrapper.group().addClass('viewport');
+		svgPanZoom("#" + svgWrapper.parent.id(), {refreshRate: 'auto', controlIconsEnabled: true});
+
 		// mousedouwn等とtouchstart等は同時にセットするとうまく動かなかった。
 		var startEvent, dragEvent, endEvent;
 		var isTouch = 'ontouchstart' in window || (navigator.msMaxTouchPoints && !navigator.msPointerEnabled );

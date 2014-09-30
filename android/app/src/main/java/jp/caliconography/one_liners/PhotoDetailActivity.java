@@ -39,9 +39,9 @@ public class PhotoDetailActivity extends Activity {
             // Create the detail fragment and add it to the activity
             // using a fragment transaction.
             Bundle arguments = new Bundle();
-            arguments.putString(BookEditFragment.ARG_ITEM_ID,
-                    getIntent().getStringExtra(BookEditFragment.ARG_ITEM_ID));
-            BookEditFragment fragment = new BookEditFragment();
+            arguments.putString(PhotoDetailFragment.ARG_ITEM_ID,
+                    getIntent().getStringExtra(PhotoDetailFragment.ARG_ITEM_ID));
+            PhotoDetailFragment fragment = new PhotoDetailFragment();
             fragment.setArguments(arguments);
             getFragmentManager().beginTransaction()
                     .add(R.id.photo_detail_container, fragment)

@@ -56,7 +56,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             card:item_margin="8dp"
-            card:column_count_portrait="3"
+            card:column_count_portrait="2"
             card:column_count_landscape="3"
             card:grid_paddingRight="8dp"
             card:grid_paddingLeft="8dp"

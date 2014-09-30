@@ -27,14 +27,24 @@ angular.module('one-linsersApp')
 
     /* init svg */
     this.init = function(width, height) {
-    	angular.element('#svg-area').css("width", width + "px").css("height", height + "px");
+    	angular.element('#svg-area').css("width", '100%').css("height", '100%');
 		// svg.jsバージョン
-		svgWrapper = SVG('svg-area').width(400).height(400);
+		var svgWrapperRoot = SVG('svg-area');
 
-		// zoom-pan
+		// zoom-pan, hammer
+		svgWrapper = svgWrapperRoot.group().addClass('viewport');
+		var panZoom = svgPanZoom('#' + svgWrapperRoot.node.id, {refreshRate: 'auto', controlIconsEnabled: true});
+		
+		var hammertime = new Hammer(svgWrapperRoot.node);
+		hammertime.on('pinchin', function(e) {
+			e.preventDefault();
+			panZoom.zoomIn();
+		});
+		hammertime.on('pinchout', function(e) {
+			e.preventDefault();
+			panZoom.zoomOut();
+		});
 
-		svgWrapper = svgWrapper.group().addClass('viewport');
-		svgPanZoom("#" + svgWrapper.parent.id(), {refreshRate: 'auto', controlIconsEnabled: true});
 
 		// mousedouwn等とtouchstart等は同時にセットするとうまく動かなかった。
 		var startEvent, dragEvent, endEvent;
@@ -234,7 +244,7 @@ angular.module('one-linsersApp')
 	}
 
 	function setSvgImage(base64data) {
-	  svgWrapper.image('data:image/jpeg;base64,' + base64data);
+	  svgWrapper.image('data:image/jpeg;base64,' + base64data).width(svgWrapper.parent.node.clientWidth).height(svgWrapper.parent.node.clientHeight);
 	};
 
 	var base64data = "";

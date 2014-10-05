@@ -2,13 +2,13 @@
 
 /**
  * @ngdoc function
- * @name tempApp.controller:MainCtrl
+ * @name one-linsersApp.controller:MainCtrl
  * @description
  * # MainCtrl
- * Controller of the tempApp
+ * Controller of the one-linsersApp
  */
 angular.module('one-linsersApp')
-  .controller('MainCtrl', function ($scope, Drawingservice) {
+  .controller('MainCtrl', function ($scope, Drawingservice, Debug) {
 
     // 画面初期化
     $scope.init = function(width, height) {
@@ -61,6 +61,16 @@ angular.module('one-linsersApp')
     }
 
     $scope.consoleLog = Drawingservice.consoleLog;
+
+    $scope.debug = Debug;
+  //   $scope.$watch('debug', function(){
+  //   // The model has changed. Do something
+  // });
+    $scope.$on('debugMessageUpdated', function() {
+      $scope.$apply(function() {
+        $scope.debug = Debug;
+      })
+    });
 
     $scope.init();
   });

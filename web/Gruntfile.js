@@ -267,9 +267,13 @@ module.exports = function (grunt) {
     //     }
     //   }
     // },
-    // concat: {
-    //   dist: {}
-    // },
+    concat: {
+      options: {
+        // 連結される各ファイル内の間に配置出力する文字列を定義
+        separator: ';'
+      },
+      dist: {}
+    },
 
     imagemin: {
       dist: {

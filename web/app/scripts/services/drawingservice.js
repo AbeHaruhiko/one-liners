@@ -45,17 +45,19 @@ angular.module('one-linsersApp')
 		});
 		
 		var hammertime = new Hammer(svgWrapperRoot.node);
+		hammertime.get('pinch').set({ enable: true });
+		hammertime.get('rotate').set({ enable: true });
 		hammertime.on('pinchin', function(e) {
 			e.preventDefault();
 			console.log('pinchin');
 			Debug.setMessage('pinchin');
-			panZoom.zoomIn();
+			panZoom.zoomOut();
 		});
 		hammertime.on('pinchout', function(e) {
 			e.preventDefault();
 			console.log('pinchout')
 			Debug.setMessage('pinchout');
-			panZoom.zoomOut();
+			panZoom.zoomIn();
 		});
 		hammertime.on('doubletap', function(e) {
 			e.preventDefault();
@@ -86,7 +88,10 @@ angular.module('one-linsersApp')
 
 	/* Remember where we started */
 	this.startDrag = function(event) {
-		if (event.touches.length > 1) console.log("more than 2 touches!");
+		if (event.touches.length > 1) {
+			console.log("more than 2 touches!");
+			Debug.setMessage('detect multi touch!' + event.touches.length);
+		}
 	    event.preventDefault();
 	    event = getCoordinates(event);
 	    offset = $('#svg-area').offset();

@@ -2,9 +2,9 @@
 
 /**
  * @ngdoc overview
- * @name tempApp
+ * @name one-linsersApp
  * @description
- * # tempApp
+ * # one-linsersApp
  *
  * Main module of the application.
  */

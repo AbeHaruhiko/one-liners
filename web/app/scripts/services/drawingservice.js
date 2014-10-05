@@ -7,13 +7,13 @@
 
 /**
  * @ngdoc service
- * @name tempApp.Drawingservice
+ * @name one-linsersApp.Drawingservice
  * @description
  * # Drawingservice
- * Service in the tempApp.
+ * Service in the one-linsersApp.
  */
 angular.module('one-linsersApp')
-  .service('Drawingservice', function Drawingservice() {
+  .service('Drawingservice', function Drawingservice($rootScope, Debug) {
     // AngularJS will instantiate a singleton by calling "new" on this function
 
 	var svgWrapper = null;
@@ -27,22 +27,41 @@ angular.module('one-linsersApp')
 
     /* init svg */
     this.init = function(width, height) {
+
+    	Debug.setMessage('init.');
+
     	angular.element('#svg-area').css("width", '100%').css("height", '100%');
 		// svg.jsバージョン
 		var svgWrapperRoot = SVG('svg-area');
 
 		// zoom-pan, hammer
 		svgWrapper = svgWrapperRoot.group().addClass('viewport');
-		var panZoom = svgPanZoom('#' + svgWrapperRoot.node.id, {refreshRate: 'auto', controlIconsEnabled: true});
+		var panZoom = svgPanZoom('#' + svgWrapperRoot.node.id, {
+			panEnabled: false,
+			refreshRate: 'auto',
+			controlIconsEnabled: true,
+			zoomScaleSensitivity: 0.1,
+			maxZoom: 2.5
+		});
 		
 		var hammertime = new Hammer(svgWrapperRoot.node);
 		hammertime.on('pinchin', function(e) {
 			e.preventDefault();
+			console.log('pinchin');
+			Debug.setMessage('pinchin');
 			panZoom.zoomIn();
 		});
 		hammertime.on('pinchout', function(e) {
 			e.preventDefault();
+			console.log('pinchout')
+			Debug.setMessage('pinchout');
 			panZoom.zoomOut();
+		});
+		hammertime.on('doubletap', function(e) {
+			e.preventDefault();
+			console.log('doubletap')
+			Debug.setMessage('doubletap');
+			panZoom.zoomIn();
 		});
 
 
@@ -67,6 +86,7 @@ angular.module('one-linsersApp')
 
 	/* Remember where we started */
 	this.startDrag = function(event) {
+		if (event.touches.length > 1) console.log("more than 2 touches!");
 	    event.preventDefault();
 	    event = getCoordinates(event);
 	    offset = $('#svg-area').offset();
@@ -157,7 +177,7 @@ angular.module('one-linsersApp')
 	                    .attr({stroke: lineColor, 'stroke-width': 2, 'stroke-opacity': 0.6});
 	        var lineSet = svgWrapper.group();
 	        // lineSet.add(lineBorder).add(line);
-	        lineSet.add(lineBorder).add(line);
+	        // lineSet.add(lineBorder).add(line);
 	        lineSet.selectable(x1, y1, x2, y2);
 
 	    } else if (lineType === 'wave') {

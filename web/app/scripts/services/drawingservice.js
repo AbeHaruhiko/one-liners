@@ -40,7 +40,7 @@ angular.module('one-linsersApp')
 			panEnabled: false,
 			refreshRate: 'auto',
 			controlIconsEnabled: true,
-			zoomScaleSensitivity: 0.1,
+			zoomScaleSensitivity: 0.01,
 			maxZoom: 2.5
 		});
 		
@@ -51,20 +51,34 @@ angular.module('one-linsersApp')
 			e.preventDefault();
 			console.log('pinchin');
 			Debug.setMessage('pinchin');
-			panZoom.zoomOut();
+			panZoom.zoomBy(e.scale);
 		});
 		hammertime.on('pinchout', function(e) {
 			e.preventDefault();
 			console.log('pinchout')
 			Debug.setMessage('pinchout');
-			panZoom.zoomIn();
+			panZoom.zoomBy(e.scale);
 		});
-		hammertime.on('doubletap', function(e) {
-			e.preventDefault();
-			console.log('doubletap')
-			Debug.setMessage('doubletap');
-			panZoom.zoomIn();
-		});
+		// hammertime.on('pinchmove', function(e) {
+		// 	e.preventDefault();
+		// 	console.log('pinchout')
+		// 	Debug.setMessage('pinchout');
+		// 	panZoom.disableZoom();
+		// 	panZoom.enablePan();
+		// });
+		// hammertime.on('pinchend', function(e) {
+		// 	e.preventDefault();
+		// 	console.log('pinchout')
+		// 	Debug.setMessage('pinchout');
+		// 	panZoom.disablePan();
+		// 	panZoom.enableZoom();
+		// });
+		// hammertime.on('doubletap', function(e) {
+		// 	e.preventDefault();
+		// 	console.log('doubletap')
+		// 	Debug.setMessage('doubletap');
+		// 	panZoom.zoomIn();
+		// });
 
 
 		// mousedouwn等とtouchstart等は同時にセットするとうまく動かなかった。
@@ -81,9 +95,9 @@ angular.module('one-linsersApp')
 			endEvent = 'mouseup';
 		}
 
-		svgWrapper.on(startEvent, this.startDrag)
-			.on(dragEvent, this.dragging)
-			.on(endEvent, this.endDrag);
+		// svgWrapper.on(startEvent, this.startDrag)
+		// 	.on(dragEvent, this.dragging)
+		// 	.on(endEvent, this.endDrag);
     };
 
 	/* Remember where we started */
@@ -91,6 +105,8 @@ angular.module('one-linsersApp')
 		if (event.touches.length > 1) {
 			console.log("more than 2 touches!");
 			Debug.setMessage('detect multi touch!' + event.touches.length);
+			startPoint = null;
+			return;
 		}
 	    event.preventDefault();
 	    event = getCoordinates(event);

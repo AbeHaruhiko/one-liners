@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,6 +16,8 @@ import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -54,6 +57,12 @@ public class PhotoDetailFragment extends Fragment {
     private Button mBtnLoadImage;
     private Uri mPictureUri;
     private SurfaceHolder mSurfaceHolder;
+    private Matrix mMatrix;
+    private float mTranslateX;
+    private float mTranslateY;
+    private float mScale;
+    private ScaleGestureDetector mScaleGestureDetector;
+    private Bitmap mBitmap;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -89,9 +98,21 @@ public class PhotoDetailFragment extends Fragment {
         });
 
         mPhotoView = (SurfaceView) rootView.findViewById(R.id.photo);
+        mPhotoView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                mScaleGestureDetector.onTouchEvent(motionEvent);
+                setBitmapToCanvas();
+                return true;
+            }
+        });
         mSurfaceHolder = mPhotoView.getHolder();
         mSurfaceHolder.addCallback(mSurfaceHolderCallback);
 
+        mMatrix = new Matrix();
+
+        mScale = 1.0f;
+        mScaleGestureDetector = new ScaleGestureDetector(getActivity().getApplicationContext(), mOnScaleListener);
 
         return rootView;
     }
@@ -103,14 +124,33 @@ public class PhotoDetailFragment extends Fragment {
         }
 
         @Override
-        public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i2, int i3) {
-
+        public void surfaceChanged(SurfaceHolder surfaceHolder, int format, int width, int height) {
+            mTranslateX = width / 2;
+            mTranslateY = height / 2;
         }
 
         @Override
         public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
 
         }
+    };
+
+    private ScaleGestureDetector.SimpleOnScaleGestureListener mOnScaleListener = new ScaleGestureDetector.SimpleOnScaleGestureListener() {
+        @Override
+        public boolean onScaleBegin(ScaleGestureDetector detector) {
+            return super.onScaleBegin(detector);
+        }
+
+        @Override
+        public void onScaleEnd(ScaleGestureDetector detector) {
+            super.onScaleEnd(detector);
+        }
+
+        @Override
+        public boolean onScale(ScaleGestureDetector detector) {
+            mScale *= detector.getScaleFactor();
+            return true;
+        };
     };
 
     @Override
@@ -130,7 +170,7 @@ public class PhotoDetailFragment extends Fragment {
 
             // 戻り値からInputStreamを取得
             InputStream in = null;
-            Bitmap bitmap = null;
+            mBitmap = null;
             // 読み込む際のオプション
             BitmapFactory.Options options = new BitmapFactory.Options();
             try {
@@ -138,7 +178,7 @@ public class PhotoDetailFragment extends Fragment {
 
                 in = getActivity().getContentResolver().openInputStream(result);
                 // Bitmapの取得
-                bitmap = BitmapFactory.decodeStream(in, null, options);
+                mBitmap = BitmapFactory.decodeStream(in, null, options);
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
@@ -150,16 +190,21 @@ public class PhotoDetailFragment extends Fragment {
                     }
                 }
             }
-            this.setBitmapToCanvas(bitmap);
+            this.setBitmapToCanvas();
             mPictureUri = null;
         }
     }
 
-    private void setBitmapToCanvas(Bitmap bitmap) {
+    private void setBitmapToCanvas() {
         Canvas canvas = mSurfaceHolder.lockCanvas();
 
+        mMatrix.reset();
+        mMatrix.postScale(mScale, mScale);
+        mMatrix.postTranslate(-mBitmap.getWidth() / 2 * mScale, -mBitmap.getHeight() / 2 * mScale);
+        mMatrix.postTranslate(mTranslateX, mTranslateY);
+
         canvas.drawColor(Color.WHITE);
-        canvas.drawBitmap(bitmap, 0, 0, null);
+        canvas.drawBitmap(mBitmap, mMatrix, null);
 
         mSurfaceHolder.unlockCanvasAndPost(canvas);
     }

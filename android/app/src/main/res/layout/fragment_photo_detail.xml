@@ -3,18 +3,25 @@
     android:layout_height="fill_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <WebView
+    <!--<WebView-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
+        <!--android:id="@+id/webView"-->
+        <!--android:layout_above="@+id/loadImage" />-->
+
+    <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/webView"
-        android:layout_above="@+id/loadImage" />
+        android:id="@+id/photo"
+        android:layout_above="@+id/load_image"
+        android:scaleType="centerInside"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="New Button"
-        android:id="@+id/loadImage"
+        android:id="@+id/load_image"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:clickable="true" />

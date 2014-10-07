@@ -6,6 +6,8 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,6 +15,8 @@ import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
@@ -46,11 +50,10 @@ public class PhotoDetailFragment extends Fragment {
      */
     private DummyContent.DummyItem mItem;
 
-    private ImageView mPhotoView;
+    private SurfaceView mPhotoView;
     private Button mBtnLoadImage;
     private Uri mPictureUri;
-    private Handler mHandler = new Handler();
-    private PhotoViewAttacher mAttacher;
+    private SurfaceHolder mSurfaceHolder;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -85,13 +88,30 @@ public class PhotoDetailFragment extends Fragment {
             }
         });
 
-        mPhotoView = (ImageView) rootView.findViewById(R.id.photo);
-        mAttacher = new PhotoViewAttacher(mPhotoView);
-        mAttacher.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        mAttacher.setMinimumScale(0.9f);
+        mPhotoView = (SurfaceView) rootView.findViewById(R.id.photo);
+        mSurfaceHolder = mPhotoView.getHolder();
+        mSurfaceHolder.addCallback(mSurfaceHolderCallback);
+
 
         return rootView;
     }
+
+    private SurfaceHolder.Callback mSurfaceHolderCallback = new SurfaceHolder.Callback() {
+        @Override
+        public void surfaceCreated(SurfaceHolder surfaceHolder) {
+
+        }
+
+        @Override
+        public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i2, int i3) {
+
+        }
+
+        @Override
+        public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
+
+        }
+    };
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -119,12 +139,10 @@ public class PhotoDetailFragment extends Fragment {
                 in = getActivity().getContentResolver().openInputStream(result);
                 // Bitmapの取得
                 bitmap = BitmapFactory.decodeStream(in, null, options);
-                mPhotoView.setImageBitmap(bitmap);
-                mAttacher.update();
-
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {
+
                 if (in != null) {
                     try {
                         in.close();
@@ -132,8 +150,18 @@ public class PhotoDetailFragment extends Fragment {
                     }
                 }
             }
+            this.setBitmapToCanvas(bitmap);
             mPictureUri = null;
         }
+    }
+
+    private void setBitmapToCanvas(Bitmap bitmap) {
+        Canvas canvas = mSurfaceHolder.lockCanvas();
+
+        canvas.drawColor(Color.WHITE);
+        canvas.drawBitmap(bitmap, 0, 0, null);
+
+        mSurfaceHolder.unlockCanvasAndPost(canvas);
     }
 
     private void launchChooser() {

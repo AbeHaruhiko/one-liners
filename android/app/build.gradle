@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+// method call logging
+apply plugin: 'hugo'
 
 android {
     compileSdkVersion 20

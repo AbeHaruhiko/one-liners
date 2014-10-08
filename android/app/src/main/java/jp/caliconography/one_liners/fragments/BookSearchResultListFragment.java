@@ -22,7 +22,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,10 +32,9 @@ import android.widget.SearchView;
 
 import com.nhaarman.listviewanimations.appearance.AnimationAdapter;
 import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
+import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import it.gmariotti.cardslib.demo.extras.cards.PicassoCard;
 import it.gmariotti.cardslib.demo.extras.fragment.BaseListFragment;
@@ -44,12 +42,11 @@ import it.gmariotti.cardslib.demo.extras.staggered.data.ServerDatabase;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
 import it.gmariotti.cardslib.library.view.CardListView;
+import jp.caliconography.android.util.BusHolder;
 import jp.caliconography.one_liners.R;
-import jp.caliconography.one_liners.services.RakutenBooksTotalSearchService;
-import retrofit.Callback;
-import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import jp.caliconography.one_liners.event.BookSearchCompletedEvent;
+import jp.caliconography.one_liners.model.BookSearchResult;
+import jp.caliconography.one_liners.services.RakutenBooksTotalSearchClient;
 
 /**
  * This example uses a staggered card with different different photos and text.
@@ -137,7 +134,7 @@ public class BookSearchResultListFragment extends BaseListFragment {
                 searchView.clearFocus();
                 mProgressContainer.setVisibility(View.VISIBLE);
 
-                new SearchBook(queryText).invoke();
+                new RakutenBooksTotalSearchClient().search(queryText);
 
                 return false;
             }
@@ -150,16 +147,21 @@ public class BookSearchResultListFragment extends BaseListFragment {
         searchView.setOnQueryTextListener(queryTextListener);
     }
 
-    private void displayResult(RakutenBooksTotalSearchService.BookSearchResult result) {
-        ArrayList<Card> cards = initCard(result);
+    @Subscribe
+    public void onBookSearchCompleted(BookSearchCompletedEvent event) {
+        displayResult(event.getBookSearchResult());
+    }
+
+    private void displayResult(BookSearchResult bookSearchResult) {
+        ArrayList<Card> cards = initCard(bookSearchResult);
         updateAdapter(cards);
         displayList();
     }
 
-    private ArrayList<Card> initCard(RakutenBooksTotalSearchService.BookSearchResult result) {
+    private ArrayList<Card> initCard(BookSearchResult bookSearchResult) {
 
         ArrayList<Card> cards = new ArrayList<Card>();
-        for (RakutenBooksTotalSearchService.BookSearchResult.ItemHolder itemHolder : result.Items) {
+        for (BookSearchResult.ItemHolder itemHolder : bookSearchResult.Items) {
 
             PicassoCard card = new PicassoCard(this.getActivity(), Uri.parse(itemHolder.Item.mediumImageUrl.toString()));
             card.setOnClickListener(new Card.OnCardClickListener() {
@@ -196,53 +198,17 @@ public class BookSearchResultListFragment extends BaseListFragment {
         }
     }
 
-    /**
-     * 書籍検索ロジック
-     * <p/>
-     * 外部クラスに切り出したいがcallbackの完了時に画面更新したいため、内部クラスとして定義。
-     * TODO EventBusでの切り出しを検討
-     */
-    private class SearchBook {
-        private String queryText;
+    @Override
+    public void onResume() {
+        super.onResume();
 
-        public SearchBook(String queryText) {
-            this.queryText = queryText;
-        }
+        BusHolder.get().register(this);
+    }
 
-        public void invoke() {
-            RestAdapter restAdapter = new RestAdapter.Builder()
-                    .setEndpoint(getActivity().getString(R.string.rakuten_api_endpoint))
-                    .build();
+    @Override
+    public void onPause() {
+        BusHolder.get().unregister(this);
 
-            RakutenBooksTotalSearchService service = restAdapter.create(RakutenBooksTotalSearchService.class);
-            service.searchBook(buildParamMap(), getBookSearchResultCallback());
-        }
-
-        private Callback<RakutenBooksTotalSearchService.BookSearchResult> getBookSearchResultCallback() {
-            return new Callback<RakutenBooksTotalSearchService.BookSearchResult>() {
-                @Override
-                public void success(RakutenBooksTotalSearchService.BookSearchResult result, Response response) {
-                    Log.d("", result.toString());
-                    Log.d("", response.toString());
-
-                    displayResult(result);
-
-                }
-
-                @Override
-                public void failure(RetrofitError retrofitError) {
-                    Log.e("", null, retrofitError);
-                }
-            };
-        }
-
-        private Map<String, String> buildParamMap() {
-            Map<String, String> paramMap = new HashMap<String, String>();
-            paramMap.put("applicationId", "1014192012049542780");
-            paramMap.put("format", "json");
-            paramMap.put("booksGenreId", "000");
-            paramMap.put("keyword", queryText);
-            return paramMap;
-        }
+        super.onPause();
     }
 }

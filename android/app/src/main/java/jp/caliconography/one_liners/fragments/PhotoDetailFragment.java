@@ -203,32 +203,35 @@ public class PhotoDetailFragment extends Fragment {
                 }
                 return;
             }
+            getBitmap(data);
 
-
-            // 戻り値からInputStreamを取得
-            InputStream in = null;
-            mBitmap = null;
-            // 読み込む際のオプション
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            try {
-                Uri result = (data == null) ? mPictureUri : data.getData();
-
-                in = getActivity().getContentResolver().openInputStream(result);
-                // Bitmapの取得
-                mBitmap = BitmapFactory.decodeStream(in, null, options);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-
-                if (in != null) {
-                    try {
-                        in.close();
-                    } catch (IOException e) {
-                    }
-                }
-            }
             this.setBitmapToCanvas();
             mPictureUri = null;
+        }
+    }
+
+    private void getBitmap(Intent intent) {
+        // 戻り値からInputStreamを取得
+        InputStream in = null;
+        mBitmap = null;
+        // 読み込む際のオプション
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        try {
+            Uri result = (intent == null) ? mPictureUri : intent.getData();
+
+            in = getActivity().getContentResolver().openInputStream(result);
+            // Bitmapの取得
+            mBitmap = BitmapFactory.decodeStream(in, null, options);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                }
+            }
         }
     }
 

@@ -116,19 +116,6 @@ public class BookSearchResultListFragment extends BaseListFragment {
             AnimationAdapter animCardArrayAdapter = new AlphaInAnimationAdapter(mCardArrayAdapter);
             animCardArrayAdapter.setAbsListView(cardListView);
             cardListView.setExternalAdapter(animCardArrayAdapter, mCardArrayAdapter);
-
-            // 何故か動作しない...
-//            cardListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//                @Override
-//                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                    PicassoCard clickedCard = (PicassoCard) mCardArrayAdapter.getItem(position);
-//                    Intent intent = new Intent();
-//                    intent.putExtra("title", clickedCard.getTitle());
-//                    intent.putExtra("author", clickedCard.getSecondaryTitle());
-//                    getActivity().setResult(Activity.RESULT_OK, intent);
-//                    getActivity().finish();
-//                }
-//            });
         }
 
         //Load cards

@@ -58,5 +58,4 @@ public class RakutenBooksTotalSearchClient {
         paramMap.put("keyword", queryText);
         return paramMap;
     }
-
 }

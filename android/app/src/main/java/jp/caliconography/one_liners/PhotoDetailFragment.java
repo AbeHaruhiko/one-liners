@@ -15,6 +15,7 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -63,6 +64,7 @@ public class PhotoDetailFragment extends Fragment {
     private float mScale;
     private ScaleGestureDetector mScaleGestureDetector;
     private Bitmap mBitmap;
+    private GestureDetector mGestureDetector;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -102,6 +104,7 @@ public class PhotoDetailFragment extends Fragment {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 mScaleGestureDetector.onTouchEvent(motionEvent);
+                mGestureDetector.onTouchEvent(motionEvent);
                 setBitmapToCanvas();
                 return true;
             }
@@ -113,6 +116,8 @@ public class PhotoDetailFragment extends Fragment {
 
         mScale = 1.0f;
         mScaleGestureDetector = new ScaleGestureDetector(getActivity().getApplicationContext(), mOnScaleListener);
+
+        mGestureDetector = new GestureDetector(getActivity().getApplicationContext(), mOnGestureListener);
 
         return rootView;
     }
@@ -153,6 +158,38 @@ public class PhotoDetailFragment extends Fragment {
         };
     };
 
+    private GestureDetector.OnGestureListener mOnGestureListener = new GestureDetector.OnGestureListener() {
+        @Override
+        public boolean onDown(MotionEvent motionEvent) {
+            return false;
+        }
+
+        @Override
+        public void onShowPress(MotionEvent motionEvent) {
+
+        }
+
+        @Override
+        public boolean onSingleTapUp(MotionEvent motionEvent) {
+            return false;
+        }
+
+        @Override
+        public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float v, float v2) {
+            return false;
+        }
+
+        @Override
+        public void onLongPress(MotionEvent motionEvent) {
+
+        }
+
+        @Override
+        public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent2, float v, float v2) {
+            return false;
+        }
+    };
+    
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

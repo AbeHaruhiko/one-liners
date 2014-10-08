@@ -100,6 +100,7 @@ public class BookSearchResultListFragment extends BaseListFragment {
         super.onActivityCreated(savedInstanceState);
 
         hideList(false);
+        mProgressContainer.setVisibility(View.GONE);
 
         //Set the arrayAdapter
         ArrayList<Card> cards = new ArrayList<Card>();
@@ -146,8 +147,8 @@ public class BookSearchResultListFragment extends BaseListFragment {
             public boolean onQueryTextSubmit(String queryText) {
 
                 mCardArrayAdapter.clear();
-
                 searchView.clearFocus();
+                mProgressContainer.setVisibility(View.VISIBLE);
 
                 new SearchBook(queryText).invoke();
 

@@ -1,4 +1,4 @@
-package jp.caliconography.one_liners;
+package jp.caliconography.one_liners.activities;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -6,15 +6,18 @@ import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 
+import jp.caliconography.one_liners.R;
+import jp.caliconography.one_liners.fragments.PhotoDetailFragment;
+
 
 /**
  * An activity representing a single book detail screen. This
  * activity is only used on handset devices. On tablet-size devices,
  * item details are presented side-by-side with a list of items
  * in a {@link BookListActivity}.
- * <p>
+ * <p/>
  * This activity is mostly just a 'shell' activity containing nothing
- * more than a {@link BookDetailFragment}.
+ * more than a {@link jp.caliconography.one_liners.fragments.BookDetailFragment}.
  */
 public class PhotoDetailActivity extends Activity {
 
@@ -60,7 +63,7 @@ public class PhotoDetailActivity extends Activity {
             //
             // http://developer.android.com/design/patterns/navigation.html#up-vs-back
             //
-            NavUtils.navigateUpTo(this, new Intent(this, BookListActivity.class));
+            NavUtils.navigateUpTo(this, new Intent(this, BookDetailActivity.class));
             return true;
         }
         return super.onOptionsItemSelected(item);

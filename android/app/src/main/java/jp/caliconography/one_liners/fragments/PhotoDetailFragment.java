@@ -1,4 +1,4 @@
-package jp.caliconography.one_liners;
+package jp.caliconography.one_liners.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -11,10 +11,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.MediaStore;
-import android.util.Base64;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -23,21 +20,22 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.JavascriptInterface;
 import android.widget.Button;
-import android.widget.ImageView;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
+import butterknife.OnTouch;
+import jp.caliconography.one_liners.R;
 import jp.caliconography.one_liners.dummy.DummyContent;
-import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**
  * A fragment representing a single book detail screen.
- * This fragment is either contained in a {@link BookListActivity}
- * in two-pane mode (on tablets) or a {@link PhotoDetailActivity}
+ * This fragment is either contained in a {@link jp.caliconography.one_liners.activities.BookListActivity}
+ * in two-pane mode (on tablets) or a {@link jp.caliconography.one_liners.activities.PhotoDetailActivity}
  * on handsets.
  */
 public class PhotoDetailFragment extends Fragment {
@@ -54,8 +52,11 @@ public class PhotoDetailFragment extends Fragment {
      */
     private DummyContent.DummyItem mItem;
 
-    private SurfaceView mPhotoView;
-    private Button mBtnLoadImage;
+    @InjectView(R.id.photo)
+    SurfaceView mPhotoView;
+    @InjectView(R.id.load_image)
+    Button mBtnLoadImage;
+
     private Uri mPictureUri;
     private SurfaceHolder mSurfaceHolder;
     private Matrix mMatrix;
@@ -91,24 +92,8 @@ public class PhotoDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_photo_detail, container, false);
 
-        mBtnLoadImage = (Button) rootView.findViewById(R.id.load_image);
-        mBtnLoadImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                launchChooser();
-            }
-        });
+        ButterKnife.inject(this, rootView);
 
-        mPhotoView = (SurfaceView) rootView.findViewById(R.id.photo);
-        mPhotoView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                mScaleGestureDetector.onTouchEvent(motionEvent);
-                mGestureDetector.onTouchEvent(motionEvent);
-                setBitmapToCanvas();
-                return true;
-            }
-        });
         mSurfaceHolder = mPhotoView.getHolder();
         mSurfaceHolder.addCallback(mSurfaceHolderCallback);
 
@@ -120,6 +105,19 @@ public class PhotoDetailFragment extends Fragment {
         mGestureDetector = new GestureDetector(getActivity().getApplicationContext(), mOnGestureListener);
 
         return rootView;
+    }
+
+    @OnClick(R.id.load_image)
+    void onClickLoadImage(View view) {
+        launchChooser();
+    }
+
+    @OnTouch(R.id.photo)
+    boolean onTouchPhoto(View view, MotionEvent motionEvent) {
+        mScaleGestureDetector.onTouchEvent(motionEvent);
+        mGestureDetector.onTouchEvent(motionEvent);
+        setBitmapToCanvas();
+        return true;
     }
 
     private SurfaceHolder.Callback mSurfaceHolderCallback = new SurfaceHolder.Callback() {
@@ -155,7 +153,9 @@ public class PhotoDetailFragment extends Fragment {
         public boolean onScale(ScaleGestureDetector detector) {
             mScale *= detector.getScaleFactor();
             return true;
-        };
+        }
+
+        ;
     };
 
     private GestureDetector.OnGestureListener mOnGestureListener = new GestureDetector.OnGestureListener() {
@@ -189,7 +189,7 @@ public class PhotoDetailFragment extends Fragment {
             return false;
         }
     };
-    
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

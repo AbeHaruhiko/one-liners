@@ -1,4 +1,4 @@
-package jp.caliconography.one_liners;
+package jp.caliconography.one_liners.activities;
 
 import android.app.Activity;
 import android.app.FragmentManager;
@@ -9,19 +9,22 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.SearchView;
 
+import jp.caliconography.one_liners.R;
+import jp.caliconography.one_liners.fragments.BookSearchResultListFragment;
+
 
 /**
  * An activity representing a list of books. This activity
  * has different presentations for handset and tablet-size devices. On
  * handsets, the activity presents a list of items, which when touched,
- * lead to a {@link jp.caliconography.one_liners.BookDetailActivity} representing
+ * lead to a {@link BookDetailActivity} representing
  * item details. On tablets, the activity presents the list of items and
  * item details side-by-side using two vertical panes.
- * <p>
+ * <p/>
  * The activity makes heavy use of fragments. The list of items is a
  * {@link BookSearchResultListActivity} and the item details
- * (if present) is a {@link jp.caliconography.one_liners.BookDetailFragment}.
- * <p>
+ * (if present) is a {@link jp.caliconography.one_liners.fragments.BookDetailFragment}.
+ * <p/>
  * This activity also implements the required
  * {@link BookSearchResultListActivity.Callbacks} interface
  * to listen for item selections.
@@ -97,7 +100,7 @@ public class BookSearchResultListActivity extends Activity {
         // SearchViewを取得する
         MenuItem searchItem = menu.findItem(R.id.search_view);
         final SearchView searchView = (SearchView) searchItem.getActionView();
-        searchView.setQueryHint("タイトル/著者名/ISBN/JAN");
+        searchView.setQueryHint(getString(R.string.book_search_query_hint));
         searchView.setIconified(false);
 //        searchView.setOnQueryTextListener(this);
 

@@ -2,39 +2,16 @@ package jp.caliconography.one_liners;
 
 import android.app.Activity;
 import android.app.Fragment;
-import android.content.ContentValues;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.graphics.Point;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.provider.MediaStore;
-import android.util.Base64;
-import android.view.Display;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.JavascriptInterface;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.SearchView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
-import it.gmariotti.cardslib.library.view.CardView;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 import jp.caliconography.one_liners.dummy.DummyContent;
 
 /**
@@ -60,15 +37,10 @@ public class BookDetailFragment extends Fragment {
      */
     private DummyContent.DummyItem mItem;
 
-    private WebView mWebView;
-    private Button mBtnLoadImage;
-    private Uri mPictureUri;
-    private int inSampleSize;
-    private Handler mHandler = new Handler();
-    private String[] imagedata;
-    private int maxDataLength = 100;
-    private TextView mTxtTitle;
-    private TextView mTxtAuthor;
+    @InjectView(R.id.txt_title)
+    TextView mTxtTitle;
+    @InjectView(R.id.txt_author)
+    TextView mTxtAuthor;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -95,26 +67,7 @@ public class BookDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_book_detail, container, false);
 
-        mTxtTitle = (TextView) rootView.findViewById(R.id.txt_title);
-        mTxtAuthor = (TextView) rootView.findViewById(R.id.txt_author);
-        Button bookPhoto = (Button) rootView.findViewById(R.id.book_photo);
-
-        bookPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), PhotoDetailActivity.class);
-                startActivityForResult(intent, REQ_CODE_PHOTO_DETAIL);
-            }
-        });
-
-        ImageButton searchButton = (ImageButton) rootView.findViewById(R.id.btn_search_book);
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), BookSearchResultListActivity.class);
-                startActivityForResult(intent, REQ_CODE_BOOK_SEARCH);
-            }
-        });
+        ButterKnife.inject(this, rootView);
 
         return rootView;
     }
@@ -125,4 +78,17 @@ public class BookDetailFragment extends Fragment {
             mTxtAuthor.setText(intent.getCharSequenceExtra("author"));
         }
     }
+
+    @OnClick(R.id.book_photo)
+    void onClickBookPhoto() {
+        Intent intent = new Intent(getActivity(), PhotoDetailActivity.class);
+        startActivityForResult(intent, REQ_CODE_PHOTO_DETAIL);
+    }
+
+    @OnClick(R.id.btn_search_book)
+    void onClickSearchBook() {
+        Intent intent = new Intent(getActivity(), BookSearchResultListActivity.class);
+        startActivityForResult(intent, REQ_CODE_BOOK_SEARCH);
+    }
+
 }

@@ -47,5 +47,6 @@ dependencies {
     // zoomable imageview
     compile 'com.github.chrisbanes.photoview:library:1.2.3'
 
-
+    // butter knife(view injection)
+    compile 'com.jakewharton:butterknife:5.1.2'
 }

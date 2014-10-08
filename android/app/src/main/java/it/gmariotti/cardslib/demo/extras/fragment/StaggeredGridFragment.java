@@ -33,8 +33,6 @@ import com.melnykov.fab.FloatingActionButton;
 
 import java.util.ArrayList;
 
-import jp.caliconography.one_liners.BookDetailActivity;
-import jp.caliconography.one_liners.R;
 import it.gmariotti.cardslib.demo.extras.staggered.DynamicHeightPicassoCardThumbnailView;
 import it.gmariotti.cardslib.demo.extras.staggered.data.Image;
 import it.gmariotti.cardslib.demo.extras.staggered.data.MockImageLoader;
@@ -44,6 +42,8 @@ import it.gmariotti.cardslib.library.extra.staggeredgrid.internal.CardGridStagge
 import it.gmariotti.cardslib.library.extra.staggeredgrid.view.CardGridStaggeredView;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardThumbnail;
+import jp.caliconography.one_liners.R;
+import jp.caliconography.one_liners.activities.BookDetailActivity;
 
 /**
  * This example uses a staggered card with different different photos and text.

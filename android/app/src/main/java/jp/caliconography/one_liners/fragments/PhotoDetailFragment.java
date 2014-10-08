@@ -1,4 +1,4 @@
-package jp.caliconography.one_liners;
+package jp.caliconography.one_liners.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -10,26 +10,23 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
-import android.util.Base64;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.JavascriptInterface;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import jp.caliconography.one_liners.R;
 import jp.caliconography.one_liners.dummy.DummyContent;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**
  * A fragment representing a single book detail screen.
- * This fragment is either contained in a {@link BookListActivity}
- * in two-pane mode (on tablets) or a {@link PhotoDetailActivity}
+ * This fragment is either contained in a {@link jp.caliconography.one_liners.activities.BookListActivity}
+ * in two-pane mode (on tablets) or a {@link jp.caliconography.one_liners.activities.PhotoDetailActivity}
  * on handsets.
  */
 public class PhotoDetailFragment extends Fragment {

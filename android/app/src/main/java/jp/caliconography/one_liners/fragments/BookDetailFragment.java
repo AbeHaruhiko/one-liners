@@ -1,4 +1,4 @@
-package jp.caliconography.one_liners;
+package jp.caliconography.one_liners.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -12,12 +12,15 @@ import android.widget.TextView;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import jp.caliconography.one_liners.R;
+import jp.caliconography.one_liners.activities.BookSearchResultListActivity;
+import jp.caliconography.one_liners.activities.PhotoDetailActivity;
 import jp.caliconography.one_liners.dummy.DummyContent;
 
 /**
  * A fragment representing a single book detail screen.
- * This fragment is either contained in a {@link BookListActivity}
- * in two-pane mode (on tablets) or a {@link BookDetailActivity}
+ * This fragment is either contained in a {@link jp.caliconography.one_liners.activities.BookListActivity}
+ * in two-pane mode (on tablets) or a {@link jp.caliconography.one_liners.activities.BookDetailActivity}
  * on handsets.
  */
 public class BookDetailFragment extends Fragment {
@@ -71,9 +74,10 @@ public class BookDetailFragment extends Fragment {
 
         return rootView;
     }
+
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent intent){
-        if(requestCode == REQ_CODE_BOOK_SEARCH && resultCode == Activity.RESULT_OK){
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        if (requestCode == REQ_CODE_BOOK_SEARCH && resultCode == Activity.RESULT_OK) {
             mTxtTitle.setText(intent.getCharSequenceExtra("title"));
             mTxtAuthor.setText(intent.getCharSequenceExtra("author"));
         }

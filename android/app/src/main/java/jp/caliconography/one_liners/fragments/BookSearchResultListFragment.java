@@ -170,10 +170,7 @@ public class BookSearchResultListFragment extends BaseListFragment {
                 public void onClick(Card card, View view) {
                     PicassoCard picassoCard = (PicassoCard) card;
 
-                    // TODO 呼び出し元でintent作成メソッドを定義する。
-                    Intent intent = new Intent();
-                    intent.putExtra("title", picassoCard.getTitle());
-                    intent.putExtra("author", picassoCard.getSecondaryTitle());
+                    Intent intent = BookDetailFragment.createSearchResultIntent(picassoCard.getTitle(), picassoCard.getSecondaryTitle());
                     getActivity().setResult(Activity.RESULT_OK, intent);
                     getActivity().finish();
                 }

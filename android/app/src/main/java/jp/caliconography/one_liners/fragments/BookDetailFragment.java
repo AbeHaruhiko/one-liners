@@ -95,4 +95,10 @@ public class BookDetailFragment extends Fragment {
         startActivityForResult(intent, REQ_CODE_BOOK_SEARCH);
     }
 
+    static Intent createSearchResultIntent(String title, String author) {
+        Intent intent = new Intent();
+        intent.putExtra("title", title);
+        intent.putExtra("author", author);
+        return intent;
+    }
 }

@@ -251,11 +251,20 @@ public class PhotoDetailFragment extends Fragment {
 
     private void launchChooser() {
         // ギャラリーから選択
-        Intent i = new Intent(Intent.ACTION_GET_CONTENT);
-        i.setType("image/*");
-        i.addCategory(Intent.CATEGORY_OPENABLE);
+        Intent imagePickIntent = getImagePickIntent();
 
         // カメラで撮影
+        Intent cameraIntent = getCameraIntent();
+
+        // ギャラリー選択のIntentでcreateChooser()
+        Intent chooserIntent = Intent.createChooser(imagePickIntent, "Pick Image");
+        // EXTRA_INITIAL_INTENTS にカメラ撮影のIntentを追加
+        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{cameraIntent});
+
+        startActivityForResult(chooserIntent, IMAGE_CHOOSER_RESULTCODE);
+    }
+
+    private Intent getCameraIntent() {
         String filename = System.currentTimeMillis() + ".jpg";
         ContentValues values = new ContentValues();
         values.put(MediaStore.Images.Media.TITLE, filename);
@@ -264,12 +273,13 @@ public class PhotoDetailFragment extends Fragment {
 
         Intent i2 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         i2.putExtra(MediaStore.EXTRA_OUTPUT, mPictureUri);
+        return i2;
+    }
 
-        // ギャラリー選択のIntentでcreateChooser()
-        Intent chooserIntent = Intent.createChooser(i, "Pick Image");
-        // EXTRA_INITIAL_INTENTS にカメラ撮影のIntentを追加
-        chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, new Intent[]{i2});
-
-        startActivityForResult(chooserIntent, IMAGE_CHOOSER_RESULTCODE);
+    private Intent getImagePickIntent() {
+        Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+        i.setType("image/*");
+        i.addCategory(Intent.CATEGORY_OPENABLE);
+        return i;
     }
 }

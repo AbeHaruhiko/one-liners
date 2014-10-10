@@ -12,7 +12,6 @@ import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -29,6 +28,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnTouch;
+import jp.caliconography.android.gesture.TranslationGestureDetector;
+import jp.caliconography.android.gesture.TranslationGestureListener;
 import jp.caliconography.one_liners.R;
 import jp.caliconography.one_liners.dummy.DummyContent;
 
@@ -64,8 +65,9 @@ public class PhotoDetailFragment extends Fragment {
     private float mTranslateY;
     private float mScale;
     private ScaleGestureDetector mScaleGestureDetector;
+    private TranslationGestureDetector mTranslationGestureDetector;
     private Bitmap mBitmap;
-    private GestureDetector mGestureDetector;
+    private float mPrevX, mPrevY;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -101,8 +103,7 @@ public class PhotoDetailFragment extends Fragment {
 
         mScale = 1.0f;
         mScaleGestureDetector = new ScaleGestureDetector(getActivity().getApplicationContext(), mOnScaleListener);
-
-        mGestureDetector = new GestureDetector(getActivity().getApplicationContext(), mOnGestureListener);
+        mTranslationGestureDetector = new TranslationGestureDetector(mTranslationListener);
 
         return rootView;
     }
@@ -115,7 +116,7 @@ public class PhotoDetailFragment extends Fragment {
     @OnTouch(R.id.photo)
     boolean onTouchPhoto(View view, MotionEvent motionEvent) {
         mScaleGestureDetector.onTouchEvent(motionEvent);
-        mGestureDetector.onTouchEvent(motionEvent);
+        mTranslationGestureDetector.onTouch(view, motionEvent);
         setBitmapToCanvas();
         return true;
     }
@@ -123,7 +124,9 @@ public class PhotoDetailFragment extends Fragment {
     private SurfaceHolder.Callback mSurfaceHolderCallback = new SurfaceHolder.Callback() {
         @Override
         public void surfaceCreated(SurfaceHolder surfaceHolder) {
-
+            if (mBitmap != null) {
+                setBitmapToCanvas();
+            }
         }
 
         @Override
@@ -158,35 +161,25 @@ public class PhotoDetailFragment extends Fragment {
         ;
     };
 
-    private GestureDetector.OnGestureListener mOnGestureListener = new GestureDetector.OnGestureListener() {
+    private TranslationGestureListener mTranslationListener = new TranslationGestureListener() {
         @Override
-        public boolean onDown(MotionEvent motionEvent) {
-            return false;
+        public void onTranslationEnd(TranslationGestureDetector detector) {
         }
 
         @Override
-        public void onShowPress(MotionEvent motionEvent) {
-
+        public void onTranslationBegin(TranslationGestureDetector detector) {
+            mPrevX = detector.getX();
+            mPrevY = detector.getY();
         }
 
         @Override
-        public boolean onSingleTapUp(MotionEvent motionEvent) {
-            return false;
-        }
-
-        @Override
-        public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float v, float v2) {
-            return false;
-        }
-
-        @Override
-        public void onLongPress(MotionEvent motionEvent) {
-
-        }
-
-        @Override
-        public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent2, float v, float v2) {
-            return false;
+        public void onTranslation(TranslationGestureDetector detector) {
+            float deltaX = detector.getX() - mPrevX;
+            float deltaY = detector.getY() - mPrevY;
+            mTranslateX += deltaX;
+            mTranslateY += deltaY;
+            mPrevX = detector.getX();
+            mPrevY = detector.getY();
         }
     };
 
@@ -205,7 +198,6 @@ public class PhotoDetailFragment extends Fragment {
             }
             getBitmap(data);
 
-            this.setBitmapToCanvas();
             mPictureUri = null;
         }
     }
@@ -236,17 +228,19 @@ public class PhotoDetailFragment extends Fragment {
     }
 
     private void setBitmapToCanvas() {
-        Canvas canvas = mSurfaceHolder.lockCanvas();
+
+        Canvas canvas = mSurfaceHolder.lockCanvas(null);
 
         mMatrix.reset();
         mMatrix.postScale(mScale, mScale);
         mMatrix.postTranslate(-mBitmap.getWidth() / 2 * mScale, -mBitmap.getHeight() / 2 * mScale);
         mMatrix.postTranslate(mTranslateX, mTranslateY);
 
-        canvas.drawColor(Color.WHITE);
-        canvas.drawBitmap(mBitmap, mMatrix, null);
-
-        mSurfaceHolder.unlockCanvasAndPost(canvas);
+        if (canvas != null) {
+            canvas.drawColor(Color.WHITE);
+            canvas.drawBitmap(mBitmap, mMatrix, null);
+            mSurfaceHolder.unlockCanvasAndPost(canvas);
+        }
     }
 
     private void launchChooser() {

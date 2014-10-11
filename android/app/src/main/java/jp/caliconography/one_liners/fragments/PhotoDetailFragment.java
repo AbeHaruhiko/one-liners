@@ -68,6 +68,7 @@ public class PhotoDetailFragment extends Fragment {
     private TranslationGestureDetector mTranslationGestureDetector;
     private Bitmap mBitmap;
     private float mPrevX, mPrevY;
+    private boolean mSurfaceCreated;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -124,6 +125,7 @@ public class PhotoDetailFragment extends Fragment {
     private SurfaceHolder.Callback mSurfaceHolderCallback = new SurfaceHolder.Callback() {
         @Override
         public void surfaceCreated(SurfaceHolder surfaceHolder) {
+            mSurfaceCreated = true;
             if (mBitmap != null) {
                 setBitmapToCanvas();
             }
@@ -168,18 +170,18 @@ public class PhotoDetailFragment extends Fragment {
 
         @Override
         public void onTranslationBegin(TranslationGestureDetector detector) {
-            mPrevX = detector.getX();
-            mPrevY = detector.getY();
+            mPrevX = detector.getFocusX();
+            mPrevY = detector.getFocusY();
         }
 
         @Override
         public void onTranslation(TranslationGestureDetector detector) {
-            float deltaX = detector.getX() - mPrevX;
-            float deltaY = detector.getY() - mPrevY;
+            float deltaX = detector.getFocusX() - mPrevX;
+            float deltaY = detector.getFocusY() - mPrevY;
             mTranslateX += deltaX;
             mTranslateY += deltaY;
-            mPrevX = detector.getX();
-            mPrevY = detector.getY();
+            mPrevX = detector.getFocusX();
+            mPrevY = detector.getFocusY();
         }
     };
 
@@ -197,6 +199,9 @@ public class PhotoDetailFragment extends Fragment {
                 return;
             }
             getBitmap(data);
+            if (mSurfaceCreated) {
+                setBitmapToCanvas();
+            }
 
             mPictureUri = null;
         }

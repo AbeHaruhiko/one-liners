@@ -5,8 +5,9 @@ import android.view.View;
 
 public class TranslationGestureDetector {
     private TranslationGestureListener mListener;
-    private float mX, mY; // タッチイベント時の座標
+    private float mX1, mY1, mX2, mY2; // タッチイベント時の座標
     private int mPointerID1, mPointerID2; // ポインタID記憶用
+    private float mFocusX, mFocusY;
 
     public TranslationGestureDetector(TranslationGestureListener listener) {
         mListener = listener;
@@ -27,66 +28,112 @@ public class TranslationGestureDetector {
                 // 最初の指の設定
                 mPointerID1 = pointerId;
                 mPointerID2 = -1;
+                mX1 = x;
+                mY1 = y;
                 break;
 
             case MotionEvent.ACTION_POINTER_DOWN:
                 // 3本目の指以降は無視する
-                if (mPointerID2 == -1) {
+                if (mPointerID1 == -1) {
+                    mPointerID1 = pointerId;
+                    mX1 = x;
+                    mY1 = y;
+                    if (mPointerID2 != -1) {
+                        int ptrIndex = event.findPointerIndex(mPointerID2);
+                        mX2 = event.getX(ptrIndex);
+                        mY2 = event.getY(ptrIndex);
+                        mFocusX = calcCenter(mX1, mX2);
+                        mFocusY = calcCenter(mY1, mY2);
+                        mListener.onTranslationBegin(this);
+                    }
+                } else if (mPointerID2 == -1) {
                     mPointerID2 = pointerId;
-
-                    mX = x;
-                    mY = y;
-                    mListener.onTranslationBegin(this);
-
+                    mX2 = x;
+                    mY2 = y;
+                    if (mPointerID1 != -1) {
+                        int ptrIndex = event.findPointerIndex(mPointerID1);
+                        mX1 = event.getX(ptrIndex);
+                        mY1 = event.getY(ptrIndex);
+                        mFocusX = calcCenter(mX1, mX2);
+                        mFocusY = calcCenter(mY1, mY2);
+                        mListener.onTranslationBegin(this);
+                    }
                 }
                 break;
 
-            case MotionEvent.ACTION_POINTER_UP:
-                if (mPointerID1 == pointerId) {
-                } else if (mPointerID2 == pointerId) {
-                    mPointerID2 = -1;
+            case MotionEvent.ACTION_MOVE:
+
+                if (mPointerID1 == -1 || mPointerID2 == -1) {
+                    // 二本指でない場合は移動しない。
+                    break;
                 }
-                mPointerID1 = -1;
-                mX = x;
-                mY = y;
-                mListener.onTranslationEnd(this);
+                // 1
+                float x1 = event.getX(event.findPointerIndex(mPointerID1));
+                float y1 = event.getY(event.findPointerIndex(mPointerID1));
+                float x2 = event.getX(event.findPointerIndex(mPointerID2));
+                float y2 = event.getY(event.findPointerIndex(mPointerID2));
+
+                mX2 = x2;
+                mY2 = y2;
+                mX1 = x1;
+                mY1 = y1;
+
+                // 4
+                mFocusX = calcCenter(x1, x2);
+                mFocusY = calcCenter(y1, y2);
+
+                // 5
+                mListener.onTranslation(this);
                 break;
 
             case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                if (mPointerID1 != -1) {
-                }
-                mX = x;
-                mY = y;
-                mListener.onTranslationEnd(this);
                 mPointerID1 = -1;
                 mPointerID2 = -1;
                 break;
 
-            case MotionEvent.ACTION_MOVE:
-                if (mPointerID1 >= 0 && mPointerID2 == -1) {
-                    int ptrIndex = event.findPointerIndex(mPointerID1);
-                    mX = event.getX(ptrIndex);
-                    mY = event.getY(ptrIndex);
-
-                    mListener.onTranslation(this);
+            case MotionEvent.ACTION_POINTER_UP:
+                if (mPointerID1 == pointerId) {
+                    mPointerID1 = -1;
+                    if (mPointerID2 != -1) {
+                        mListener.onTranslationEnd(this);
+                    }
+                } else if (mPointerID2 == pointerId) {
+                    mPointerID2 = -1;
+                    if (mPointerID1 != -1) {
+                        mListener.onTranslationEnd(this);
+                    }
                 }
-//                if (mPointerID1 >= 0) {
-//                    int ptrIndex = event.findPointerIndex(mPointerID1);
-//                    mX = event.getX(ptrIndex);
-//                    mY = event.getY(ptrIndex);
-//                }
                 break;
         }
 
         return true;
     }
 
-    public float getX() {
-        return mX;
+    public float getX1() {
+        return mX1;
     }
 
-    public float getY() {
-        return mY;
+    public float getY1() {
+        return mY1;
+    }
+
+    public float getX2() {
+        return mX2;
+    }
+
+    public float getY2() {
+        return mY2;
+    }
+
+    public float getFocusX() {
+        return mFocusX;
+    }
+
+    public float getFocusY() {
+        return mFocusY;
+    }
+
+    private float calcCenter(float p1, float p2) {
+        return (p1 + p2) / 2;
     }
 }

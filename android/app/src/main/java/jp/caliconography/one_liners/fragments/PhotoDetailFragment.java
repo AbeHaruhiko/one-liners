@@ -169,33 +169,6 @@ public class PhotoDetailFragment extends Fragment {
         ;
     };
 
-    private TranslationGestureListener mTranslationBy2FingerListener = new TranslationGestureListener() {
-        @DebugLog
-        @Override
-        public void onTranslationEnd(TranslationGestureDetector detector) {
-        }
-
-        @DebugLog
-        @Override
-        public void onTranslationBegin(TranslationGestureDetector detector) {
-            TranslationBy2FingerGestureDetector twoFingerDetector = (TranslationBy2FingerGestureDetector) detector;
-            mPrevX = twoFingerDetector.getFocusX();
-            mPrevY = twoFingerDetector.getFocusY();
-        }
-
-        @DebugLog
-        @Override
-        public void onTranslation(TranslationGestureDetector detector) {
-            TranslationBy2FingerGestureDetector twoFingerDetector = (TranslationBy2FingerGestureDetector) detector;
-            float deltaX = twoFingerDetector.getFocusX() - mPrevX;
-            float deltaY = twoFingerDetector.getFocusY() - mPrevY;
-            mTranslateX += deltaX;
-            mTranslateY += deltaY;
-            mPrevX = twoFingerDetector.getFocusX();
-            mPrevY = twoFingerDetector.getFocusY();
-        }
-    };
-
     private TranslationGestureListener mTranslationBy1FingerListener = new TranslationGestureListener() {
         @DebugLog
         @Override
@@ -220,6 +193,33 @@ public class PhotoDetailFragment extends Fragment {
             mTranslateY += deltaY;
             mPrevX = oneFingerDetector.getX();
             mPrevY = oneFingerDetector.getY();
+        }
+    };
+
+    private TranslationGestureListener mTranslationBy2FingerListener = new TranslationGestureListener() {
+        @DebugLog
+        @Override
+        public void onTranslationEnd(TranslationGestureDetector detector) {
+        }
+
+        @DebugLog
+        @Override
+        public void onTranslationBegin(TranslationGestureDetector detector) {
+            TranslationBy2FingerGestureDetector twoFingerDetector = (TranslationBy2FingerGestureDetector) detector;
+            mPrevX = twoFingerDetector.getFocusX();
+            mPrevY = twoFingerDetector.getFocusY();
+        }
+
+        @DebugLog
+        @Override
+        public void onTranslation(TranslationGestureDetector detector) {
+            TranslationBy2FingerGestureDetector twoFingerDetector = (TranslationBy2FingerGestureDetector) detector;
+            float deltaX = twoFingerDetector.getFocusX() - mPrevX;
+            float deltaY = twoFingerDetector.getFocusY() - mPrevY;
+            mTranslateX += deltaX;
+            mTranslateY += deltaY;
+            mPrevX = twoFingerDetector.getFocusX();
+            mPrevY = twoFingerDetector.getFocusY();
         }
     };
 

@@ -28,6 +28,9 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnTouch;
+import hugo.weaving.DebugLog;
+import jp.caliconography.android.gesture.TranslationBy1FingerGestureDetector;
+import jp.caliconography.android.gesture.TranslationBy2FingerGestureDetector;
 import jp.caliconography.android.gesture.TranslationGestureDetector;
 import jp.caliconography.android.gesture.TranslationGestureListener;
 import jp.caliconography.one_liners.R;
@@ -65,7 +68,8 @@ public class PhotoDetailFragment extends Fragment {
     private float mTranslateY;
     private float mScale;
     private ScaleGestureDetector mScaleGestureDetector;
-    private TranslationGestureDetector mTranslationGestureDetector;
+    private TranslationBy1FingerGestureDetector mTranslationBy1FingerGestureDetector;
+    private TranslationBy2FingerGestureDetector mTranslationBy2FingerGestureDetector;
     private Bitmap mBitmap;
     private float mPrevX, mPrevY;
     private boolean mSurfaceCreated;
@@ -104,7 +108,8 @@ public class PhotoDetailFragment extends Fragment {
 
         mScale = 1.0f;
         mScaleGestureDetector = new ScaleGestureDetector(getActivity().getApplicationContext(), mOnScaleListener);
-        mTranslationGestureDetector = new TranslationGestureDetector(mTranslationListener);
+        mTranslationBy1FingerGestureDetector = new TranslationBy1FingerGestureDetector(mTranslationBy1FingerListener);
+        mTranslationBy2FingerGestureDetector = new TranslationBy2FingerGestureDetector(mTranslationBy2FingerListener);
 
         return rootView;
     }
@@ -117,7 +122,8 @@ public class PhotoDetailFragment extends Fragment {
     @OnTouch(R.id.photo)
     boolean onTouchPhoto(View view, MotionEvent motionEvent) {
         mScaleGestureDetector.onTouchEvent(motionEvent);
-        mTranslationGestureDetector.onTouch(view, motionEvent);
+        mTranslationBy1FingerGestureDetector.onTouch(view, motionEvent);
+        mTranslationBy2FingerGestureDetector.onTouch(view, motionEvent);
         setBitmapToCanvas();
         return true;
     }
@@ -163,25 +169,57 @@ public class PhotoDetailFragment extends Fragment {
         ;
     };
 
-    private TranslationGestureListener mTranslationListener = new TranslationGestureListener() {
+    private TranslationGestureListener mTranslationBy2FingerListener = new TranslationGestureListener() {
+        @DebugLog
         @Override
         public void onTranslationEnd(TranslationGestureDetector detector) {
         }
 
+        @DebugLog
         @Override
         public void onTranslationBegin(TranslationGestureDetector detector) {
-            mPrevX = detector.getFocusX();
-            mPrevY = detector.getFocusY();
+            TranslationBy2FingerGestureDetector twoFingerDetector = (TranslationBy2FingerGestureDetector) detector;
+            mPrevX = twoFingerDetector.getFocusX();
+            mPrevY = twoFingerDetector.getFocusY();
         }
 
+        @DebugLog
         @Override
         public void onTranslation(TranslationGestureDetector detector) {
-            float deltaX = detector.getFocusX() - mPrevX;
-            float deltaY = detector.getFocusY() - mPrevY;
+            TranslationBy2FingerGestureDetector twoFingerDetector = (TranslationBy2FingerGestureDetector) detector;
+            float deltaX = twoFingerDetector.getFocusX() - mPrevX;
+            float deltaY = twoFingerDetector.getFocusY() - mPrevY;
             mTranslateX += deltaX;
             mTranslateY += deltaY;
-            mPrevX = detector.getFocusX();
-            mPrevY = detector.getFocusY();
+            mPrevX = twoFingerDetector.getFocusX();
+            mPrevY = twoFingerDetector.getFocusY();
+        }
+    };
+
+    private TranslationGestureListener mTranslationBy1FingerListener = new TranslationGestureListener() {
+        @DebugLog
+        @Override
+        public void onTranslationEnd(TranslationGestureDetector detector) {
+        }
+
+        @DebugLog
+        @Override
+        public void onTranslationBegin(TranslationGestureDetector detector) {
+            TranslationBy1FingerGestureDetector oneFingerDetector = (TranslationBy1FingerGestureDetector) detector;
+            mPrevX = oneFingerDetector.getX();
+            mPrevY = oneFingerDetector.getY();
+        }
+
+        @DebugLog
+        @Override
+        public void onTranslation(TranslationGestureDetector detector) {
+            TranslationBy1FingerGestureDetector oneFingerDetector = (TranslationBy1FingerGestureDetector) detector;
+            float deltaX = oneFingerDetector.getX() - mPrevX;
+            float deltaY = oneFingerDetector.getY() - mPrevY;
+            mTranslateX += deltaX;
+            mTranslateY += deltaY;
+            mPrevX = oneFingerDetector.getX();
+            mPrevY = oneFingerDetector.getY();
         }
     };
 

@@ -193,20 +193,14 @@ public class PhotoDetailFragment extends Fragment {
         @Override
         public void onTranslationBegin(TranslationGestureDetector detector) {
             TranslationBy1FingerGestureDetector oneFingerDetector = (TranslationBy1FingerGestureDetector) detector;
-            mPrevX = mOriginX = oneFingerDetector.getX();
-            mPrevY = mOriginY = oneFingerDetector.getY();
+            mCurrentX = mOriginX = oneFingerDetector.getX();
+            mCurrentY = mOriginY = oneFingerDetector.getY();
         }
 
         @DebugLog
         @Override
         public void onTranslation(TranslationGestureDetector detector) {
             TranslationBy1FingerGestureDetector oneFingerDetector = (TranslationBy1FingerGestureDetector) detector;
-//            float deltaX = oneFingerDetector.getX() - mPrevX;
-//            float deltaY = oneFingerDetector.getY() - mPrevY;
-//            mTranslateX += deltaX;
-//            mTranslateY += deltaY;
-//            mPrevX = oneFingerDetector.getX();
-//            mPrevY = oneFingerDetector.getY();
             mCurrentX = oneFingerDetector.getX();
             mCurrentY = oneFingerDetector.getY();
         }

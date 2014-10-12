@@ -9,6 +9,8 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.Path;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -71,8 +73,13 @@ public class PhotoDetailFragment extends Fragment {
     private TranslationBy1FingerGestureDetector mTranslationBy1FingerGestureDetector;
     private TranslationBy2FingerGestureDetector mTranslationBy2FingerGestureDetector;
     private Bitmap mBitmap;
-    private float mPrevX, mPrevY;
+    private float mPrevX, mPrevY;       // matrixのtranslateで前回からの差分で計算すつるための前回検出点
+    private float mOriginX, mOriginY;   // 一本指でスワイプを開始した点
+    private float mCurrentX, mCurrentY; // 一本指の現在点
+
+
     private boolean mSurfaceCreated;
+    private Paint mPaint;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -110,6 +117,15 @@ public class PhotoDetailFragment extends Fragment {
         mScaleGestureDetector = new ScaleGestureDetector(getActivity().getApplicationContext(), mOnScaleListener);
         mTranslationBy1FingerGestureDetector = new TranslationBy1FingerGestureDetector(mTranslationBy1FingerListener);
         mTranslationBy2FingerGestureDetector = new TranslationBy2FingerGestureDetector(mTranslationBy2FingerListener);
+
+        mPaint = new Paint();
+        mPaint.setAntiAlias(true);
+        mPaint.setDither(true);
+        mPaint.setColor(0xFFFF0000);
+        mPaint.setStyle(Paint.Style.STROKE);
+        mPaint.setStrokeJoin(Paint.Join.ROUND);
+        mPaint.setStrokeCap(Paint.Cap.ROUND);
+        mPaint.setStrokeWidth(4);
 
         return rootView;
     }
@@ -165,8 +181,6 @@ public class PhotoDetailFragment extends Fragment {
             mScale *= detector.getScaleFactor();
             return true;
         }
-
-        ;
     };
 
     private TranslationGestureListener mTranslationBy1FingerListener = new TranslationGestureListener() {
@@ -179,20 +193,22 @@ public class PhotoDetailFragment extends Fragment {
         @Override
         public void onTranslationBegin(TranslationGestureDetector detector) {
             TranslationBy1FingerGestureDetector oneFingerDetector = (TranslationBy1FingerGestureDetector) detector;
-            mPrevX = oneFingerDetector.getX();
-            mPrevY = oneFingerDetector.getY();
+            mPrevX = mOriginX = oneFingerDetector.getX();
+            mPrevY = mOriginY = oneFingerDetector.getY();
         }
 
         @DebugLog
         @Override
         public void onTranslation(TranslationGestureDetector detector) {
             TranslationBy1FingerGestureDetector oneFingerDetector = (TranslationBy1FingerGestureDetector) detector;
-            float deltaX = oneFingerDetector.getX() - mPrevX;
-            float deltaY = oneFingerDetector.getY() - mPrevY;
-            mTranslateX += deltaX;
-            mTranslateY += deltaY;
-            mPrevX = oneFingerDetector.getX();
-            mPrevY = oneFingerDetector.getY();
+//            float deltaX = oneFingerDetector.getX() - mPrevX;
+//            float deltaY = oneFingerDetector.getY() - mPrevY;
+//            mTranslateX += deltaX;
+//            mTranslateY += deltaY;
+//            mPrevX = oneFingerDetector.getX();
+//            mPrevY = oneFingerDetector.getY();
+            mCurrentX = oneFingerDetector.getX();
+            mCurrentY = oneFingerDetector.getY();
         }
     };
 
@@ -282,6 +298,14 @@ public class PhotoDetailFragment extends Fragment {
         if (canvas != null) {
             canvas.drawColor(Color.WHITE);
             canvas.drawBitmap(mBitmap, mMatrix, null);
+
+            if (mOriginX > 0 && mOriginY > 0 && mCurrentX > 0 && mCurrentY > 0) {
+                Path path = new Path();
+                path.moveTo(mOriginX, mOriginY);
+                path.lineTo(mCurrentX, mCurrentY);
+                canvas.drawPath(path, mPaint);
+            }
+
             mSurfaceHolder.unlockCanvasAndPost(canvas);
         }
     }

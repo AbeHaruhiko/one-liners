@@ -76,6 +76,7 @@ public class PhotoDetailFragment extends Fragment {
     private float mPrevX, mPrevY;       // matrixのtranslateで前回からの差分で計算すつるための前回検出点
     private float mOriginX, mOriginY;   // 一本指でスワイプを開始した点
     private float mCurrentX, mCurrentY; // 一本指の現在点
+    private boolean mTranslatingBy1Finger, mTranslatingBy2Finger;
 
 
     private boolean mSurfaceCreated;
@@ -140,7 +141,11 @@ public class PhotoDetailFragment extends Fragment {
         mScaleGestureDetector.onTouchEvent(motionEvent);
         mTranslationBy1FingerGestureDetector.onTouch(view, motionEvent);
         mTranslationBy2FingerGestureDetector.onTouch(view, motionEvent);
-        setBitmapToCanvas();
+        if (mTranslatingBy1Finger) {
+            drawPath();
+        } else if (mTranslatingBy2Finger) {
+            setPhotoBitmapToCanvas();
+        }
         return true;
     }
 
@@ -149,7 +154,7 @@ public class PhotoDetailFragment extends Fragment {
         public void surfaceCreated(SurfaceHolder surfaceHolder) {
             mSurfaceCreated = true;
             if (mBitmap != null) {
-                setBitmapToCanvas();
+                setPhotoBitmapToCanvas();
             }
         }
 
@@ -187,11 +192,16 @@ public class PhotoDetailFragment extends Fragment {
         @DebugLog
         @Override
         public void onTranslationEnd(TranslationGestureDetector detector) {
+            mTranslatingBy1Finger = false;
         }
 
         @DebugLog
         @Override
         public void onTranslationBegin(TranslationGestureDetector detector) {
+
+            mTranslatingBy1Finger = true;
+            mTranslatingBy2Finger = false;
+
             TranslationBy1FingerGestureDetector oneFingerDetector = (TranslationBy1FingerGestureDetector) detector;
             mCurrentX = mOriginX = oneFingerDetector.getX();
             mCurrentY = mOriginY = oneFingerDetector.getY();
@@ -210,11 +220,16 @@ public class PhotoDetailFragment extends Fragment {
         @DebugLog
         @Override
         public void onTranslationEnd(TranslationGestureDetector detector) {
+            mTranslatingBy2Finger = false;
         }
 
         @DebugLog
         @Override
         public void onTranslationBegin(TranslationGestureDetector detector) {
+
+            mTranslatingBy2Finger = true;
+            mTranslatingBy1Finger = false;
+
             TranslationBy2FingerGestureDetector twoFingerDetector = (TranslationBy2FingerGestureDetector) detector;
             mPrevX = twoFingerDetector.getFocusX();
             mPrevY = twoFingerDetector.getFocusY();
@@ -247,8 +262,9 @@ public class PhotoDetailFragment extends Fragment {
                 return;
             }
             getBitmap(data);
+            // TODO mSurfaceHolder.isValid()で判定できるっぽい。
             if (mSurfaceCreated) {
-                setBitmapToCanvas();
+                setPhotoBitmapToCanvas();
             }
 
             mPictureUri = null;
@@ -261,6 +277,7 @@ public class PhotoDetailFragment extends Fragment {
         mBitmap = null;
         // 読み込む際のオプション
         BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inMutable = true;       // このbitmapをオフスクリーンバッファにしたい。= これを引数にcanvasを生成したい。mutableでないとnew Canvas(bitmap)で例外
         try {
             Uri result = (intent == null) ? mPictureUri : intent.getData();
 
@@ -280,7 +297,7 @@ public class PhotoDetailFragment extends Fragment {
         }
     }
 
-    private void setBitmapToCanvas() {
+    private void setPhotoBitmapToCanvas() {
 
         Canvas canvas = mSurfaceHolder.lockCanvas(null);
 
@@ -293,13 +310,28 @@ public class PhotoDetailFragment extends Fragment {
             canvas.drawColor(Color.WHITE);
             canvas.drawBitmap(mBitmap, mMatrix, null);
 
+            mSurfaceHolder.unlockCanvasAndPost(canvas);
+        }
+    }
+
+    private void drawPath() {
+
+        Canvas canvas = mSurfaceHolder.lockCanvas(null);
+
+        if (canvas != null) {
             if (mOriginX > 0 && mOriginY > 0 && mCurrentX > 0 && mCurrentY > 0) {
+                // オフスクリーンバッファを生成する
+                Canvas offScreen = new Canvas(mBitmap);
+
                 Path path = new Path();
                 path.moveTo(mOriginX, mOriginY);
                 path.lineTo(mCurrentX, mCurrentY);
-                canvas.drawPath(path, mPaint);
-            }
+                offScreen.drawPath(path, mPaint);
+                path.reset();
 
+                // オフスクリーンバッファを描画する
+                canvas.drawBitmap(mBitmap, 0, 0, null);
+            }
             mSurfaceHolder.unlockCanvasAndPost(canvas);
         }
     }

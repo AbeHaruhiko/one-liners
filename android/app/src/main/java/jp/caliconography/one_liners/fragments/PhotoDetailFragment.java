@@ -81,6 +81,7 @@ public class PhotoDetailFragment extends Fragment {
 
     private boolean mSurfaceCreated;
     private Paint mPaint;
+    private Bitmap mBitmapOriginal;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -141,11 +142,24 @@ public class PhotoDetailFragment extends Fragment {
         mScaleGestureDetector.onTouchEvent(motionEvent);
         mTranslationBy1FingerGestureDetector.onTouch(view, motionEvent);
         mTranslationBy2FingerGestureDetector.onTouch(view, motionEvent);
-        if (mTranslatingBy1Finger) {
-            drawPath();
-        } else if (mTranslatingBy2Finger) {
-            setPhotoBitmapToCanvas();
+
+        Canvas canvas = null;
+        try {
+            canvas = mSurfaceHolder.lockCanvas(null);
+
+            if (canvas != null) {
+                if (mTranslatingBy1Finger) {
+                    drawPath(canvas);
+                } else if (mTranslatingBy2Finger) {
+                    setPhotoBitmapToCanvas(canvas);
+                }
+            }
+        } finally {
+            if (canvas != null) {
+                mSurfaceHolder.unlockCanvasAndPost(canvas);
+            }
         }
+
         return true;
     }
 
@@ -154,7 +168,17 @@ public class PhotoDetailFragment extends Fragment {
         public void surfaceCreated(SurfaceHolder surfaceHolder) {
             mSurfaceCreated = true;
             if (mBitmap != null) {
-                setPhotoBitmapToCanvas();
+                Canvas canvas = null;
+                try {
+                    canvas = mSurfaceHolder.lockCanvas(null);
+                    if (canvas != null) {
+                        setPhotoBitmapToCanvas(canvas);
+                    }
+                } finally {
+                    if (canvas != null) {
+                        mSurfaceHolder.unlockCanvasAndPost(canvas);
+                    }
+                }
             }
         }
 
@@ -261,20 +285,31 @@ public class PhotoDetailFragment extends Fragment {
                 }
                 return;
             }
-            getBitmap(data);
+            mBitmap = getBitmap(data);
+            mBitmapOriginal = mBitmap.copy(Bitmap.Config.ARGB_8888, true);
             // TODO mSurfaceHolder.isValid()で判定できるっぽい。
             if (mSurfaceCreated) {
-                setPhotoBitmapToCanvas();
+                Canvas canvas = null;
+                try {
+                    canvas = mSurfaceHolder.lockCanvas(null);
+                    if (canvas != null) {
+                        setPhotoBitmapToCanvas(canvas);
+                    }
+                } finally {
+                    if (canvas != null) {
+                        mSurfaceHolder.unlockCanvasAndPost(canvas);
+                    }
+                }
             }
 
             mPictureUri = null;
         }
     }
 
-    private void getBitmap(Intent intent) {
+    private Bitmap getBitmap(Intent intent) {
         // 戻り値からInputStreamを取得
         InputStream in = null;
-        mBitmap = null;
+        Bitmap bitmap = null;
         // 読み込む際のオプション
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inMutable = true;       // このbitmapをオフスクリーンバッファにしたい。= これを引数にcanvasを生成したい。mutableでないとnew Canvas(bitmap)で例外
@@ -283,7 +318,7 @@ public class PhotoDetailFragment extends Fragment {
 
             in = getActivity().getContentResolver().openInputStream(result);
             // Bitmapの取得
-            mBitmap = BitmapFactory.decodeStream(in, null, options);
+            bitmap = BitmapFactory.decodeStream(in, null, options);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -295,44 +330,49 @@ public class PhotoDetailFragment extends Fragment {
                 }
             }
         }
+        return bitmap;
     }
 
-    private void setPhotoBitmapToCanvas() {
-
-        Canvas canvas = mSurfaceHolder.lockCanvas(null);
+    private void setPhotoBitmapToCanvas(Canvas canvas) {
 
         mMatrix.reset();
         mMatrix.postScale(mScale, mScale);
         mMatrix.postTranslate(-mBitmap.getWidth() / 2 * mScale, -mBitmap.getHeight() / 2 * mScale);
         mMatrix.postTranslate(mTranslateX, mTranslateY);
 
-        if (canvas != null) {
-            canvas.drawColor(Color.WHITE);
-            canvas.drawBitmap(mBitmap, mMatrix, null);
+        // オフスクリーンバッファを生成する
+        Canvas offScreen = new Canvas(mBitmapOriginal);
 
-            mSurfaceHolder.unlockCanvasAndPost(canvas);
+        offScreen.drawColor(Color.WHITE);
+        offScreen.drawBitmap(mBitmap, mMatrix, null);
+
+        if (mOriginX > 0 && mOriginY > 0 && mCurrentX > 0 && mCurrentY > 0) {
+            Path path = new Path();
+            path.moveTo(mOriginX, mOriginY);
+            path.lineTo(mCurrentX, mCurrentY);
+            offScreen.drawPath(path, mPaint);
+            path.reset();
         }
+
+        // オフスクリーンバッファを描画する
+        canvas.drawBitmap(mBitmapOriginal, 0, 0, null);
+
     }
 
-    private void drawPath() {
+    private void drawPath(Canvas canvas) {
 
-        Canvas canvas = mSurfaceHolder.lockCanvas(null);
+        if (mOriginX > 0 && mOriginY > 0 && mCurrentX > 0 && mCurrentY > 0) {
+            // オフスクリーンバッファを生成する
+            Canvas offScreen = new Canvas(mBitmapOriginal);
 
-        if (canvas != null) {
-            if (mOriginX > 0 && mOriginY > 0 && mCurrentX > 0 && mCurrentY > 0) {
-                // オフスクリーンバッファを生成する
-                Canvas offScreen = new Canvas(mBitmap);
+            Path path = new Path();
+            path.moveTo(mOriginX, mOriginY);
+            path.lineTo(mCurrentX, mCurrentY);
+            offScreen.drawPath(path, mPaint);
+            path.reset();
 
-                Path path = new Path();
-                path.moveTo(mOriginX, mOriginY);
-                path.lineTo(mCurrentX, mCurrentY);
-                offScreen.drawPath(path, mPaint);
-                path.reset();
-
-                // オフスクリーンバッファを描画する
-                canvas.drawBitmap(mBitmap, 0, 0, null);
-            }
-            mSurfaceHolder.unlockCanvasAndPost(canvas);
+            // オフスクリーンバッファを描画する
+            canvas.drawBitmap(mBitmapOriginal, 0, 0, null);
         }
     }
 

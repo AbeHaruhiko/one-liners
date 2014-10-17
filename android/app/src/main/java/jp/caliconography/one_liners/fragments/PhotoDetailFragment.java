@@ -152,11 +152,13 @@ public class PhotoDetailFragment extends Fragment {
             canvas = mSurfaceHolder.lockCanvas(null);
 
             if (canvas != null) {
-                if (mTranslatingBy1Finger) {
-                    drawPath(canvas);
-                } else if (mTranslatingBy2Finger) {
-                    setPhotoBitmapToCanvas(canvas);
-                }
+//                if (mTranslatingBy1Finger) {
+//                    drawPath(canvas);
+//                } else if (mTranslatingBy2Finger) {
+//                    setPhotoBitmapToCanvas(canvas);
+//                }
+                setPhotoBitmapToCanvas(canvas);
+                drawPath(canvas);
             }
         } finally {
             if (canvas != null) {
@@ -189,19 +191,6 @@ public class PhotoDetailFragment extends Fragment {
                     mSurfaceHolder.unlockCanvasAndPost(canvas);
                 }
             }
-
-//            if (mBitmap != null) {
-//                try {
-//                    canvas = mSurfaceHolder.lockCanvas(null);
-//                    if (canvas != null) {
-//                        setPhotoBitmapToCanvas(canvas);
-//                    }
-//                } finally {
-//                    if (canvas != null) {
-//                        mSurfaceHolder.unlockCanvasAndPost(canvas);
-//                    }
-//                }
-//            }
         }
 
         @Override
@@ -387,6 +376,18 @@ public class PhotoDetailFragment extends Fragment {
         }
     }
 
+    private void setInitialPhotoBitmapToCanvas(Canvas canvas) {
+
+        // オフスクリーンバッファを生成する
+        Canvas offScreen = new Canvas(mOffScreenBitmap);
+
+        offScreen.drawColor(Color.WHITE);       // 画像部分はmatrixで縮小されるので余白ができる。余白部分を白で表示させるための処理。
+        offScreen.drawBitmap(mBitmap, mMatrix, null);
+
+        // オフスクリーンバッファを描画する
+        canvas.drawBitmap(mOffScreenBitmap, 0, 0, null);
+    }
+
     private void setPhotoBitmapToCanvas(Canvas canvas) {
 
         mMatrix.reset();
@@ -414,19 +415,21 @@ public class PhotoDetailFragment extends Fragment {
 
     private void drawPath(Canvas canvas) {
 
-        if (mOriginX > 0 && mOriginY > 0 && mCurrentX > 0 && mCurrentY > 0) {
+//        setPhotoBitmapToCanvas(canvas);
+
+//        if (mOriginX > 0 && mOriginY > 0 && mCurrentX > 0 && mCurrentY > 0) {
             // オフスクリーンバッファを生成する
-            Canvas offScreen = new Canvas(mOffScreenBitmap);
+//            Canvas offScreen = new Canvas(mOffScreenBitmap);
 
             Path path = new Path();
             path.moveTo(mOriginX, mOriginY);
             path.lineTo(mCurrentX, mCurrentY);
-            offScreen.drawPath(path, mPaint);
+        canvas.drawPath(path, mPaint);
             path.reset();
 
             // オフスクリーンバッファを描画する
-            canvas.drawBitmap(mOffScreenBitmap, 0, 0, null);
-        }
+//            canvas.drawBitmap(mOffScreenBitmap, 0, 0, null);
+//        }
     }
 
     private void launchChooser() {

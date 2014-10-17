@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -85,6 +86,7 @@ public class PhotoDetailFragment extends Fragment {
     private Paint mPaint;
     private String mOriginalBitmapFileName;
     private Bitmap mOffScreenBitmap;
+    ArrayList<jp.caliconography.one_liners.model.Path> mPathArray = new ArrayList<jp.caliconography.one_liners.model.Path>();
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -259,6 +261,31 @@ public class PhotoDetailFragment extends Fragment {
         @DebugLog
         @Override
         public void onTranslationEnd(TranslationGestureDetector detector) {
+            Canvas canvas = null;
+            try {
+                canvas = mSurfaceHolder.lockCanvas(null);
+
+                if (canvas != null) {
+
+                    setPhotoBitmapToCanvas(canvas);
+
+                    for (jp.caliconography.one_liners.model.Path line : mPathArray) {
+                        mPaint.setColor(0xffff0000);
+
+                        Path path = new Path();
+                        path.moveTo(line.getStartX(), line.getStartY());
+                        path.lineTo(line.getEndX(), line.getEndY());
+                        path.transform(line.getmMatrix());
+                        canvas.drawPath(path, line.getPaint());
+                        path.reset();
+
+                    }
+                }
+            } finally {
+                if (canvas != null) {
+                    mSurfaceHolder.unlockCanvasAndPost(canvas);
+                }
+            }
         }
 
         @DebugLog
@@ -424,6 +451,8 @@ public class PhotoDetailFragment extends Fragment {
         path.lineTo(mCurrentX, mCurrentY);
         canvas.drawPath(path, mPaint);
         path.reset();
+
+        mPathArray.add(new jp.caliconography.one_liners.model.Path(mOriginX, mOriginX, mCurrentX, mCurrentY, mPaint, mMatrix));
     }
 
     private void launchChooser() {

@@ -3,6 +3,7 @@ package jp.caliconography.one_liners.fragments;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -23,6 +24,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -81,7 +84,8 @@ public class PhotoDetailFragment extends Fragment {
 
     private boolean mSurfaceCreated;
     private Paint mPaint;
-    private Bitmap mBitmapOriginal;
+    private String mOriginalBitmapFileName;
+    private Bitmap mOffScreenBitmap;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -167,19 +171,37 @@ public class PhotoDetailFragment extends Fragment {
         @Override
         public void surfaceCreated(SurfaceHolder surfaceHolder) {
             mSurfaceCreated = true;
-            if (mBitmap != null) {
-                Canvas canvas = null;
-                try {
-                    canvas = mSurfaceHolder.lockCanvas(null);
-                    if (canvas != null) {
+
+            Canvas canvas = null;
+            try {
+                canvas = mSurfaceHolder.lockCanvas(null);
+                if (canvas != null) {
+                    // オフスクリーン用のBitmapを生成する
+                    mOffScreenBitmap = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888);
+
+                    if (mBitmap != null) {
+                        // 背景をセット
                         setPhotoBitmapToCanvas(canvas);
                     }
-                } finally {
-                    if (canvas != null) {
-                        mSurfaceHolder.unlockCanvasAndPost(canvas);
-                    }
+                }
+            } finally {
+                if (canvas != null) {
+                    mSurfaceHolder.unlockCanvasAndPost(canvas);
                 }
             }
+
+//            if (mBitmap != null) {
+//                try {
+//                    canvas = mSurfaceHolder.lockCanvas(null);
+//                    if (canvas != null) {
+//                        setPhotoBitmapToCanvas(canvas);
+//                    }
+//                } finally {
+//                    if (canvas != null) {
+//                        mSurfaceHolder.unlockCanvasAndPost(canvas);
+//                    }
+//                }
+//            }
         }
 
         @Override
@@ -286,8 +308,10 @@ public class PhotoDetailFragment extends Fragment {
                 return;
             }
             mBitmap = getBitmap(data);
-            mBitmapOriginal = mBitmap.copy(Bitmap.Config.ARGB_8888, true);
-            // TODO mSurfaceHolder.isValid()で判定できるっぽい。
+
+            // オリジナルをファイルに保管しておく。
+            mOriginalBitmapFileName = saveImageToCacheDir(mBitmap, getActivity().getApplicationContext());
+
             if (mSurfaceCreated) {
                 Canvas canvas = null;
                 try {
@@ -333,6 +357,36 @@ public class PhotoDetailFragment extends Fragment {
         return bitmap;
     }
 
+    private String saveImageToCacheDir(Bitmap bmp, Context context) {
+        File cacheDir = context.getExternalCacheDir();
+
+        cleanCacheDir(cacheDir);
+
+        String fileName = String.valueOf(System.currentTimeMillis()) + ".png";
+        File file = new File(cacheDir, fileName);
+        FileOutputStream outputStream;
+
+        try {
+
+            outputStream = new FileOutputStream(file);
+//            bmp.compress(Bitmap.CompressFormat.PNG, 90, outputStream);
+
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return fileName;
+    }
+
+    private void cleanCacheDir(File cacheDir) {
+        // 一時キャッシュディレクトリをクリーニング
+        File[] files = cacheDir.listFiles();
+        for (int i = 0; i < files.length; i++) {
+            files[i].delete();
+        }
+    }
+
     private void setPhotoBitmapToCanvas(Canvas canvas) {
 
         mMatrix.reset();
@@ -341,29 +395,28 @@ public class PhotoDetailFragment extends Fragment {
         mMatrix.postTranslate(mTranslateX, mTranslateY);
 
         // オフスクリーンバッファを生成する
-        Canvas offScreen = new Canvas(mBitmapOriginal);
+        Canvas offScreen = new Canvas(mOffScreenBitmap);
 
-        offScreen.drawColor(Color.WHITE);
+        offScreen.drawColor(Color.WHITE);       // 画像部分はmatrixで縮小されるので余白ができる。余白部分を白で表示させるための処理。
         offScreen.drawBitmap(mBitmap, mMatrix, null);
 
-        if (mOriginX > 0 && mOriginY > 0 && mCurrentX > 0 && mCurrentY > 0) {
-            Path path = new Path();
-            path.moveTo(mOriginX, mOriginY);
-            path.lineTo(mCurrentX, mCurrentY);
-            offScreen.drawPath(path, mPaint);
-            path.reset();
-        }
+//        if (mOriginX > 0 && mOriginY > 0 && mCurrentX > 0 && mCurrentY > 0) {
+//            Path path = new Path();
+//            path.moveTo(mOriginX, mOriginY);
+//            path.lineTo(mCurrentX, mCurrentY);
+//            offScreen.drawPath(path, mPaint);
+//            path.reset();
+//        }
 
         // オフスクリーンバッファを描画する
-        canvas.drawBitmap(mBitmapOriginal, 0, 0, null);
-
+        canvas.drawBitmap(mOffScreenBitmap, 0, 0, null);
     }
 
     private void drawPath(Canvas canvas) {
 
         if (mOriginX > 0 && mOriginY > 0 && mCurrentX > 0 && mCurrentY > 0) {
             // オフスクリーンバッファを生成する
-            Canvas offScreen = new Canvas(mBitmapOriginal);
+            Canvas offScreen = new Canvas(mOffScreenBitmap);
 
             Path path = new Path();
             path.moveTo(mOriginX, mOriginY);
@@ -372,7 +425,7 @@ public class PhotoDetailFragment extends Fragment {
             path.reset();
 
             // オフスクリーンバッファを描画する
-            canvas.drawBitmap(mBitmapOriginal, 0, 0, null);
+            canvas.drawBitmap(mOffScreenBitmap, 0, 0, null);
         }
     }
 

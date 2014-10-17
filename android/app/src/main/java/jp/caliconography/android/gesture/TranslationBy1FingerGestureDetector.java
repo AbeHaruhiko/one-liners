@@ -1,11 +1,15 @@
 package jp.caliconography.android.gesture;
 
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
 import hugo.weaving.DebugLog;
 
 public class TranslationBy1FingerGestureDetector extends TranslationGestureDetector {
+
+    static final String TAG = TranslationBy1FingerGestureDetector.class.getSimpleName();
+
     private float mX, mY; // タッチイベント時の座標
     private int mPointerID1, mPointerID2; // ポインタID記憶用
 
@@ -26,6 +30,7 @@ public class TranslationBy1FingerGestureDetector extends TranslationGestureDetec
 
         switch (eventAction) {
             case MotionEvent.ACTION_DOWN:
+                Log.d(TAG, "down");
                 // 最初の指の設定
                 mPointerID1 = pointerId;
                 mPointerID2 = -1;
@@ -53,6 +58,7 @@ public class TranslationBy1FingerGestureDetector extends TranslationGestureDetec
                 break;
 
             case MotionEvent.ACTION_UP:
+                Log.d(TAG, "up");
             case MotionEvent.ACTION_CANCEL:
                 if (mPointerID1 != -1) {
                     mX = x;
@@ -64,6 +70,7 @@ public class TranslationBy1FingerGestureDetector extends TranslationGestureDetec
                 break;
 
             case MotionEvent.ACTION_MOVE:
+                Log.d(TAG, "move");
                 if (mPointerID1 >= 0 && mPointerID2 == -1) {
                     int ptrIndex = event.findPointerIndex(mPointerID1);
                     mX = event.getX(ptrIndex);
@@ -76,6 +83,9 @@ public class TranslationBy1FingerGestureDetector extends TranslationGestureDetec
                     mX = event.getX(ptrIndex);
                     mY = event.getY(ptrIndex);
                 }
+                break;
+            default:
+                Log.d(TAG, "default");
                 break;
         }
 

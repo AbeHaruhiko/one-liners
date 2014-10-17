@@ -147,24 +147,26 @@ public class PhotoDetailFragment extends Fragment {
         mTranslationBy1FingerGestureDetector.onTouch(view, motionEvent);
         mTranslationBy2FingerGestureDetector.onTouch(view, motionEvent);
 
-        Canvas canvas = null;
-        try {
-            canvas = mSurfaceHolder.lockCanvas(null);
-
-            if (canvas != null) {
-//                if (mTranslatingBy1Finger) {
-//                    drawPath(canvas);
-//                } else if (mTranslatingBy2Finger) {
+//        Canvas canvas = null;
+//        try {
+//            canvas = mSurfaceHolder.lockCanvas(null);
+//
+//            if (canvas != null) {
+////                if (mTranslatingBy1Finger) {
+////                    drawPath(canvas);
+////                } else if (mTranslatingBy2Finger) {
+////                    setPhotoBitmapToCanvas(canvas);
+////                }
+////                if (mTranslatingBy1Finger || mTranslatingBy2Finger) {
 //                    setPhotoBitmapToCanvas(canvas);
-//                }
-                setPhotoBitmapToCanvas(canvas);
-                drawPath(canvas);
-            }
-        } finally {
-            if (canvas != null) {
-                mSurfaceHolder.unlockCanvasAndPost(canvas);
-            }
-        }
+//                    drawPath(canvas);
+////                }
+//            }
+//        } finally {
+//            if (canvas != null) {
+//                mSurfaceHolder.unlockCanvasAndPost(canvas);
+//            }
+//        }
 
         return true;
     }
@@ -228,6 +230,20 @@ public class PhotoDetailFragment extends Fragment {
         @Override
         public void onTranslationEnd(TranslationGestureDetector detector) {
             mTranslatingBy1Finger = false;
+
+            // 線確定
+            Canvas canvas = null;
+            try {
+                canvas = mSurfaceHolder.lockCanvas(null);
+                if (canvas != null) {
+                    setPhotoBitmapToCanvas(canvas);
+                    fixPath(canvas);
+                }
+            } finally {
+                if (canvas != null) {
+                    mSurfaceHolder.unlockCanvasAndPost(canvas);
+                }
+            }
         }
 
         @DebugLog
@@ -248,6 +264,28 @@ public class PhotoDetailFragment extends Fragment {
             TranslationBy1FingerGestureDetector oneFingerDetector = (TranslationBy1FingerGestureDetector) detector;
             mCurrentX = oneFingerDetector.getX();
             mCurrentY = oneFingerDetector.getY();
+
+            Canvas canvas = null;
+            try {
+                canvas = mSurfaceHolder.lockCanvas(null);
+
+                if (canvas != null) {
+//                if (mTranslatingBy1Finger) {
+//                    drawPath(canvas);
+//                } else if (mTranslatingBy2Finger) {
+//                    setPhotoBitmapToCanvas(canvas);
+//                }
+//                if (mTranslatingBy1Finger || mTranslatingBy2Finger) {
+                    setPhotoBitmapToCanvas(canvas);
+                    drawPath(canvas);
+//                }
+                }
+            } finally {
+                if (canvas != null) {
+                    mSurfaceHolder.unlockCanvasAndPost(canvas);
+                }
+            }
+
         }
     };
 
@@ -280,6 +318,28 @@ public class PhotoDetailFragment extends Fragment {
             mTranslateY += deltaY;
             mPrevX = twoFingerDetector.getFocusX();
             mPrevY = twoFingerDetector.getFocusY();
+
+            Canvas canvas = null;
+            try {
+                canvas = mSurfaceHolder.lockCanvas(null);
+
+                if (canvas != null) {
+//                if (mTranslatingBy1Finger) {
+//                    drawPath(canvas);
+//                } else if (mTranslatingBy2Finger) {
+//                    setPhotoBitmapToCanvas(canvas);
+//                }
+//                if (mTranslatingBy1Finger || mTranslatingBy2Finger) {
+                    setPhotoBitmapToCanvas(canvas);
+                    drawPath(canvas);
+//                }
+                }
+            } finally {
+                if (canvas != null) {
+                    mSurfaceHolder.unlockCanvasAndPost(canvas);
+                }
+            }
+
         }
     };
 
@@ -388,6 +448,7 @@ public class PhotoDetailFragment extends Fragment {
         canvas.drawBitmap(mOffScreenBitmap, 0, 0, null);
     }
 
+    @DebugLog
     private void setPhotoBitmapToCanvas(Canvas canvas) {
 
         mMatrix.reset();
@@ -413,23 +474,44 @@ public class PhotoDetailFragment extends Fragment {
         canvas.drawBitmap(mOffScreenBitmap, 0, 0, null);
     }
 
+    @DebugLog
     private void drawPath(Canvas canvas) {
 
 //        setPhotoBitmapToCanvas(canvas);
 
 //        if (mOriginX > 0 && mOriginY > 0 && mCurrentX > 0 && mCurrentY > 0) {
             // オフスクリーンバッファを生成する
-//            Canvas offScreen = new Canvas(mOffScreenBitmap);
+        Canvas offScreen = new Canvas(mOffScreenBitmap);
 
-            Path path = new Path();
-            path.moveTo(mOriginX, mOriginY);
-            path.lineTo(mCurrentX, mCurrentY);
-        canvas.drawPath(path, mPaint);
-            path.reset();
+        mPaint.setColor(0x88cdcdcd);
+
+        Path path = new Path();
+        path.moveTo(mOriginX, mOriginY);
+        path.lineTo(mCurrentX, mCurrentY);
+        offScreen.drawPath(path, mPaint);
+        path.reset();
 
             // オフスクリーンバッファを描画する
-//            canvas.drawBitmap(mOffScreenBitmap, 0, 0, null);
+        canvas.drawBitmap(mOffScreenBitmap, 0, 0, null);
 //        }
+    }
+
+    @DebugLog
+    private void fixPath(Canvas canvas) {
+
+        // オフスクリーンバッファを生成する
+        Canvas offScreen = new Canvas(mOffScreenBitmap);
+
+        mPaint.setColor(0xffff0000);
+
+        Path path = new Path();
+        path.moveTo(mOriginX, mOriginY);
+        path.lineTo(mCurrentX, mCurrentY);
+        offScreen.drawPath(path, mPaint);
+        path.reset();
+
+        // オフスクリーンバッファを描画する
+        canvas.drawBitmap(mOffScreenBitmap, 0, 0, null);
     }
 
     private void launchChooser() {

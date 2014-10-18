@@ -217,7 +217,10 @@ public class PhotoDetailFragment extends Fragment {
                 canvas = mSurfaceHolder.lockCanvas(null);
                 if (canvas != null) {
                     setPhotoBitmapToCanvas(canvas);
+                    renderAllPath(canvas);
                     fixPath(canvas);
+                    mPathArray.add(new jp.caliconography.one_liners.model.Path(mOriginX, mOriginX, mCurrentX, mCurrentY, mPaint, mMatrix));
+                    Log.d(TAG, "___added!!___" + mPathArray.size());
                 }
             } finally {
                 if (canvas != null) {
@@ -226,7 +229,6 @@ public class PhotoDetailFragment extends Fragment {
             }
         }
 
-        @DebugLog
         @Override
         public void onTranslationBegin(TranslationGestureDetector detector) {
 
@@ -235,7 +237,6 @@ public class PhotoDetailFragment extends Fragment {
             mCurrentY = mOriginY = oneFingerDetector.getY();
         }
 
-        @DebugLog
         @Override
         public void onTranslation(TranslationGestureDetector detector) {
             TranslationBy1FingerGestureDetector oneFingerDetector = (TranslationBy1FingerGestureDetector) detector;
@@ -248,6 +249,7 @@ public class PhotoDetailFragment extends Fragment {
 
                 if (canvas != null) {
                     setPhotoBitmapToCanvas(canvas);
+                    renderAllPath(canvas);
                     drawPath(canvas);
                 }
             } finally {
@@ -268,34 +270,8 @@ public class PhotoDetailFragment extends Fragment {
                 canvas = mSurfaceHolder.lockCanvas(null);
 
                 if (canvas != null) {
-
                     setPhotoBitmapToCanvas(canvas);
-
-                    for (jp.caliconography.one_liners.model.Path line : mPathArray) {
-                        mPaint.setColor(0x88ff0000);
-
-                        Path path = new Path();
-                        path.moveTo(line.getStartX(), line.getStartY());
-                        path.lineTo(line.getEndX(), line.getEndY());
-                        path.transform(line.getMatrix());
-
-                        float[] valueHolder = new float[9];
-                        line.getMatrix().getValues(valueHolder);
-
-                        // 各Path用のPaintを生成（line.getPaint().setStrokeWidth()すると累乗になってしまうため。
-                        Paint tmpPaint = new Paint();
-                        tmpPaint.setAntiAlias(true);
-                        tmpPaint.setDither(true);
-                        tmpPaint.setColor(line.getPaint().getColor());
-                        tmpPaint.setStyle(line.getPaint().getStyle());
-                        tmpPaint.setStrokeJoin(line.getPaint().getStrokeJoin());
-                        tmpPaint.setStrokeCap(line.getPaint().getStrokeCap());
-                        tmpPaint.setStrokeWidth(line.getPaint().getStrokeWidth() * valueHolder[0]);
-
-                        canvas.drawPath(path, tmpPaint);
-                        path.reset();
-
-                    }
+                    renderAllPath(canvas);
                 }
             } finally {
                 if (canvas != null) {
@@ -304,7 +280,6 @@ public class PhotoDetailFragment extends Fragment {
             }
         }
 
-        @DebugLog
         @Override
         public void onTranslationBegin(TranslationGestureDetector detector) {
             TranslationBy2FingerGestureDetector twoFingerDetector = (TranslationBy2FingerGestureDetector) detector;
@@ -312,7 +287,6 @@ public class PhotoDetailFragment extends Fragment {
             mPrevY = twoFingerDetector.getFocusY();
         }
 
-        @DebugLog
         @Override
         public void onTranslation(TranslationGestureDetector detector) {
             TranslationBy2FingerGestureDetector twoFingerDetector = (TranslationBy2FingerGestureDetector) detector;
@@ -330,6 +304,7 @@ public class PhotoDetailFragment extends Fragment {
                 if (canvas != null) {
                     setPhotoBitmapToCanvas(canvas);
                     drawPath(canvas);
+                    renderAllPath(canvas);
                 }
             } finally {
                 if (canvas != null) {
@@ -339,6 +314,34 @@ public class PhotoDetailFragment extends Fragment {
 
         }
     };
+
+    private void renderAllPath(Canvas canvas) {
+        for (jp.caliconography.one_liners.model.Path line : mPathArray) {
+            mPaint.setColor(0x88ff0000);
+
+            Path path = new Path();
+            path.moveTo(line.getStartX(), line.getStartY());
+            path.lineTo(line.getEndX(), line.getEndY());
+            path.transform(line.getMatrix());
+
+            float[] valueHolder = new float[9];
+            line.getMatrix().getValues(valueHolder);
+
+            // 各Path用のPaintを生成（line.getPaint().setStrokeWidth()すると累乗になってしまうため。
+            Paint tmpPaint = new Paint();
+            tmpPaint.setAntiAlias(true);
+            tmpPaint.setDither(true);
+            tmpPaint.setColor(line.getPaint().getColor());
+            tmpPaint.setStyle(line.getPaint().getStyle());
+            tmpPaint.setStrokeJoin(line.getPaint().getStrokeJoin());
+            tmpPaint.setStrokeCap(line.getPaint().getStrokeCap());
+            tmpPaint.setStrokeWidth(line.getPaint().getStrokeWidth() * valueHolder[0]);
+
+            canvas.drawPath(path, tmpPaint);
+            path.reset();
+
+        }
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -433,7 +436,6 @@ public class PhotoDetailFragment extends Fragment {
         }
     }
 
-    @DebugLog
     private void setPhotoBitmapToCanvas(Canvas canvas) {
 
         mMatrix.reset();
@@ -445,7 +447,6 @@ public class PhotoDetailFragment extends Fragment {
         canvas.drawBitmap(mBitmap, mMatrix, null);
     }
 
-    @DebugLog
     private void drawPath(Canvas canvas) {
 
         mPaint.setColor(0x88cdcdcd);
@@ -457,7 +458,6 @@ public class PhotoDetailFragment extends Fragment {
         path.reset();
     }
 
-    @DebugLog
     private void fixPath(Canvas canvas) {
 
         mPaint.setColor(0x88ff0000);
@@ -468,7 +468,6 @@ public class PhotoDetailFragment extends Fragment {
         canvas.drawPath(path, mPaint);
         path.reset();
 
-        mPathArray.add(new jp.caliconography.one_liners.model.Path(mOriginX, mOriginX, mCurrentX, mCurrentY, mPaint, mMatrix));
     }
 
     private void launchChooser() {

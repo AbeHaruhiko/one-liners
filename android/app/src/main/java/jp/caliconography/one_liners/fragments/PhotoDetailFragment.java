@@ -15,6 +15,7 @@ import android.graphics.Path;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -132,7 +133,7 @@ public class PhotoDetailFragment extends Fragment {
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeJoin(Paint.Join.ROUND);
         mPaint.setStrokeCap(Paint.Cap.ROUND);
-        mPaint.setStrokeWidth(4);
+        mPaint.setStrokeWidth(20);
 
         return rootView;
     }
@@ -201,6 +202,7 @@ public class PhotoDetailFragment extends Fragment {
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
             mScale *= detector.getScaleFactor();
+            Log.d(TAG, "mScale=" + Float.toString(mScale));
             return true;
         }
     };
@@ -270,13 +272,27 @@ public class PhotoDetailFragment extends Fragment {
                     setPhotoBitmapToCanvas(canvas);
 
                     for (jp.caliconography.one_liners.model.Path line : mPathArray) {
-                        mPaint.setColor(0xffff0000);
+                        mPaint.setColor(0x88ff0000);
 
                         Path path = new Path();
                         path.moveTo(line.getStartX(), line.getStartY());
                         path.lineTo(line.getEndX(), line.getEndY());
-                        path.transform(line.getmMatrix());
-                        canvas.drawPath(path, line.getPaint());
+                        path.transform(line.getMatrix());
+
+                        float[] valueHolder = new float[9];
+                        line.getMatrix().getValues(valueHolder);
+
+                        // 各Path用のPaintを生成（line.getPaint().setStrokeWidth()すると累乗になってしまうため。
+                        Paint tmpPaint = new Paint();
+                        tmpPaint.setAntiAlias(true);
+                        tmpPaint.setDither(true);
+                        tmpPaint.setColor(line.getPaint().getColor());
+                        tmpPaint.setStyle(line.getPaint().getStyle());
+                        tmpPaint.setStrokeJoin(line.getPaint().getStrokeJoin());
+                        tmpPaint.setStrokeCap(line.getPaint().getStrokeCap());
+                        tmpPaint.setStrokeWidth(line.getPaint().getStrokeWidth() * valueHolder[0]);
+
+                        canvas.drawPath(path, tmpPaint);
                         path.reset();
 
                     }
@@ -444,7 +460,7 @@ public class PhotoDetailFragment extends Fragment {
     @DebugLog
     private void fixPath(Canvas canvas) {
 
-        mPaint.setColor(0xffff0000);
+        mPaint.setColor(0x88ff0000);
 
         Path path = new Path();
         path.moveTo(mOriginX, mOriginY);

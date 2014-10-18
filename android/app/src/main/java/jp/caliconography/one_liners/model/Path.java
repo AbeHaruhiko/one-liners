@@ -43,7 +43,7 @@ public class Path {
         return mPaint;
     }
 
-    public Matrix getmMatrix() {
+    public Matrix getMatrix() {
         return mMatrix;
     }
 }

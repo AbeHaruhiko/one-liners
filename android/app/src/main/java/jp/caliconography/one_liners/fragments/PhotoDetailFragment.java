@@ -42,6 +42,7 @@ import jp.caliconography.android.gesture.TranslationGestureDetector;
 import jp.caliconography.android.gesture.TranslationGestureListener;
 import jp.caliconography.one_liners.R;
 import jp.caliconography.one_liners.dummy.DummyContent;
+import jp.caliconography.one_liners.model.Line;
 import jp.caliconography.one_liners.model.PointInFloat;
 
 /**
@@ -88,10 +89,10 @@ public class PhotoDetailFragment extends Fragment {
     private Paint mPaint;
     private String mOriginalBitmapFileName;
     private Bitmap mOffScreenBitmap;
-    ArrayList<jp.caliconography.one_liners.model.Path> mPathArray = new ArrayList<jp.caliconography.one_liners.model.Path>();
-    private PointInFloat mSurfaceCenter;
+    ArrayList<Line> mLineArray = new ArrayList<Line>();
     private float mDeltaX;
     private float mDeltaY;
+    private boolean mTranslatingBy2Finger;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -156,6 +157,7 @@ public class PhotoDetailFragment extends Fragment {
         return true;
     }
 
+    private PointInFloat mSurfaceCenter;
     private SurfaceHolder.Callback mSurfaceHolderCallback = new SurfaceHolder.Callback() {
         @Override
         public void surfaceCreated(SurfaceHolder surfaceHolder) {
@@ -180,6 +182,7 @@ public class PhotoDetailFragment extends Fragment {
             }
         }
 
+        @DebugLog
         @Override
         public void surfaceChanged(SurfaceHolder surfaceHolder, int format, int width, int height) {
             mTranslateX = width / 2;
@@ -243,12 +246,13 @@ public class PhotoDetailFragment extends Fragment {
                     setPhotoBitmapToCanvas(canvas);
                     Log.d(TAG, "______一本指のonTranslationEnd______");
                     renderAllPath(canvas);
+                    mLineArray.add(new Line(mOriginX, mOriginY, mCurrentX, mCurrentY, mPaint, mMatrix));
                     fixPath(canvas);
                     // TODO 点も描けるようにしたい。
                     if (mOriginX != mCurrentX || mOriginY != mCurrentY) {
-                        mPathArray.add(new jp.caliconography.one_liners.model.Path(mOriginX, mOriginY, mCurrentX, mCurrentY, new Paint(mPaint), new Matrix(mMatrix)));
+                        mLineArray.add(new Line(mOriginX, mOriginY, mCurrentX, mCurrentY, new Paint(mPaint), new Matrix(mMatrix)));
                     }
-                    Log.d(TAG, "___added!!___" + mPathArray.size());
+                    Log.d(TAG, "___added!!___" + mLineArray.size());
                 }
             } finally {
                 if (canvas != null) {
@@ -257,6 +261,7 @@ public class PhotoDetailFragment extends Fragment {
             }
         }
 
+        @DebugLog
         @Override
         public void onTranslationBegin(TranslationGestureDetector detector) {
 
@@ -265,6 +270,7 @@ public class PhotoDetailFragment extends Fragment {
             mCurrentY = mOriginY = oneFingerDetector.getY();
         }
 
+        @DebugLog
         @Override
         public void onTranslation(TranslationGestureDetector detector) {
             TranslationBy1FingerGestureDetector oneFingerDetector = (TranslationBy1FingerGestureDetector) detector;
@@ -293,29 +299,20 @@ public class PhotoDetailFragment extends Fragment {
         @DebugLog
         @Override
         public void onTranslationEnd(TranslationGestureDetector detector) {
-            Canvas canvas = null;
-            try {
-                canvas = mSurfaceHolder.lockCanvas(null);
-
-                if (canvas != null) {
-                    setPhotoBitmapToCanvas(canvas);
-                    Log.d(TAG, "______二本指のonTranslationEnd______");
-                    renderAllPath(canvas);
-                }
-            } finally {
-                if (canvas != null) {
-                    mSurfaceHolder.unlockCanvasAndPost(canvas);
-                }
-            }
+            mDeltaX = 0;
+            mDeltaY = 0;
+            mTranslatingBy2Finger = false;
         }
 
         @Override
         public void onTranslationBegin(TranslationGestureDetector detector) {
+            mTranslatingBy2Finger = true;
             TranslationBy2FingerGestureDetector twoFingerDetector = (TranslationBy2FingerGestureDetector) detector;
             mPrevX = twoFingerDetector.getFocusX();
             mPrevY = twoFingerDetector.getFocusY();
         }
 
+        @DebugLog
         @Override
         public void onTranslation(TranslationGestureDetector detector) {
             TranslationBy2FingerGestureDetector twoFingerDetector = (TranslationBy2FingerGestureDetector) detector;
@@ -346,8 +343,10 @@ public class PhotoDetailFragment extends Fragment {
     };
 
     private void renderAllPath(Canvas canvas) {
-        for (jp.caliconography.one_liners.model.Path line : mPathArray) {
+        for (Line line : mLineArray) {
             mPaint.setColor(0x88ff0000);
+
+//            Log.d(TAG, "all!!!___" + line.getStartX() + ": " + line.getStartY() + ": " + line.getEndX() + ": " + line.getEndY());
 
             Path path = new Path();
 
@@ -366,8 +365,6 @@ public class PhotoDetailFragment extends Fragment {
 
 //            path.moveTo(line.getStartX(), line.getStartY());
 //            path.lineTo(line.getEndX(), line.getEndY());
-
-
 
             float[] valueHolder = new float[9];
             line.getMatrix().getValues(valueHolder);
@@ -502,10 +499,21 @@ public class PhotoDetailFragment extends Fragment {
 
         mPaint.setColor(0x88cdcdcd);
 
+        // 各Path用のPaintを生成（line.getPaint().setStrokeWidth()すると累乗になってしまうため。
+        Paint tmpPaint = new Paint();
+        tmpPaint.setAntiAlias(true);
+        tmpPaint.setDither(true);
+        tmpPaint.setColor(mPaint.getColor());
+        tmpPaint.setStyle(mPaint.getStyle());
+        tmpPaint.setStrokeJoin(mPaint.getStrokeJoin());
+        tmpPaint.setStrokeCap(mPaint.getStrokeCap());
+        tmpPaint.setStrokeWidth(mPaint.getStrokeWidth() * mScale);
+
         Path path = new Path();
         path.moveTo(mOriginX, mOriginY);
         path.lineTo(mCurrentX, mCurrentY);
-        canvas.drawPath(path, mPaint);
+
+        canvas.drawPath(path, tmpPaint);
         path.reset();
     }
 
@@ -513,11 +521,23 @@ public class PhotoDetailFragment extends Fragment {
 
         mPaint.setColor(0x88ff0000);
 
+        // 各Path用のPaintを生成（line.getPaint().setStrokeWidth()すると累乗になってしまうため。
+        Paint tmpPaint = new Paint();
+        tmpPaint.setAntiAlias(true);
+        tmpPaint.setDither(true);
+        tmpPaint.setColor(mPaint.getColor());
+        tmpPaint.setStyle(mPaint.getStyle());
+        tmpPaint.setStrokeJoin(mPaint.getStrokeJoin());
+        tmpPaint.setStrokeCap(mPaint.getStrokeCap());
+        tmpPaint.setStrokeWidth(mPaint.getStrokeWidth() * mScale);
+
         Path path = new Path();
         path.moveTo(mOriginX, mOriginY);
         path.lineTo(mCurrentX, mCurrentY);
-        canvas.drawPath(path, mPaint);
+        canvas.drawPath(path, tmpPaint);
         path.reset();
+
+        Log.d(TAG, "fixed!!___" + mOriginX + ": " + mOriginY + ": " + mCurrentX + ": " + mCurrentY);
 
     }
 

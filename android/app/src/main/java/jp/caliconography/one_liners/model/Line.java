@@ -6,15 +6,17 @@ import android.graphics.Paint;
 /**
  * Created by abeharuhiko on 2014/10/17.
  */
-public class Path {
+public class Line {
     private final float mStartX;
     private final float mStartY;
     private final float mEndX;
     private final float mEndY;
     private final Paint mPaint;
     private final Matrix mMatrix;
+    private float mTranslateX = 0;
+    private float mTranslateY = 0;
 
-    public Path(float startX, float startY, float endX, float endY, Paint path, Matrix matrix) {
+    public Line(float startX, float startY, float endX, float endY, Paint path, Matrix matrix) {
         this.mStartX = startX;
         this.mStartY = startY;
         this.mEndX = endX;
@@ -45,5 +47,29 @@ public class Path {
 
     public Matrix getMatrix() {
         return mMatrix;
+    }
+
+    public float getmTranslateX() {
+        return mTranslateX;
+    }
+
+    public void setmTranslateX(float mTranslateX) {
+        this.mTranslateX = mTranslateX;
+    }
+
+    public float addTranslateX(float value) {
+        return this.mTranslateX += value;
+    }
+
+    public float getTranslateY() {
+        return mTranslateY;
+    }
+
+    public void setTranslateY(float translateY) {
+        this.mTranslateY = translateY;
+    }
+
+    public float addTranslateY(float value) {
+        return this.mTranslateY += value;
     }
 }

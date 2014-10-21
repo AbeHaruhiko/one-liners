@@ -42,6 +42,7 @@ import jp.caliconography.android.gesture.TranslationGestureDetector;
 import jp.caliconography.android.gesture.TranslationGestureListener;
 import jp.caliconography.one_liners.R;
 import jp.caliconography.one_liners.dummy.DummyContent;
+import jp.caliconography.one_liners.model.PointInFloat;
 
 /**
  * A fragment representing a single book detail screen.
@@ -88,6 +89,9 @@ public class PhotoDetailFragment extends Fragment {
     private String mOriginalBitmapFileName;
     private Bitmap mOffScreenBitmap;
     ArrayList<jp.caliconography.one_liners.model.Path> mPathArray = new ArrayList<jp.caliconography.one_liners.model.Path>();
+    private PointInFloat mSurfaceCenter;
+    private float mDeltaX;
+    private float mDeltaY;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -180,6 +184,7 @@ public class PhotoDetailFragment extends Fragment {
         public void surfaceChanged(SurfaceHolder surfaceHolder, int format, int width, int height) {
             mTranslateX = width / 2;
             mTranslateY = height / 2;
+            mSurfaceCenter = new PointInFloat(width / 2, height / 2);
         }
 
         @Override
@@ -188,6 +193,7 @@ public class PhotoDetailFragment extends Fragment {
         }
     };
 
+    private float mDeltaScale;
     private ScaleGestureDetector.SimpleOnScaleGestureListener mOnScaleListener = new ScaleGestureDetector.SimpleOnScaleGestureListener() {
         @Override
         public boolean onScaleBegin(ScaleGestureDetector detector) {
@@ -201,8 +207,26 @@ public class PhotoDetailFragment extends Fragment {
 
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
-            mScale *= detector.getScaleFactor();
+            mDeltaScale = detector.getScaleFactor();
+            mScale *= mDeltaScale;
             Log.d(TAG, "mScale=" + Float.toString(mScale));
+
+            Canvas canvas = null;
+            try {
+                canvas = mSurfaceHolder.lockCanvas(null);
+
+                if (canvas != null) {
+                    setPhotoBitmapToCanvas(canvas);
+                    drawPath(canvas);
+                    Log.d(TAG, "______onScale______");
+                    renderAllPath(canvas);
+                }
+            } finally {
+                if (canvas != null) {
+                    mSurfaceHolder.unlockCanvasAndPost(canvas);
+                }
+            }
+
             return true;
         }
     };
@@ -217,9 +241,13 @@ public class PhotoDetailFragment extends Fragment {
                 canvas = mSurfaceHolder.lockCanvas(null);
                 if (canvas != null) {
                     setPhotoBitmapToCanvas(canvas);
+                    Log.d(TAG, "______一本指のonTranslationEnd______");
                     renderAllPath(canvas);
                     fixPath(canvas);
-                    mPathArray.add(new jp.caliconography.one_liners.model.Path(mOriginX, mOriginX, mCurrentX, mCurrentY, mPaint, mMatrix));
+                    // TODO 点も描けるようにしたい。
+                    if (mOriginX != mCurrentX || mOriginY != mCurrentY) {
+                        mPathArray.add(new jp.caliconography.one_liners.model.Path(mOriginX, mOriginY, mCurrentX, mCurrentY, new Paint(mPaint), new Matrix(mMatrix)));
+                    }
                     Log.d(TAG, "___added!!___" + mPathArray.size());
                 }
             } finally {
@@ -271,6 +299,7 @@ public class PhotoDetailFragment extends Fragment {
 
                 if (canvas != null) {
                     setPhotoBitmapToCanvas(canvas);
+                    Log.d(TAG, "______二本指のonTranslationEnd______");
                     renderAllPath(canvas);
                 }
             } finally {
@@ -290,10 +319,10 @@ public class PhotoDetailFragment extends Fragment {
         @Override
         public void onTranslation(TranslationGestureDetector detector) {
             TranslationBy2FingerGestureDetector twoFingerDetector = (TranslationBy2FingerGestureDetector) detector;
-            float deltaX = twoFingerDetector.getFocusX() - mPrevX;
-            float deltaY = twoFingerDetector.getFocusY() - mPrevY;
-            mTranslateX += deltaX;
-            mTranslateY += deltaY;
+            mDeltaX = twoFingerDetector.getFocusX() - mPrevX;
+            mDeltaY = twoFingerDetector.getFocusY() - mPrevY;
+            mTranslateX += mDeltaX;
+            mTranslateY += mDeltaY;
             mPrevX = twoFingerDetector.getFocusX();
             mPrevY = twoFingerDetector.getFocusY();
 
@@ -304,6 +333,7 @@ public class PhotoDetailFragment extends Fragment {
                 if (canvas != null) {
                     setPhotoBitmapToCanvas(canvas);
                     drawPath(canvas);
+                    Log.d(TAG, "______一本指のonTranslation______");
                     renderAllPath(canvas);
                 }
             } finally {
@@ -320,22 +350,43 @@ public class PhotoDetailFragment extends Fragment {
             mPaint.setColor(0x88ff0000);
 
             Path path = new Path();
-            path.moveTo(line.getStartX(), line.getStartY());
-            path.lineTo(line.getEndX(), line.getEndY());
-            path.transform(line.getMatrix());
+
+            // 一旦SurfaceViewの中心に配置して、移動させる。（背景と同じ動きにさせるため）
+
+            // 線の中点を求める
+            PointInFloat lineCenter = PointInFloat.getMidpoint(new PointInFloat(line.getStartX(), line.getStartY()), new PointInFloat(line.getEndX(), line.getEndY()));
+
+            // SurfaceViewの中心からの距離
+            float distanceXFromSurfaceViewCenter = mSurfaceCenter.x - lineCenter.x;
+            float distanceYFromSurfaceViewCenter = mSurfaceCenter.y - lineCenter.y;
+
+            // 中心に配置。
+            path.moveTo(line.getStartX() + distanceXFromSurfaceViewCenter, line.getStartY() + distanceYFromSurfaceViewCenter);
+            path.lineTo(line.getEndX() + distanceXFromSurfaceViewCenter, line.getEndY() + distanceYFromSurfaceViewCenter);
+
+//            path.moveTo(line.getStartX(), line.getStartY());
+//            path.lineTo(line.getEndX(), line.getEndY());
+
+
 
             float[] valueHolder = new float[9];
             line.getMatrix().getValues(valueHolder);
 
+            Matrix tmpMatrix = new Matrix();
+            // 最初に線を描いた時点のscale(valueHolder[0])から今(mScale)何倍になっているか。 = mScale / valueHolder[0]
+            tmpMatrix.postScale(mScale / valueHolder[0], mScale / valueHolder[0]);
+//            if (mScaleGestureDetector.isInProgress()) {
+//                tmpMatrix.postTranslate((float)mSurfaceCenter.x, (float)mSurfaceCenter.y);
+//            } else {
+            // 本来の位置にtranslate
+            tmpMatrix.postTranslate(-distanceXFromSurfaceViewCenter, -distanceYFromSurfaceViewCenter);
+            tmpMatrix.postTranslate(mDeltaX, mDeltaY);
+//            }
+            path.transform(tmpMatrix);
+
             // 各Path用のPaintを生成（line.getPaint().setStrokeWidth()すると累乗になってしまうため。
-            Paint tmpPaint = new Paint();
-            tmpPaint.setAntiAlias(true);
-            tmpPaint.setDither(true);
-            tmpPaint.setColor(line.getPaint().getColor());
-            tmpPaint.setStyle(line.getPaint().getStyle());
-            tmpPaint.setStrokeJoin(line.getPaint().getStrokeJoin());
-            tmpPaint.setStrokeCap(line.getPaint().getStrokeCap());
-            tmpPaint.setStrokeWidth(line.getPaint().getStrokeWidth() * valueHolder[0]);
+            Paint tmpPaint = new Paint(line.getPaint());
+            tmpPaint.setStrokeWidth(line.getPaint().getStrokeWidth() * mScale);
 
             canvas.drawPath(path, tmpPaint);
             path.reset();

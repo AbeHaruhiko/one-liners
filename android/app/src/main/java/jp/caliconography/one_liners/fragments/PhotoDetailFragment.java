@@ -235,7 +235,6 @@ public class PhotoDetailFragment extends Fragment {
                     // TODO 点も描けるようにしたい。
                     if (mOriginX != mCurrentX || mOriginY != mCurrentY) {
                         mLineArray.add(new Line(mOriginX, mOriginY, mCurrentX, mCurrentY, new Paint(mPaint), new Matrix(mMatrix)));
-                        Log.d(TAG, "___added!!___" + mLineArray.size());
                     }
                     fixPath(canvas);
                 }
@@ -329,20 +328,7 @@ public class PhotoDetailFragment extends Fragment {
 
     private void renderAllPath(Canvas canvas) {
         for (Line line : mLineArray) {
-            mPaint.setColor(0x88ff0000);
-
-//            Log.d(TAG, "all!!!___" + line.getStartX() + ": " + line.getStartY() + ": " + line.getEndX() + ": " + line.getEndY());
-
             Path path = new Path();
-
-            // 一旦SurfaceViewの中心に配置して、移動させる。（背景と同じ動きにさせるため）
-
-//            // 線の中点を求める
-//            PointInFloat lineCenter = PointInFloat.getMidpoint(new PointInFloat(line.getStartX(), line.getStartY()), new PointInFloat(line.getEndX(), line.getEndY()));
-//
-//            // 線の中点を原点(0, 0)へ配置。
-//            path.moveTo(line.getStartX() - lineCenter.x, line.getStartY() - lineCenter.y);
-//            path.lineTo(line.getEndX() - lineCenter.x, line.getEndY() - lineCenter.y);
 
             path.moveTo(line.getStartX(), line.getStartY());
             path.lineTo(line.getEndX(), line.getEndY());
@@ -351,25 +337,14 @@ public class PhotoDetailFragment extends Fragment {
             line.getMatrix().getValues(valueHolder);
 
             Matrix tmpMatrix = new Matrix();
+
             // 最初に線を描いた時点のscale(valueHolder[0])から今(mScale)何倍になっているか。 = mScale / valueHolder[0]
             tmpMatrix.postScale(mScale / valueHolder[0], mScale / valueHolder[0]);
-//            if (mScaleGestureDetector.isInProgress()) {
-//            } else {
-            // 本来の位置にtranslate
-//            tmpMatrix.postTranslate(lineCenter.x, lineCenter.y);
-
-//            // ドラッグ分
-//            line.addTranslateX(mDeltaX);
-//            line.addTranslateY(mDeltaY);
             tmpMatrix.postTranslate(mTranslateX, mTranslateY);
-//            tmpMatrix.postTranslate((float)mSurfaceCenter.x, (float)mSurfaceCenter.y);
-//            tmpMatrix.postTranslate(mTranslateX - mSurfaceCenter.x, mTranslateY - mSurfaceCenter.y);
-//            }
             path.transform(tmpMatrix);
 
             // 各Path用のPaintを生成（line.getPaint().setStrokeWidth()すると累乗になってしまうため。
             Paint tmpPaint = new Paint(line.getPaint());
-            tmpPaint.setColor(0x88fffcfc);
             tmpPaint.setStrokeWidth(line.getPaint().getStrokeWidth() * mScale);
 
             canvas.drawPath(path, tmpPaint);
@@ -414,10 +389,9 @@ public class PhotoDetailFragment extends Fragment {
     }
 
     private void getScaleForFitBitmapToView() {
-        // SurfaceViewにフィットさせるための設定。
-        float hightScale = (float) mSurfaceHolder.getSurfaceFrame().height() / (float) mBitmap.getHeight();
+        float heightScale = (float) mSurfaceHolder.getSurfaceFrame().height() / (float) mBitmap.getHeight();
         float widthScale = (float) mSurfaceHolder.getSurfaceFrame().width() / (float) mBitmap.getWidth();
-        mScale = Math.min(hightScale, widthScale);
+        mScale = Math.min(heightScale, widthScale);
     }
 
     private Bitmap getBitmap(Intent intent) {
@@ -459,16 +433,9 @@ public class PhotoDetailFragment extends Fragment {
 
     private void drawPath(Canvas canvas) {
 
-        mPaint.setColor(0x88cdcdcd);
-
         // 各Path用のPaintを生成（line.getPaint().setStrokeWidth()すると累乗になってしまうため。
-        Paint tmpPaint = new Paint();
-        tmpPaint.setAntiAlias(true);
-        tmpPaint.setDither(true);
-        tmpPaint.setColor(mPaint.getColor());
-        tmpPaint.setStyle(mPaint.getStyle());
-        tmpPaint.setStrokeJoin(mPaint.getStrokeJoin());
-        tmpPaint.setStrokeCap(mPaint.getStrokeCap());
+        Paint tmpPaint = new Paint(mPaint);
+        tmpPaint.setColor(0x88cdcdcd);
         tmpPaint.setStrokeWidth(mPaint.getStrokeWidth() * mScale);
 
         Path path = new Path();
@@ -481,26 +448,17 @@ public class PhotoDetailFragment extends Fragment {
 
     private void fixPath(Canvas canvas) {
 
-        mPaint.setColor(0x88ff0000);
-
         // 各Path用のPaintを生成（line.getPaint().setStrokeWidth()すると累乗になってしまうため。
-        Paint tmpPaint = new Paint();
-        tmpPaint.setAntiAlias(true);
-        tmpPaint.setDither(true);
-        tmpPaint.setColor(mPaint.getColor());
-        tmpPaint.setStyle(mPaint.getStyle());
-        tmpPaint.setStrokeJoin(mPaint.getStrokeJoin());
-        tmpPaint.setStrokeCap(mPaint.getStrokeCap());
+        Paint tmpPaint = new Paint(mPaint);
+        tmpPaint.setColor(0x88ff0000);
         tmpPaint.setStrokeWidth(mPaint.getStrokeWidth() * mScale);
 
         Path path = new Path();
         path.moveTo(mOriginX, mOriginY);
         path.lineTo(mCurrentX, mCurrentY);
+
         canvas.drawPath(path, tmpPaint);
         path.reset();
-
-        Log.d(TAG, "fixed!!___" + mOriginX + ": " + mOriginY + ": " + mCurrentX + ": " + mCurrentY);
-
     }
 
     private void launchChooser() {

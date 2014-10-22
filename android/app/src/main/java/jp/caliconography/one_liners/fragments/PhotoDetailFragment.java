@@ -87,8 +87,6 @@ public class PhotoDetailFragment extends Fragment {
 
     private boolean mSurfaceCreated;
     private Paint mPaint;
-    private String mOriginalBitmapFileName;
-    private Bitmap mOffScreenBitmap;
     ArrayList<Line> mLineArray = new ArrayList<Line>();
     private float mDeltaX;
     private float mDeltaY;
@@ -167,12 +165,8 @@ public class PhotoDetailFragment extends Fragment {
             try {
                 canvas = mSurfaceHolder.lockCanvas(null);
                 if (canvas != null) {
-                    // オフスクリーン用のBitmapを生成する
-                    mOffScreenBitmap = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888);
-
                     if (mBitmap != null) {
                         getScaleForFitBitmapToView();
-
                         // 背景をセット
                         setPhotoBitmapToCanvas(canvas);
                     }
@@ -374,10 +368,10 @@ public class PhotoDetailFragment extends Fragment {
             // 本来の位置にtranslate
 //            tmpMatrix.postTranslate(lineCenter.x, lineCenter.y);
 
-            // ドラッグ分
-            line.addTranslateX(mDeltaX);
-            line.addTranslateY(mDeltaY);
-            tmpMatrix.postTranslate(line.getTranslateX() * mScale, line.getTranslateY() * mScale);
+//            // ドラッグ分
+//            line.addTranslateX(mDeltaX);
+//            line.addTranslateY(mDeltaY);
+            tmpMatrix.postTranslate(mTranslateX, mTranslateY);
 //            tmpMatrix.postTranslate((float)mSurfaceCenter.x, (float)mSurfaceCenter.y);
 //            tmpMatrix.postTranslate(mTranslateX - mSurfaceCenter.x, mTranslateY - mSurfaceCenter.y);
 //            }
@@ -408,9 +402,6 @@ public class PhotoDetailFragment extends Fragment {
                 return;
             }
             mBitmap = getBitmap(data);
-
-            // オリジナルをファイルに保管しておく。
-            mOriginalBitmapFileName = saveImageToCacheDir(mBitmap, getActivity().getApplicationContext());
 
             if (mSurfaceCreated) {
                 getScaleForFitBitmapToView();

@@ -246,13 +246,12 @@ public class PhotoDetailFragment extends Fragment {
                     setPhotoBitmapToCanvas(canvas);
                     Log.d(TAG, "______一本指のonTranslationEnd______");
                     renderAllPath(canvas);
-                    mLineArray.add(new Line(mOriginX, mOriginY, mCurrentX, mCurrentY, mPaint, mMatrix));
-                    fixPath(canvas);
                     // TODO 点も描けるようにしたい。
                     if (mOriginX != mCurrentX || mOriginY != mCurrentY) {
                         mLineArray.add(new Line(mOriginX, mOriginY, mCurrentX, mCurrentY, new Paint(mPaint), new Matrix(mMatrix)));
+                        Log.d(TAG, "___added!!___" + mLineArray.size());
                     }
-                    Log.d(TAG, "___added!!___" + mLineArray.size());
+                    fixPath(canvas);
                 }
             } finally {
                 if (canvas != null) {
@@ -355,13 +354,9 @@ public class PhotoDetailFragment extends Fragment {
             // 線の中点を求める
             PointInFloat lineCenter = PointInFloat.getMidpoint(new PointInFloat(line.getStartX(), line.getStartY()), new PointInFloat(line.getEndX(), line.getEndY()));
 
-            // SurfaceViewの中心からの距離
-            float distanceXFromSurfaceViewCenter = mSurfaceCenter.x - lineCenter.x;
-            float distanceYFromSurfaceViewCenter = mSurfaceCenter.y - lineCenter.y;
-
-            // 中心に配置。
-            path.moveTo(line.getStartX() + distanceXFromSurfaceViewCenter, line.getStartY() + distanceYFromSurfaceViewCenter);
-            path.lineTo(line.getEndX() + distanceXFromSurfaceViewCenter, line.getEndY() + distanceYFromSurfaceViewCenter);
+            // 線の中点を原点(0, 0)へ配置。
+            path.moveTo(line.getStartX() - lineCenter.x, line.getStartY() - lineCenter.y);
+            path.lineTo(line.getEndX() - lineCenter.x, line.getEndY() - lineCenter.y);
 
 //            path.moveTo(line.getStartX(), line.getStartY());
 //            path.lineTo(line.getEndX(), line.getEndY());
@@ -373,16 +368,22 @@ public class PhotoDetailFragment extends Fragment {
             // 最初に線を描いた時点のscale(valueHolder[0])から今(mScale)何倍になっているか。 = mScale / valueHolder[0]
             tmpMatrix.postScale(mScale / valueHolder[0], mScale / valueHolder[0]);
 //            if (mScaleGestureDetector.isInProgress()) {
-//                tmpMatrix.postTranslate((float)mSurfaceCenter.x, (float)mSurfaceCenter.y);
 //            } else {
             // 本来の位置にtranslate
-            tmpMatrix.postTranslate(-distanceXFromSurfaceViewCenter, -distanceYFromSurfaceViewCenter);
-            tmpMatrix.postTranslate(mDeltaX, mDeltaY);
+            tmpMatrix.postTranslate(lineCenter.x, lineCenter.y);
+
+            // ドラッグ分
+            line.addTranslateX(mDeltaX);
+            line.addTranslateY(mDeltaY);
+            tmpMatrix.postTranslate(line.getTranslateX(), line.getTranslateY());
+//            tmpMatrix.postTranslate((float)mSurfaceCenter.x, (float)mSurfaceCenter.y);
+//            tmpMatrix.postTranslate(mTranslateX - mSurfaceCenter.x, mTranslateY - mSurfaceCenter.y);
 //            }
             path.transform(tmpMatrix);
 
             // 各Path用のPaintを生成（line.getPaint().setStrokeWidth()すると累乗になってしまうため。
             Paint tmpPaint = new Paint(line.getPaint());
+            tmpPaint.setColor(0x88fffcfc);
             tmpPaint.setStrokeWidth(line.getPaint().getStrokeWidth() * mScale);
 
             canvas.drawPath(path, tmpPaint);

@@ -49,7 +49,7 @@ public class Line {
         return mMatrix;
     }
 
-    public float getmTranslateX() {
+    public float getTranslateX() {
         return mTranslateX;
     }
 

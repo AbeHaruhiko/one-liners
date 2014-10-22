@@ -87,7 +87,6 @@ public class PhotoDetailFragment extends Fragment {
     ArrayList<Line> mLineArray = new ArrayList<Line>();
     private float mDeltaX;
     private float mDeltaY;
-    private boolean mTranslatingBy2Finger;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -286,12 +285,10 @@ public class PhotoDetailFragment extends Fragment {
         public void onTranslationEnd(TranslationGestureDetector detector) {
             mDeltaX = 0;
             mDeltaY = 0;
-            mTranslatingBy2Finger = false;
         }
 
         @Override
         public void onTranslationBegin(TranslationGestureDetector detector) {
-            mTranslatingBy2Finger = true;
             TranslationBy2FingerGestureDetector twoFingerDetector = (TranslationBy2FingerGestureDetector) detector;
             mPrevX = twoFingerDetector.getFocusX();
             mPrevY = twoFingerDetector.getFocusY();

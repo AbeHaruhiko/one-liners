@@ -16,13 +16,15 @@ public class Line {
     private float mTranslateX = 0;
     private float mTranslateY = 0;
 
-    public Line(float startX, float startY, float endX, float endY, Paint path, Matrix matrix) {
-        this.mStartX = startX;
-        this.mStartY = startY;
-        this.mEndX = endX;
-        this.mEndY = endY;
-        this.mPaint = path;
-        this.mMatrix = matrix;
+    public Line(float mStartX, float mStartY, float mEndX, float mEndY, Paint mPaint, Matrix mMatrix, float mTranslateX, float mTranslateY) {
+        this.mStartX = mStartX;
+        this.mStartY = mStartY;
+        this.mEndX = mEndX;
+        this.mEndY = mEndY;
+        this.mPaint = mPaint;
+        this.mMatrix = mMatrix;
+        this.mTranslateX = mTranslateX;
+        this.mTranslateY = mTranslateY;
     }
 
     public float getStartX() {

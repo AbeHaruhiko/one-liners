@@ -40,6 +40,7 @@ import jp.caliconography.android.gesture.TranslationGestureListener;
 import jp.caliconography.one_liners.R;
 import jp.caliconography.one_liners.dummy.DummyContent;
 import jp.caliconography.one_liners.model.Line;
+import jp.caliconography.one_liners.model.PointInFloat;
 
 /**
  * A fragment representing a single book detail screen.
@@ -234,7 +235,7 @@ public class PhotoDetailFragment extends Fragment {
                     renderAllPath(canvas);
                     // TODO 点も描けるようにしたい。
                     if (mOriginX != mCurrentX || mOriginY != mCurrentY) {
-                        mLineArray.add(new Line(mOriginX, mOriginY, mCurrentX, mCurrentY, new Paint(mPaint), new Matrix(mMatrix)));
+                        mLineArray.add(new Line(mOriginX, mOriginY, mCurrentX, mCurrentY, new Paint(mPaint), new Matrix(mMatrix), mTranslateX, mTranslateY));
                     }
                     fixPath(canvas);
                 }
@@ -330,8 +331,12 @@ public class PhotoDetailFragment extends Fragment {
         for (Line line : mLineArray) {
             Path path = new Path();
 
-            path.moveTo(line.getStartX(), line.getStartY());
-            path.lineTo(line.getEndX(), line.getEndY());
+            // 線の中点を求める
+            PointInFloat lineCenter = PointInFloat.getMidpoint(new PointInFloat(line.getStartX(), line.getStartY()), new PointInFloat(line.getEndX(), line.getEndY()));
+
+            // 線の中点を原点(0, 0)へ配置。
+            path.moveTo(line.getStartX() - lineCenter.x, line.getStartY() - lineCenter.y);
+            path.lineTo(line.getEndX() - lineCenter.x, line.getEndY() - lineCenter.y);
 
             float[] valueHolder = new float[9];
             line.getMatrix().getValues(valueHolder);
@@ -340,6 +345,11 @@ public class PhotoDetailFragment extends Fragment {
 
             // 最初に線を描いた時点のscale(valueHolder[0])から今(mScale)何倍になっているか。 = mScale / valueHolder[0]
             tmpMatrix.postScale(mScale / valueHolder[0], mScale / valueHolder[0]);
+            // 本来の位置にtranslate
+            tmpMatrix.postTranslate(lineCenter.x, lineCenter.y);
+            // 描いた時点の移動分
+//            tmpMatrix.postTranslate(-line.getTranslateX(), -line.getTranslateY());
+            // 移動分
             tmpMatrix.postTranslate(mTranslateX, mTranslateY);
             path.transform(tmpMatrix);
 

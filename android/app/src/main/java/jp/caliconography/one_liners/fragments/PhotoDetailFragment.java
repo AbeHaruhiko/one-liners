@@ -85,8 +85,6 @@ public class PhotoDetailFragment extends Fragment {
     private boolean mSurfaceCreated;
     private Paint mPaint;
     ArrayList<Line> mLineArray = new ArrayList<Line>();
-    private float mDeltaX;
-    private float mDeltaY;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -283,8 +281,6 @@ public class PhotoDetailFragment extends Fragment {
         @DebugLog
         @Override
         public void onTranslationEnd(TranslationGestureDetector detector) {
-            mDeltaX = 0;
-            mDeltaY = 0;
         }
 
         @Override
@@ -298,10 +294,8 @@ public class PhotoDetailFragment extends Fragment {
         @Override
         public void onTranslation(TranslationGestureDetector detector) {
             TranslationBy2FingerGestureDetector twoFingerDetector = (TranslationBy2FingerGestureDetector) detector;
-            mDeltaX = twoFingerDetector.getFocusX() - mPrevX;
-            mDeltaY = twoFingerDetector.getFocusY() - mPrevY;
-            mTranslateX += mDeltaX;
-            mTranslateY += mDeltaY;
+            mTranslateX += twoFingerDetector.getFocusX() - mPrevX;
+            mTranslateY += twoFingerDetector.getFocusY() - mPrevY;
             mPrevX = twoFingerDetector.getFocusX();
             mPrevY = twoFingerDetector.getFocusY();
 
@@ -332,22 +326,25 @@ public class PhotoDetailFragment extends Fragment {
             PointInFloat lineCenter = PointInFloat.getMidpoint(new PointInFloat(line.getStartX(), line.getStartY()), new PointInFloat(line.getEndX(), line.getEndY()));
 
             // 線の中点を原点(0, 0)へ配置。
-            path.moveTo(line.getStartX() - lineCenter.x, line.getStartY() - lineCenter.y);
-            path.lineTo(line.getEndX() - lineCenter.x, line.getEndY() - lineCenter.y);
+            setLineOnOrigin(line, path, lineCenter);
 
-            float[] valueHolder = new float[9];
-            line.getMatrix().getValues(valueHolder);
+            float[] valueHolder = getMatrixFloats(line.getMatrix());
 
             Matrix tmpMatrix = new Matrix();
 
             // 最初に線を描いた時点のscale(valueHolder[0])から今(mScale)何倍になっているか。 = mScale / valueHolder[0]
             float scaleOfThisLine = mScale / valueHolder[0];
             tmpMatrix.postScale(scaleOfThisLine, scaleOfThisLine);
+
             // 本来の位置にtranslate
             tmpMatrix.postTranslate(lineCenter.x * scaleOfThisLine, lineCenter.y * scaleOfThisLine);
-            // 描いた時点の移動分     tmpMatrix.postTranslate(-line.getTranslateX(), -line.getTranslateY());
+
+            // 描いた時点の移動分
+            tmpMatrix.postTranslate(-line.getTranslateX() * scaleOfThisLine, -line.getTranslateY() * scaleOfThisLine);
+
             // 移動分
             tmpMatrix.postTranslate(mTranslateX, mTranslateY);
+
             path.transform(tmpMatrix);
 
             // 各Path用のPaintを生成（line.getPaint().setStrokeWidth()すると累乗になってしまうため。
@@ -359,6 +356,17 @@ public class PhotoDetailFragment extends Fragment {
             path.reset();
 
         }
+    }
+
+    private float[] getMatrixFloats(Matrix matrix) {
+        float[] valueHolder = new float[9];
+        matrix.getValues(valueHolder);
+        return valueHolder;
+    }
+
+    private void setLineOnOrigin(Line line, Path path, PointInFloat lineCenter) {
+        path.moveTo(line.getStartX() - lineCenter.x, line.getStartY() - lineCenter.y);
+        path.lineTo(line.getEndX() - lineCenter.x, line.getEndY() - lineCenter.y);
     }
 
     @Override

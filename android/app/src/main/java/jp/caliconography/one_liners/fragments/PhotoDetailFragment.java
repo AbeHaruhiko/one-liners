@@ -3,7 +3,6 @@ package jp.caliconography.one_liners.fragments;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -25,8 +24,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -457,41 +454,10 @@ public class PhotoDetailFragment extends Fragment {
         return bitmap;
     }
 
-    private String saveImageToCacheDir(Bitmap bmp, Context context) {
-        File cacheDir = context.getExternalCacheDir();
-
-        cleanCacheDir(cacheDir);
-
-        String fileName = String.valueOf(System.currentTimeMillis()) + ".png";
-        File file = new File(cacheDir, fileName);
-        FileOutputStream outputStream;
-
-        try {
-
-            outputStream = new FileOutputStream(file);
-//            bmp.compress(Bitmap.CompressFormat.PNG, 90, outputStream);
-
-            outputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        return fileName;
-    }
-
-    private void cleanCacheDir(File cacheDir) {
-        // 一時キャッシュディレクトリをクリーニング
-        File[] files = cacheDir.listFiles();
-        for (int i = 0; i < files.length; i++) {
-            files[i].delete();
-        }
-    }
-
     private void setPhotoBitmapToCanvas(Canvas canvas) {
 
         mMatrix.reset();
         mMatrix.postScale(mScale, mScale);
-//        mMatrix.postTranslate(-mBitmap.getWidth() / 2 * mScale, -mBitmap.getHeight() / 2 * mScale);
         mMatrix.postTranslate(mTranslateX, mTranslateY);
 
         canvas.drawColor(Color.WHITE);       // 画像部分はmatrixで縮小されるので余白ができる。余白部分を白で表示させるための処理。

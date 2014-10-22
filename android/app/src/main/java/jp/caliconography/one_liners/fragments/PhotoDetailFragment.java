@@ -119,10 +119,21 @@ public class PhotoDetailFragment extends Fragment {
         mMatrix = new Matrix();
 
         mScale = 1.0f;
+
+        createGetsureDetectors();
+
+        createDefaultPaint();
+
+        return rootView;
+    }
+
+    private void createGetsureDetectors() {
         mScaleGestureDetector = new ScaleGestureDetector(getActivity().getApplicationContext(), mOnScaleListener);
         mTranslationBy1FingerGestureDetector = new TranslationBy1FingerGestureDetector(mTranslationBy1FingerListener);
         mTranslationBy2FingerGestureDetector = new TranslationBy2FingerGestureDetector(mTranslationBy2FingerListener);
+    }
 
+    private void createDefaultPaint() {
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
         mPaint.setDither(true);
@@ -131,8 +142,6 @@ public class PhotoDetailFragment extends Fragment {
         mPaint.setStrokeJoin(Paint.Join.ROUND);
         mPaint.setStrokeCap(Paint.Cap.ROUND);
         mPaint.setStrokeWidth(20);
-
-        return rootView;
     }
 
     @OnClick(R.id.load_image)
@@ -149,7 +158,7 @@ public class PhotoDetailFragment extends Fragment {
         return true;
     }
 
-    private SurfaceHolder.Callback mSurfaceHolderCallback = new SurfaceHolder.Callback() {
+    private final SurfaceHolder.Callback mSurfaceHolderCallback = new SurfaceHolder.Callback() {
         @Override
         public void surfaceCreated(SurfaceHolder surfaceHolder) {
             mSurfaceCreated = true;
@@ -182,7 +191,7 @@ public class PhotoDetailFragment extends Fragment {
         }
     };
 
-    private ScaleGestureDetector.SimpleOnScaleGestureListener mOnScaleListener = new ScaleGestureDetector.SimpleOnScaleGestureListener() {
+    private final ScaleGestureDetector.SimpleOnScaleGestureListener mOnScaleListener = new ScaleGestureDetector.SimpleOnScaleGestureListener() {
         @Override
         public boolean onScaleBegin(ScaleGestureDetector detector) {
             return super.onScaleBegin(detector);
@@ -218,7 +227,7 @@ public class PhotoDetailFragment extends Fragment {
         }
     };
 
-    private TranslationGestureListener mTranslationBy1FingerListener = new TranslationGestureListener() {
+    private final TranslationGestureListener mTranslationBy1FingerListener = new TranslationGestureListener() {
         @DebugLog
         @Override
         public void onTranslationEnd(TranslationGestureDetector detector) {
@@ -277,7 +286,7 @@ public class PhotoDetailFragment extends Fragment {
         }
     };
 
-    private TranslationGestureListener mTranslationBy2FingerListener = new TranslationGestureListener() {
+    private final TranslationGestureListener mTranslationBy2FingerListener = new TranslationGestureListener() {
         @DebugLog
         @Override
         public void onTranslationEnd(TranslationGestureDetector detector) {
@@ -322,28 +331,10 @@ public class PhotoDetailFragment extends Fragment {
         for (Line line : mLineArray) {
             Path path = new Path();
 
-            // 線の中点を求める
-            PointInFloat lineCenter = PointInFloat.getMidpoint(new PointInFloat(line.getStartX(), line.getStartY()), new PointInFloat(line.getEndX(), line.getEndY()));
-
             // 線の中点を原点(0, 0)へ配置。
-            setLineOnOrigin(line, path, lineCenter);
+            setLineOnOrigin(line, path);
 
-            float[] valueHolder = getMatrixFloats(line.getMatrix());
-
-            Matrix tmpMatrix = new Matrix();
-
-            // 最初に線を描いた時点のscale(valueHolder[0])から今(mScale)何倍になっているか。 = mScale / valueHolder[0]
-            float scaleOfThisLine = mScale / valueHolder[0];
-            tmpMatrix.postScale(scaleOfThisLine, scaleOfThisLine);
-
-            // 本来の位置にtranslate
-            tmpMatrix.postTranslate(lineCenter.x * scaleOfThisLine, lineCenter.y * scaleOfThisLine);
-
-            // 描いた時点の移動分
-            tmpMatrix.postTranslate(-line.getTranslateX() * scaleOfThisLine, -line.getTranslateY() * scaleOfThisLine);
-
-            // 移動分
-            tmpMatrix.postTranslate(mTranslateX, mTranslateY);
+            Matrix tmpMatrix = buildMatrixForPanZoom(line);
 
             path.transform(tmpMatrix);
 
@@ -358,13 +349,40 @@ public class PhotoDetailFragment extends Fragment {
         }
     }
 
+    private Matrix buildMatrixForPanZoom(Line line) {
+        // 線の中点を求める
+        PointInFloat lineCenter = PointInFloat.getMidpoint(new PointInFloat(line.getStartX(), line.getStartY()), new PointInFloat(line.getEndX(), line.getEndY()));
+
+        float[] valueHolder = getMatrixFloats(line.getMatrix());
+
+        Matrix tmpMatrix = new Matrix();
+
+        float scaleOfThisLine = mScale / valueHolder[0];
+
+        // 最初に線を描いた時点のscale(valueHolder[0])から今(mScale)何倍になっているか。 = mScale / valueHolder[0]
+        tmpMatrix.postScale(scaleOfThisLine, scaleOfThisLine);
+
+        // 本来の位置にtranslate
+        tmpMatrix.postTranslate(lineCenter.x * scaleOfThisLine, lineCenter.y * scaleOfThisLine);
+
+        // 描いた時点の移動分
+        tmpMatrix.postTranslate(-line.getTranslateX() * scaleOfThisLine, -line.getTranslateY() * scaleOfThisLine);
+
+        // 移動分
+        tmpMatrix.postTranslate(mTranslateX, mTranslateY);
+        return tmpMatrix;
+    }
+
     private float[] getMatrixFloats(Matrix matrix) {
         float[] valueHolder = new float[9];
         matrix.getValues(valueHolder);
         return valueHolder;
     }
 
-    private void setLineOnOrigin(Line line, Path path, PointInFloat lineCenter) {
+    private void setLineOnOrigin(Line line, Path path) {
+        // 線の中点を求める
+        PointInFloat lineCenter = PointInFloat.getMidpoint(new PointInFloat(line.getStartX(), line.getStartY()), new PointInFloat(line.getEndX(), line.getEndY()));
+
         path.moveTo(line.getStartX() - lineCenter.x, line.getStartY() - lineCenter.y);
         path.lineTo(line.getEndX() - lineCenter.x, line.getEndY() - lineCenter.y);
     }

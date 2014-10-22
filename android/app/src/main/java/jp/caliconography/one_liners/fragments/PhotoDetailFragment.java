@@ -40,7 +40,6 @@ import jp.caliconography.android.gesture.TranslationGestureListener;
 import jp.caliconography.one_liners.R;
 import jp.caliconography.one_liners.dummy.DummyContent;
 import jp.caliconography.one_liners.model.Line;
-import jp.caliconography.one_liners.model.PointInFloat;
 
 /**
  * A fragment representing a single book detail screen.
@@ -152,7 +151,6 @@ public class PhotoDetailFragment extends Fragment {
         return true;
     }
 
-    private PointInFloat mSurfaceCenter;
     private SurfaceHolder.Callback mSurfaceHolderCallback = new SurfaceHolder.Callback() {
         @Override
         public void surfaceCreated(SurfaceHolder surfaceHolder) {
@@ -178,9 +176,6 @@ public class PhotoDetailFragment extends Fragment {
         @DebugLog
         @Override
         public void surfaceChanged(SurfaceHolder surfaceHolder, int format, int width, int height) {
-//            mTranslateX = width / 2;
-//            mTranslateY = height / 2;
-            mSurfaceCenter = new PointInFloat(width / 2, height / 2);
         }
 
         @Override

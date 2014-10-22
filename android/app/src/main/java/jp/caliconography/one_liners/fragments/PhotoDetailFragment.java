@@ -171,6 +171,8 @@ public class PhotoDetailFragment extends Fragment {
                     mOffScreenBitmap = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888);
 
                     if (mBitmap != null) {
+                        getScaleForFitBitmapToView();
+
                         // 背景をセット
                         setPhotoBitmapToCanvas(canvas);
                     }
@@ -185,8 +187,8 @@ public class PhotoDetailFragment extends Fragment {
         @DebugLog
         @Override
         public void surfaceChanged(SurfaceHolder surfaceHolder, int format, int width, int height) {
-            mTranslateX = width / 2;
-            mTranslateY = height / 2;
+//            mTranslateX = width / 2;
+//            mTranslateY = height / 2;
             mSurfaceCenter = new PointInFloat(width / 2, height / 2);
         }
 
@@ -351,15 +353,15 @@ public class PhotoDetailFragment extends Fragment {
 
             // 一旦SurfaceViewの中心に配置して、移動させる。（背景と同じ動きにさせるため）
 
-            // 線の中点を求める
-            PointInFloat lineCenter = PointInFloat.getMidpoint(new PointInFloat(line.getStartX(), line.getStartY()), new PointInFloat(line.getEndX(), line.getEndY()));
+//            // 線の中点を求める
+//            PointInFloat lineCenter = PointInFloat.getMidpoint(new PointInFloat(line.getStartX(), line.getStartY()), new PointInFloat(line.getEndX(), line.getEndY()));
+//
+//            // 線の中点を原点(0, 0)へ配置。
+//            path.moveTo(line.getStartX() - lineCenter.x, line.getStartY() - lineCenter.y);
+//            path.lineTo(line.getEndX() - lineCenter.x, line.getEndY() - lineCenter.y);
 
-            // 線の中点を原点(0, 0)へ配置。
-            path.moveTo(line.getStartX() - lineCenter.x, line.getStartY() - lineCenter.y);
-            path.lineTo(line.getEndX() - lineCenter.x, line.getEndY() - lineCenter.y);
-
-//            path.moveTo(line.getStartX(), line.getStartY());
-//            path.lineTo(line.getEndX(), line.getEndY());
+            path.moveTo(line.getStartX(), line.getStartY());
+            path.lineTo(line.getEndX(), line.getEndY());
 
             float[] valueHolder = new float[9];
             line.getMatrix().getValues(valueHolder);
@@ -370,12 +372,12 @@ public class PhotoDetailFragment extends Fragment {
 //            if (mScaleGestureDetector.isInProgress()) {
 //            } else {
             // 本来の位置にtranslate
-            tmpMatrix.postTranslate(lineCenter.x, lineCenter.y);
+//            tmpMatrix.postTranslate(lineCenter.x, lineCenter.y);
 
             // ドラッグ分
             line.addTranslateX(mDeltaX);
             line.addTranslateY(mDeltaY);
-            tmpMatrix.postTranslate(line.getTranslateX(), line.getTranslateY());
+            tmpMatrix.postTranslate(line.getTranslateX() * mScale, line.getTranslateY() * mScale);
 //            tmpMatrix.postTranslate((float)mSurfaceCenter.x, (float)mSurfaceCenter.y);
 //            tmpMatrix.postTranslate(mTranslateX - mSurfaceCenter.x, mTranslateY - mSurfaceCenter.y);
 //            }
@@ -411,6 +413,8 @@ public class PhotoDetailFragment extends Fragment {
             mOriginalBitmapFileName = saveImageToCacheDir(mBitmap, getActivity().getApplicationContext());
 
             if (mSurfaceCreated) {
+                getScaleForFitBitmapToView();
+
                 Canvas canvas = null;
                 try {
                     canvas = mSurfaceHolder.lockCanvas(null);
@@ -426,6 +430,13 @@ public class PhotoDetailFragment extends Fragment {
 
             mPictureUri = null;
         }
+    }
+
+    private void getScaleForFitBitmapToView() {
+        // SurfaceViewにフィットさせるための設定。
+        float hightScale = (float) mSurfaceHolder.getSurfaceFrame().height() / (float) mBitmap.getHeight();
+        float widthScale = (float) mSurfaceHolder.getSurfaceFrame().width() / (float) mBitmap.getWidth();
+        mScale = Math.min(hightScale, widthScale);
     }
 
     private Bitmap getBitmap(Intent intent) {
@@ -489,7 +500,7 @@ public class PhotoDetailFragment extends Fragment {
 
         mMatrix.reset();
         mMatrix.postScale(mScale, mScale);
-        mMatrix.postTranslate(-mBitmap.getWidth() / 2 * mScale, -mBitmap.getHeight() / 2 * mScale);
+//        mMatrix.postTranslate(-mBitmap.getWidth() / 2 * mScale, -mBitmap.getHeight() / 2 * mScale);
         mMatrix.postTranslate(mTranslateX, mTranslateY);
 
         canvas.drawColor(Color.WHITE);       // 画像部分はmatrixで縮小されるので余白ができる。余白部分を白で表示させるための処理。

@@ -344,11 +344,11 @@ public class PhotoDetailFragment extends Fragment {
             Matrix tmpMatrix = new Matrix();
 
             // 最初に線を描いた時点のscale(valueHolder[0])から今(mScale)何倍になっているか。 = mScale / valueHolder[0]
-            tmpMatrix.postScale(mScale / valueHolder[0], mScale / valueHolder[0]);
+            float scaleOfThisLine = mScale / valueHolder[0];
+            tmpMatrix.postScale(scaleOfThisLine, scaleOfThisLine);
             // 本来の位置にtranslate
-            tmpMatrix.postTranslate(lineCenter.x, lineCenter.y);
-            // 描いた時点の移動分
-//            tmpMatrix.postTranslate(-line.getTranslateX(), -line.getTranslateY());
+            tmpMatrix.postTranslate(lineCenter.x * scaleOfThisLine, lineCenter.y * scaleOfThisLine);
+            // 描いた時点の移動分     tmpMatrix.postTranslate(-line.getTranslateX(), -line.getTranslateY());
             // 移動分
             tmpMatrix.postTranslate(mTranslateX, mTranslateY);
             path.transform(tmpMatrix);
@@ -358,6 +358,7 @@ public class PhotoDetailFragment extends Fragment {
             tmpPaint.setStrokeWidth(line.getPaint().getStrokeWidth() * mScale);
 
             canvas.drawPath(path, tmpPaint);
+
             path.reset();
 
         }

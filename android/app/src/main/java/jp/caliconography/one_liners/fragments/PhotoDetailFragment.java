@@ -184,7 +184,6 @@ public class PhotoDetailFragment extends Fragment {
         }
     };
 
-    private float mDeltaScale;
     private ScaleGestureDetector.SimpleOnScaleGestureListener mOnScaleListener = new ScaleGestureDetector.SimpleOnScaleGestureListener() {
         @Override
         public boolean onScaleBegin(ScaleGestureDetector detector) {
@@ -198,8 +197,7 @@ public class PhotoDetailFragment extends Fragment {
 
         @Override
         public boolean onScale(ScaleGestureDetector detector) {
-            mDeltaScale = detector.getScaleFactor();
-            mScale *= mDeltaScale;
+            mScale *= detector.getScaleFactor();
             Log.d(TAG, "mScale=" + Float.toString(mScale));
 
             Canvas canvas = null;

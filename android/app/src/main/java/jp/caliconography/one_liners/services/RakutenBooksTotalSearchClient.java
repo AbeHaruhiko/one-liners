@@ -5,9 +5,9 @@ import android.util.Log;
 import java.util.HashMap;
 import java.util.Map;
 
-import jp.caliconography.android.util.BusHolder;
 import jp.caliconography.one_liners.event.BookSearchCompletedEvent;
 import jp.caliconography.one_liners.model.BookSearchResult;
+import jp.caliconography.one_liners.util.BusHolder;
 import retrofit.Callback;
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;

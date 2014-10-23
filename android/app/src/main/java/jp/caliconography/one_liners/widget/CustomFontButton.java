@@ -1,4 +1,4 @@
-package jp.caliconography.android.widget;
+package jp.caliconography.one_liners.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -7,8 +7,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.Button;
 
-import jp.caliconography.android.util.CachedTypefaces;
 import jp.caliconography.one_liners.R;
+import jp.caliconography.one_liners.util.CachedTypefaces;
 
 public class CustomFontButton extends Button {
     private static final String TAG = "CustomFontButton";

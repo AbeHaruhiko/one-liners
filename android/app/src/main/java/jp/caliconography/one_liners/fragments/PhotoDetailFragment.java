@@ -33,12 +33,12 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnTouch;
 import hugo.weaving.DebugLog;
-import jp.caliconography.android.gesture.TranslationBy1FingerGestureDetector;
-import jp.caliconography.android.gesture.TranslationBy2FingerGestureDetector;
-import jp.caliconography.android.gesture.TranslationGestureDetector;
-import jp.caliconography.android.gesture.TranslationGestureListener;
 import jp.caliconography.one_liners.R;
 import jp.caliconography.one_liners.dummy.DummyContent;
+import jp.caliconography.one_liners.gesture.TranslationBy1FingerGestureDetector;
+import jp.caliconography.one_liners.gesture.TranslationBy2FingerGestureDetector;
+import jp.caliconography.one_liners.gesture.TranslationGestureDetector;
+import jp.caliconography.one_liners.gesture.TranslationGestureListener;
 import jp.caliconography.one_liners.model.Line;
 import jp.caliconography.one_liners.model.PointInFloat;
 

@@ -1,4 +1,4 @@
-package jp.caliconography.android.gesture;
+package jp.caliconography.one_liners.gesture;
 
 import android.view.MotionEvent;
 import android.view.View;

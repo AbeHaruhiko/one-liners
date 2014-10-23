@@ -1,11 +1,9 @@
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:caliconography="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.etsy.android.grid.StaggeredGridView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <com.etsy.android.grid.StaggeredGridView xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/grid_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -15,7 +13,7 @@
     <view
         android:layout_width="50dp"
         android:layout_height="50dp"
-        class="jp.caliconography.android.widget.CustomFontButton"
+        class="jp.caliconography.one_liners.widget.CustomFontButton"
         android:id="@+id/create"
         android:layout_gravity="right|bottom"
         android:text="&#xf055;"

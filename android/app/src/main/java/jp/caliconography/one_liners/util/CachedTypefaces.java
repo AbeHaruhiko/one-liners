@@ -1,4 +1,4 @@
-package jp.caliconography.android.util;
+package jp.caliconography.one_liners.util;
 
 import android.content.Context;
 import android.graphics.Typeface;

@@ -1,4 +1,4 @@
-package jp.caliconography.android.util;
+package jp.caliconography.one_liners.util;
 
 import com.squareup.otto.Bus;
 

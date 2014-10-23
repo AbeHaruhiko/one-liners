@@ -42,11 +42,11 @@ import it.gmariotti.cardslib.demo.extras.staggered.data.ServerDatabase;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
 import it.gmariotti.cardslib.library.view.CardListView;
-import jp.caliconography.android.util.BusHolder;
 import jp.caliconography.one_liners.R;
 import jp.caliconography.one_liners.event.BookSearchCompletedEvent;
 import jp.caliconography.one_liners.model.BookSearchResult;
 import jp.caliconography.one_liners.services.RakutenBooksTotalSearchClient;
+import jp.caliconography.one_liners.util.BusHolder;
 
 /**
  * This example uses a staggered card with different different photos and text.

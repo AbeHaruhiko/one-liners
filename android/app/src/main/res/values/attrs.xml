@@ -3,4 +3,7 @@
     <declare-styleable name="CustomFontButton">
         <attr name="customFont" format="string" />
     </declare-styleable>
+    <declare-styleable name="PopupMenu">
+        <attr name="item_interval" format="integer" />
+    </declare-styleable>
 </resources>

@@ -25,6 +25,8 @@ public class PopupMenu extends FrameLayout {
 
     public static final String TRANSLATION_Y = "translationY";
     public static final int ITEM_INTERVAL_DEFAULT_VALUE = 100;
+    public static final int OPEN_DURATION_DEFAULT_VALUE = 500;
+    public static final int CLOSE_DURATION_DEFAULT_VALUE = 200;
     @InjectView(R.id.popup_menu_base)
     Button mBaseButton;
     @InjectView(R.id.menu1)
@@ -39,6 +41,8 @@ public class PopupMenu extends FrameLayout {
     ImageView mMenu5;
 
     private float mItemInterval = ITEM_INTERVAL_DEFAULT_VALUE;
+    private int mOpenDuration = OPEN_DURATION_DEFAULT_VALUE;
+    private int mCloseDuration = CLOSE_DURATION_DEFAULT_VALUE;
 
     private final ArrayList<View> mViewList = new ArrayList<View>();
 
@@ -53,6 +57,8 @@ public class PopupMenu extends FrameLayout {
 
         TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.PopupMenu);
         mItemInterval = attributes.getFloat(R.styleable.PopupMenu_item_interval, ITEM_INTERVAL_DEFAULT_VALUE);
+        mOpenDuration = attributes.getInt(R.styleable.PopupMenu_open_duration, OPEN_DURATION_DEFAULT_VALUE);
+        mCloseDuration = attributes.getInt(R.styleable.PopupMenu_close_duration, CLOSE_DURATION_DEFAULT_VALUE);
 
         // LayoutInflaterでレイアウトxmlの内容でViewを作る
         // LayoutInflater#inflate()の第2引数ではルートとなるViewとして自分自身を指定する
@@ -84,7 +90,7 @@ public class PopupMenu extends FrameLayout {
     public void open() {
         for (int i = 0; i < mViewList.size(); i++) {
             ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mViewList.get(i), TRANSLATION_Y, 0f, -mItemInterval * i);
-            objectAnimator.setDuration(500);
+            objectAnimator.setDuration(mOpenDuration);
             objectAnimator.setInterpolator(new AnticipateOvershootInterpolator(2));
             objectAnimator.start();
         }
@@ -93,7 +99,7 @@ public class PopupMenu extends FrameLayout {
     public void close() {
         for (int i = 0; i < mViewList.size(); i++) {
             ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mViewList.get(i), TRANSLATION_Y, -mItemInterval * i, 0f);
-            objectAnimator.setDuration(200);
+            objectAnimator.setDuration(mCloseDuration);
             objectAnimator.start();
         }
     }

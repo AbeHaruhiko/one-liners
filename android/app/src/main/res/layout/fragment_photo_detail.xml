@@ -32,7 +32,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true" />
 
-    <view xmlns:one-liners="http://schemas.android.com/apk/res/android"
+    <view xmlns:one-liners="http://schemas.android.com/apk/res-auto"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         class="jp.caliconography.one_liners.widget.PopupMenu"
@@ -42,6 +42,6 @@
         android:layout_alignBottom="@+id/photo"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        one-liners:item_interval="100" />
+        one-liners:item_interval="100.0" />
 
 </RelativeLayout>

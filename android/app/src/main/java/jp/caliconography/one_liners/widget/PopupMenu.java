@@ -1,11 +1,11 @@
 package jp.caliconography.one_liners.widget;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AnticipateOvershootInterpolator;
-import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -37,7 +37,7 @@ public class PopupMenu extends FrameLayout {
 
     private final ArrayList<ImageView> viewList = new ArrayList<ImageView>();
 
-    private boolean isOpenMenu;
+    private boolean isOpenMenu = false;
     private final int RADIUS = 300;     //メニューが開いたときの半径の長さ
     private final int DEGREE = 90;     //メニューが開く角度
 
@@ -93,45 +93,19 @@ public class PopupMenu extends FrameLayout {
     //メニューをオープンするメソッド
     public void openAnimation() {
         for (int i = 0; i < viewList.size(); i++) {
-            //アニメーションで移動する分だけマージンを取る
-            setMargin(i);
-            //メニューが開くアニメーションを設定。
-            TranslateAnimation openAnimation = new TranslateAnimation(-getTranslateX(getDegree() * i), 0, getTranslateY(getDegree() * i), 0);
-            openAnimation.setDuration(500);
-            openAnimation.setStartOffset(100 * i);
-            AnticipateOvershootInterpolator overshootInterpolator = new AnticipateOvershootInterpolator(2);
-            openAnimation.setInterpolator(overshootInterpolator);
-            viewList.get(i).startAnimation(openAnimation);
+            ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(viewList.get(i), "translationY", 0f, -100f * i);
+            objectAnimator.setDuration(500);
+            objectAnimator.setInterpolator(new AnticipateOvershootInterpolator(2));
+            objectAnimator.start();
         }
     }
 
     //メニューをクローズするアニメーション
     public void closeAnimation() {
         for (int i = 0; i < viewList.size(); i++) {
-            //マージンを元に戻す
-            resetMargin(i);
-            //メニューが閉じるアニメーションを設定する
-            TranslateAnimation closeAnimation = new TranslateAnimation(getTranslateX(getDegree() * i), 0, -getTranslateY(getDegree() * i), 0);
-            closeAnimation.setDuration(300);
-            closeAnimation.setStartOffset(100 * i);
-            viewList.get(i).startAnimation(closeAnimation);
+            ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(viewList.get(i), "translationY", -100f * i, 0f);
+            objectAnimator.setDuration(200);
+            objectAnimator.start();
         }
-    }
-
-    //アニメーション後の座標までマージンを取るメソッド
-    public void setMargin(int index) {
-        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) viewList.get(index).getLayoutParams();
-        params.bottomMargin = getTranslateY(getDegree() * index);
-        params.leftMargin = getTranslateX(getDegree() * index);
-        viewList.get(index).setLayoutParams(params);
-        viewList.get(index).setVisibility(View.VISIBLE);
-    }
-
-    //マージンを元に戻すメソッド
-    public void resetMargin(int index) {
-        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) viewList.get(index).getLayoutParams();
-        params.bottomMargin = 0;
-        params.leftMargin = 0;
-        viewList.get(index).setLayoutParams(params);
     }
 }

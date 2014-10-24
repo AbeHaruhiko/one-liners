@@ -36,8 +36,9 @@ public class PopupMenu extends FrameLayout {
 
     private List<PopupMenuItem> mItemList = new ArrayList<PopupMenuItem>();
 
-    private boolean isOpened = false;
+    public boolean isOpened = false;
     private View mLayout;
+    private ItemClickedListener mItemClickedListener;
 
     public PopupMenu(Context context) {
         super(context);
@@ -74,7 +75,10 @@ public class PopupMenu extends FrameLayout {
         } else {
             close();
         }
-        isOpened = !isOpened;
+    }
+
+    public void setOnItemClickedListener(ItemClickedListener itemClickedListener) {
+        this.mItemClickedListener = itemClickedListener;
     }
 
     public void addItems(List<PopupMenuItem> items) {
@@ -94,6 +98,7 @@ public class PopupMenu extends FrameLayout {
             objectAnimator.setInterpolator(new AnticipateOvershootInterpolator(2));
             objectAnimator.start();
         }
+        this.isOpened = true;
     }
 
     public void close() {
@@ -102,5 +107,10 @@ public class PopupMenu extends FrameLayout {
             objectAnimator.setDuration(mCloseDuration);
             objectAnimator.start();
         }
+        this.isOpened = false;
+    }
+
+    public interface ItemClickedListener {
+        public void onClicked(int id);
     }
 }

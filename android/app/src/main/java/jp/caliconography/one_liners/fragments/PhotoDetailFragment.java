@@ -24,6 +24,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.squareup.otto.Subscribe;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -35,12 +37,14 @@ import butterknife.OnTouch;
 import hugo.weaving.DebugLog;
 import jp.caliconography.one_liners.R;
 import jp.caliconography.one_liners.dummy.DummyContent;
+import jp.caliconography.one_liners.event.PopupMenuItemClickedEvent;
 import jp.caliconography.one_liners.gesture.TranslationBy1FingerGestureDetector;
 import jp.caliconography.one_liners.gesture.TranslationBy2FingerGestureDetector;
 import jp.caliconography.one_liners.gesture.TranslationGestureDetector;
 import jp.caliconography.one_liners.gesture.TranslationGestureListener;
 import jp.caliconography.one_liners.model.Line;
 import jp.caliconography.one_liners.model.PointInFloat;
+import jp.caliconography.one_liners.util.BusHolder;
 import jp.caliconography.one_liners.widget.PopupMenu;
 import jp.caliconography.one_liners.widget.PopupMenuItem;
 
@@ -119,9 +123,22 @@ public class PhotoDetailFragment extends Fragment {
 
         // ポップアップメニューを構成
         ArrayList<PopupMenuItem> menuItems = new ArrayList<PopupMenuItem>();
-        menuItems.add(new PopupMenuItem(getActivity().getApplicationContext(), R.drawable.icon_reflection_heart_red));
-        menuItems.add(new PopupMenuItem(getActivity().getApplicationContext(), R.drawable.icon_reflection_arrow_red));
+        menuItems.add(new PopupMenuItem(getActivity().getApplicationContext(), 1, R.drawable.icon_reflection_heart_red));
+        menuItems.add(new PopupMenuItem(getActivity().getApplicationContext(), 2, R.drawable.icon_reflection_arrow_red));
         mColorPopup.addItems(menuItems);
+//        mColorPopup.setOnItemClickedListener(new PopupMenu.ItemClickedListener() {
+//            @Override
+//            public void onClicked(int id) {
+//                switch (id) {
+//                    case 1:
+//                        Log.d(TAG, "1");
+//                        break;
+//                    case  2:
+//                        Log.d(TAG, "2");
+//                        break;
+//                }
+//            }
+//        });
 
         mSurfaceHolder = mPhotoView.getHolder();
         mSurfaceHolder.addCallback(mSurfaceHolderCallback);
@@ -135,6 +152,20 @@ public class PhotoDetailFragment extends Fragment {
         createDefaultPaint();
 
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        BusHolder.get().register(this);
+    }
+
+    @Override
+    public void onPause() {
+        BusHolder.get().unregister(this);
+
+        super.onPause();
     }
 
     private void createGetsureDetectors() {
@@ -537,5 +568,16 @@ public class PhotoDetailFragment extends Fragment {
         i.setType("image/*");
         i.addCategory(Intent.CATEGORY_OPENABLE);
         return i;
+    }
+
+    @Subscribe
+    public void onItemClicked(PopupMenuItemClickedEvent event) {
+        switch (event.getId()) {
+            case 1:
+                break;
+            case 2:
+                break;
+        }
+        mColorPopup.close();
     }
 }

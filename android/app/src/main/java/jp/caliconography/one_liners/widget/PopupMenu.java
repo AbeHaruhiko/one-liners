@@ -29,16 +29,6 @@ public class PopupMenu extends FrameLayout {
     public static final int CLOSE_DURATION_DEFAULT_VALUE = 200;
     @InjectView(R.id.popup_menu_base)
     Button mBaseButton;
-//    @InjectView(R.id.menu1)
-//    ImageView mMenu1;
-//    @InjectView(R.id.menu2)
-//    ImageView mMenu2;
-//    @InjectView(R.id.menu3)
-//    ImageView mMenu3;
-//    @InjectView(R.id.menu4)
-//    ImageView mMenu4;
-//    @InjectView(R.id.menu5)
-//    ImageView mMenu5;
 
     private float mItemInterval = ITEM_INTERVAL_DEFAULT_VALUE;
     private int mOpenDuration = OPEN_DURATION_DEFAULT_VALUE;
@@ -68,15 +58,9 @@ public class PopupMenu extends FrameLayout {
             mCloseDuration = attributes.getInt(R.styleable.PopupMenu_close_duration, CLOSE_DURATION_DEFAULT_VALUE);
         }
 
-        // LayoutInflaterでレイアウトxmlの内容でViewを作る
-        // LayoutInflater#inflate()の第2引数ではルートとなるViewとして自分自身を指定する
         mLayout = LayoutInflater.from(context).inflate(R.layout.popup_menu, this);
 
         ButterKnife.inject(this, mLayout);
-
-//        mItemList.add(new PopupMenuItem(context, R.drawable.icon_reflection_none_red));
-//        mItemList.add(new PopupMenuItem(context, R.drawable.icon_reflection_arrow_red));
-//        mItemList.add(new PopupMenuItem(context, R.drawable.icon_reflection_heart_red));
     }
 
     public PopupMenu(Context context, AttributeSet attrs, int defStyle) {

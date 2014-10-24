@@ -36,7 +36,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         class="jp.caliconography.one_liners.widget.PopupMenu"
-        android:id="@+id/view"
+        android:id="@+id/color_popup"
         android:layout_toEndOf="@+id/load_image"
         android:layout_toRightOf="@+id/load_image"
         android:layout_alignBottom="@+id/photo"

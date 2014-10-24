@@ -41,6 +41,8 @@ import jp.caliconography.one_liners.gesture.TranslationGestureDetector;
 import jp.caliconography.one_liners.gesture.TranslationGestureListener;
 import jp.caliconography.one_liners.model.Line;
 import jp.caliconography.one_liners.model.PointInFloat;
+import jp.caliconography.one_liners.widget.PopupMenu;
+import jp.caliconography.one_liners.widget.PopupMenuItem;
 
 /**
  * A fragment representing a single book detail screen.
@@ -66,6 +68,8 @@ public class PhotoDetailFragment extends Fragment {
     SurfaceView mPhotoView;
     @InjectView(R.id.load_image)
     Button mBtnLoadImage;
+    @InjectView(R.id.color_popup)
+    PopupMenu mColorPopup;
 
     private Uri mPictureUri;
     private SurfaceHolder mSurfaceHolder;
@@ -109,9 +113,15 @@ public class PhotoDetailFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_photo_detail, container, false);
+        ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_photo_detail, container, false);
 
         ButterKnife.inject(this, rootView);
+
+        // ポップアップメニューを構成
+        ArrayList<PopupMenuItem> menuItems = new ArrayList<PopupMenuItem>();
+        menuItems.add(new PopupMenuItem(getActivity().getApplicationContext(), R.drawable.icon_reflection_heart_red));
+        menuItems.add(new PopupMenuItem(getActivity().getApplicationContext(), R.drawable.icon_reflection_arrow_red));
+        mColorPopup.addItems(menuItems);
 
         mSurfaceHolder = mPhotoView.getHolder();
         mSurfaceHolder.addCallback(mSurfaceHolderCallback);

@@ -3,35 +3,32 @@ package jp.caliconography.one_liners.widget;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.view.ViewGroup;
-import android.widget.ImageButton;
+import android.view.Gravity;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 /**
  * Created by abe on 2014/10/23.
  */
-public class PopupMenuItem extends ImageButton {
+public class PopupMenuItem extends ImageView {
+
     public PopupMenuItem(Context context) {
         super(context);
-
-        ViewGroup.LayoutParams params = (ViewGroup.LayoutParams) getLayoutParams();
-        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-        params.height = ViewGroup.LayoutParams.MATCH_PARENT;
-
-        setLayoutParams(params);
+        setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM | Gravity.LEFT));
     }
 
     public PopupMenuItem(Context context, int imageResourceId) {
-        super(context);
+        this(context);
         setImageResource(imageResourceId);
     }
 
     public PopupMenuItem(Context context, Drawable image) {
-        super(context);
+        this(context);
         setImageDrawable(image);
     }
 
     public PopupMenuItem(Context context, Bitmap bitmap) {
-        super(context);
+        this(context);
         setImageBitmap(bitmap);
     }
 }

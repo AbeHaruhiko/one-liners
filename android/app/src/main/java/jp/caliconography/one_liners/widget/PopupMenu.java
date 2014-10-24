@@ -7,8 +7,8 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AnticipateOvershootInterpolator;
-import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,7 @@ public class PopupMenu extends FrameLayout {
     public static final int OPEN_DURATION_DEFAULT_VALUE = 500;
     public static final int CLOSE_DURATION_DEFAULT_VALUE = 200;
     @InjectView(R.id.popup_menu_base)
-    Button mBaseButton;
+    ImageButton mBaseButton;
 
     private float mItemInterval = ITEM_INTERVAL_DEFAULT_VALUE;
     private int mOpenDuration = OPEN_DURATION_DEFAULT_VALUE;

@@ -40,7 +40,7 @@
     <!--android:layout_gravity="bottom|left"-->
     <!--android:src="@drawable/icon_reflection_heart_red" />-->
 
-    <Button
+    <ImageButton
         android:id="@+id/popup_menu_base"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

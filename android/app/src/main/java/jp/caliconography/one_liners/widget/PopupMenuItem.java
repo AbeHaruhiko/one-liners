@@ -1,16 +1,14 @@
 package jp.caliconography.one_liners.widget;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.view.Gravity;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 
 /**
  * Created by abe on 2014/10/23.
  */
-public class PopupMenuItem extends ImageView {
+public class PopupMenuItem extends ImageButton {
 
     public PopupMenuItem(Context context) {
         super(context);
@@ -19,16 +17,6 @@ public class PopupMenuItem extends ImageView {
 
     public PopupMenuItem(Context context, int imageResourceId) {
         this(context);
-        setImageResource(imageResourceId);
-    }
-
-    public PopupMenuItem(Context context, Drawable image) {
-        this(context);
-        setImageDrawable(image);
-    }
-
-    public PopupMenuItem(Context context, Bitmap bitmap) {
-        this(context);
-        setImageBitmap(bitmap);
+        setBackgroundResource(imageResourceId);
     }
 }

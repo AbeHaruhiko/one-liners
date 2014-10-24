@@ -126,19 +126,6 @@ public class PhotoDetailFragment extends Fragment {
         menuItems.add(new PopupMenuItem(getActivity().getApplicationContext(), 1, R.drawable.icon_reflection_heart_red));
         menuItems.add(new PopupMenuItem(getActivity().getApplicationContext(), 2, R.drawable.icon_reflection_arrow_red));
         mColorPopup.addItems(menuItems);
-//        mColorPopup.setOnItemClickedListener(new PopupMenu.ItemClickedListener() {
-//            @Override
-//            public void onClicked(int id) {
-//                switch (id) {
-//                    case 1:
-//                        Log.d(TAG, "1");
-//                        break;
-//                    case  2:
-//                        Log.d(TAG, "2");
-//                        break;
-//                }
-//            }
-//        });
 
         mSurfaceHolder = mPhotoView.getHolder();
         mSurfaceHolder.addCallback(mSurfaceHolderCallback);

@@ -3,6 +3,7 @@ package jp.caliconography.one_liners.fragments;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -99,6 +100,12 @@ public class BookDetailFragment extends Fragment {
         Intent intent = new Intent();
         intent.putExtra("title", title);
         intent.putExtra("author", author);
+        return intent;
+    }
+
+    static Intent createPaintedPhotoIntent(Bitmap paintedPhoto) {
+        Intent intent = new Intent();
+        intent.putExtra("paintedPhoto", paintedPhoto);
         return intent;
     }
 }

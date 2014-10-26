@@ -1,19 +1,18 @@
 package jp.caliconography.one_liners.model;
 
 import android.graphics.Matrix;
-import android.graphics.Paint;
 
 /**
  * Created by abeharuhiko on 2014/10/17.
  */
-public class Line extends Shape {
+public class RectangleConfig extends ShapeConfig {
 
     private final float mStartX;
     private final float mStartY;
     private final float mEndX;
     private final float mEndY;
 
-    public Line(float mStartX, float mStartY, float mEndX, float mEndY, Paint mPaint, Matrix mMatrix, float mTranslateX, float mTranslateY) {
+    public RectangleConfig(float mStartX, float mStartY, float mEndX, float mEndY, Paint mPaint, Matrix mMatrix, float mTranslateX, float mTranslateY) {
         super(mPaint, mMatrix, mTranslateX, mTranslateY);
         this.mStartX = mStartX;
         this.mStartY = mStartY;

@@ -42,7 +42,7 @@ import jp.caliconography.one_liners.gesture.TranslationBy1FingerGestureDetector;
 import jp.caliconography.one_liners.gesture.TranslationBy2FingerGestureDetector;
 import jp.caliconography.one_liners.gesture.TranslationGestureDetector;
 import jp.caliconography.one_liners.gesture.TranslationGestureListener;
-import jp.caliconography.one_liners.model.Line;
+import jp.caliconography.one_liners.model.LineConfig;
 import jp.caliconography.one_liners.model.PaintConfig;
 import jp.caliconography.one_liners.model.PointInFloat;
 import jp.caliconography.one_liners.util.BusHolder;
@@ -94,7 +94,7 @@ public class PhotoDetailFragment extends Fragment {
 
     private boolean mSurfaceCreated;
     private Paint mPaint;
-    ArrayList<Line> mLineArray = new ArrayList<Line>();
+    ArrayList<LineConfig> mLineConfigArray = new ArrayList<LineConfig>();
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -245,7 +245,7 @@ public class PhotoDetailFragment extends Fragment {
 
                 if (canvas != null) {
                     setPhotoBitmapToCanvas(canvas);
-                    drawPath(canvas);
+                    drawTempPath(canvas);
                     Log.d(TAG, "______onScale______");
                     renderAllPath(canvas);
                 }
@@ -271,10 +271,6 @@ public class PhotoDetailFragment extends Fragment {
                     setPhotoBitmapToCanvas(canvas);
                     Log.d(TAG, "______一本指のonTranslationEnd______");
                     renderAllPath(canvas);
-                    // TODO 点も描けるようにしたい。
-                    if (mOriginX != mCurrentX || mOriginY != mCurrentY) {
-                        mLineArray.add(new Line(mOriginX, mOriginY, mCurrentX, mCurrentY, new Paint(mPaint), new Matrix(mMatrix), mTranslateX, mTranslateY));
-                    }
                     fixPath(canvas);
                 }
             } finally {
@@ -307,7 +303,7 @@ public class PhotoDetailFragment extends Fragment {
                 if (canvas != null) {
                     setPhotoBitmapToCanvas(canvas);
                     renderAllPath(canvas);
-                    drawPath(canvas);
+                    drawTempPath(canvas);
                 }
             } finally {
                 if (canvas != null) {
@@ -346,7 +342,7 @@ public class PhotoDetailFragment extends Fragment {
 
                 if (canvas != null) {
                     setPhotoBitmapToCanvas(canvas);
-                    drawPath(canvas);
+                    drawTempPath(canvas);
                     Log.d(TAG, "______一本指のonTranslation______");
                     renderAllPath(canvas);
                 }
@@ -360,17 +356,17 @@ public class PhotoDetailFragment extends Fragment {
     };
 
     private void renderAllPath(Canvas canvas) {
-        for (Line line : mLineArray) {
+        for (LineConfig lineConfig : mLineConfigArray) {
             Path path = new Path();
 
             // 線の中点を原点(0, 0)へ配置。
-            setLineOnOrigin(line, path);
+            setLineOnOrigin(lineConfig, path);
 
-            path.transform(buildMatrixForPanZoom(line));
+            path.transform(buildMatrixForPanZoom(lineConfig));
 
             // 各Path用のPaintを生成（line.getPaint().setStrokeWidth()すると累乗になってしまうため。
-            Paint paint = new Paint(line.getPaint());
-            paint.setStrokeWidth(line.getPaint().getStrokeWidth() * mScale);
+            Paint paint = new Paint(lineConfig.getPaint());
+            paint.setStrokeWidth(lineConfig.getPaint().getUnScaledStrokeWidth().getWidthInt() * mScale);
 
             canvas.drawPath(path, paint);
 
@@ -379,11 +375,11 @@ public class PhotoDetailFragment extends Fragment {
         }
     }
 
-    private Matrix buildMatrixForPanZoom(Line line) {
+    private Matrix buildMatrixForPanZoom(LineConfig lineConfig) {
         // 線の中点を求める
-        PointInFloat lineCenter = PointInFloat.getMidpoint(new PointInFloat(line.getStartX(), line.getStartY()), new PointInFloat(line.getEndX(), line.getEndY()));
+        PointInFloat lineCenter = PointInFloat.getMidpoint(new PointInFloat(lineConfig.getStartX(), lineConfig.getStartY()), new PointInFloat(lineConfig.getEndX(), lineConfig.getEndY()));
 
-        float[] valueHolder = getMatrixFloats(line.getMatrix());
+        float[] valueHolder = getMatrixFloats(lineConfig.getMatrix());
 
         Matrix matrix = new Matrix();
 
@@ -396,7 +392,7 @@ public class PhotoDetailFragment extends Fragment {
         matrix.postTranslate(lineCenter.x * scaleOfThisLine, lineCenter.y * scaleOfThisLine);
 
         // 描いた時点の移動分
-        matrix.postTranslate(-line.getTranslateX() * scaleOfThisLine, -line.getTranslateY() * scaleOfThisLine);
+        matrix.postTranslate(-lineConfig.getTranslateX() * scaleOfThisLine, -lineConfig.getTranslateY() * scaleOfThisLine);
 
         // 移動分
         matrix.postTranslate(mTranslateX, mTranslateY);
@@ -409,12 +405,12 @@ public class PhotoDetailFragment extends Fragment {
         return valueHolder;
     }
 
-    private void setLineOnOrigin(Line line, Path path) {
+    private void setLineOnOrigin(LineConfig lineConfig, Path path) {
         // 線の中点を求める
-        PointInFloat lineCenter = PointInFloat.getMidpoint(new PointInFloat(line.getStartX(), line.getStartY()), new PointInFloat(line.getEndX(), line.getEndY()));
+        PointInFloat lineCenter = PointInFloat.getMidpoint(new PointInFloat(lineConfig.getStartX(), lineConfig.getStartY()), new PointInFloat(lineConfig.getEndX(), lineConfig.getEndY()));
 
-        path.moveTo(line.getStartX() - lineCenter.x, line.getStartY() - lineCenter.y);
-        path.lineTo(line.getEndX() - lineCenter.x, line.getEndY() - lineCenter.y);
+        path.moveTo(lineConfig.getStartX() - lineCenter.x, lineConfig.getStartY() - lineCenter.y);
+        path.lineTo(lineConfig.getEndX() - lineCenter.x, lineConfig.getEndY() - lineCenter.y);
     }
 
     @Override
@@ -495,12 +491,13 @@ public class PhotoDetailFragment extends Fragment {
         canvas.drawBitmap(mBitmap, mMatrix, null);
     }
 
-    private void drawPath(Canvas canvas) {
+    private LineConfig drawPath(Canvas canvas, int color) {
 
         // 各Path用のPaintを生成（line.getPaint().setStrokeWidth()すると累乗になってしまうため。
-        Paint paint = new Paint(mPaint);
-        paint.setColor(0x88cdcdcd);
-        paint.setStrokeWidth(mPaint.getStrokeWidth() * mScale);
+        jp.caliconography.one_liners.model.Paint paint = new jp.caliconography.one_liners.model.Paint(mPaint);
+        paint.setColor(color);
+        paint.setStrokeWidth(mPaintConfig.getStrokeWidth().getWidthInt() * mScale);
+        paint.setUnScaledStrokeWidth(mPaintConfig.getStrokeWidth());
 
         Path path = new Path();
         path.moveTo(mOriginX, mOriginY);
@@ -508,23 +505,37 @@ public class PhotoDetailFragment extends Fragment {
 
         canvas.drawPath(path, paint);
         path.reset();
+
+        return new LineConfig(mOriginX, mOriginY, mCurrentX, mCurrentY, paint, new Matrix(mMatrix), mTranslateX, mTranslateY);
+    }
+
+    private void drawTempPath(Canvas canvas) {
+        drawPath(canvas, 0x88cdcdcd);
     }
 
     private void fixPath(Canvas canvas) {
-
-        // 各Path用のPaintを生成（line.getPaint().setStrokeWidth()すると累乗になってしまうため。
-        Paint paint = new Paint(mPaint);
-        paint.setColor(mPaintConfig.getColor().getColorInt());
-        paint.setAlpha(0x88);
-        paint.setStrokeWidth(mPaint.getStrokeWidth() * mScale);
-
-        Path path = new Path();
-        path.moveTo(mOriginX, mOriginY);
-        path.lineTo(mCurrentX, mCurrentY);
-
-        canvas.drawPath(path, paint);
-        path.reset();
+        LineConfig lineConfig = drawPath(canvas, mPaintConfig.getColor().getColorInt());
+        // TODO 点も描けるようにしたい。
+        if (mOriginX != mCurrentX || mOriginY != mCurrentY) {
+            mLineConfigArray.add(lineConfig);
+        }
     }
+
+//    private void fixPath(Canvas canvas) {
+//
+//        // 各Path用のPaintを生成（line.getPaint().setStrokeWidth()すると累乗になってしまうため。
+//        Paint paint = new Paint(mPaint);
+//        paint.setColor(mPaintConfig.getColor().getColorInt());
+//        paint.setAlpha(0x88);
+//        paint.setStrokeWidth(mPaint.getStrokeWidth() * mScale);
+//
+//        Path path = new Path();
+//        path.moveTo(mOriginX, mOriginY);
+//        path.lineTo(mCurrentX, mCurrentY);
+//
+//        canvas.drawPath(path, paint);
+//        path.reset();
+//    }
 
     private void launchChooser() {
         // ギャラリーから選択

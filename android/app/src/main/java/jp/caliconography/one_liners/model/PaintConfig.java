@@ -69,6 +69,10 @@ public class PaintConfig {
         private StrokeWidth(int width) {
             this.width = width;
         }
+
+        public int getWidthInt() {
+            return width;
+        }
     }
 
     public enum StrokeBorderWidth {
@@ -85,12 +89,12 @@ public class PaintConfig {
 
     public enum ShapeType {
 
-        LINE(Line.class),
-        RECTANGLE(Rectangle.class);
+        LINE(LineConfig.class),
+        RECTANGLE(RectangleConfig.class);
 
         private Class shapeType;
 
-        private ShapeType(Class<? extends Shape> shapeType) {
+        private ShapeType(Class<? extends ShapeConfig> shapeType) {
             this.shapeType = shapeType;
         }
     }

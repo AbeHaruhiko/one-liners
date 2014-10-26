@@ -12,25 +12,31 @@ import jp.caliconography.one_liners.util.BusHolder;
 /**
  * Created by abe on 2014/10/23.
  */
-public class PopupMenuItem extends ImageButton {
+public abstract class PopupMenuItem<T> extends ImageButton {
 
-    int mId;
+    T mValue;
 
     public PopupMenuItem(Context context) {
         super(context);
         setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM | Gravity.LEFT));
     }
 
-    public PopupMenuItem(Context context, int id, int imageResourceId) {
+    public PopupMenuItem(Context context, int id, T value, int imageResourceId) {
         this(context);
-        mId = id;
+        this.setId(id);
+        mValue = value;
+
         setBackgroundResource(imageResourceId);
         setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                BusHolder.get().post(new PopupMenuItemClickedEvent(mId));
+                BusHolder.get().post(new PopupMenuItemClickedEvent((PopupMenuItem) view));
             }
         });
+    }
+
+    public T getValue() {
+        return mValue;
     }
 
 }

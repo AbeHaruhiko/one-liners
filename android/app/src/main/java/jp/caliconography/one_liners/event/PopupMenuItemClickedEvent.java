@@ -1,16 +1,18 @@
 package jp.caliconography.one_liners.event;
 
+import jp.caliconography.one_liners.widget.PopupMenuItem;
+
 /**
  * Created by abe on 2014/10/24.
  */
 public class PopupMenuItemClickedEvent {
-    private final int id;
+    private final PopupMenuItem mItem;
 
-    public PopupMenuItemClickedEvent(final int id) {
-        this.id = id;
+    public PopupMenuItemClickedEvent(final PopupMenuItem popupMenuItem) {
+        this.mItem = popupMenuItem;
     }
 
-    public int getId() {
-        return id;
+    public PopupMenuItem getItem() {
+        return mItem;
     }
 }

@@ -43,8 +43,10 @@ import jp.caliconography.one_liners.gesture.TranslationBy2FingerGestureDetector;
 import jp.caliconography.one_liners.gesture.TranslationGestureDetector;
 import jp.caliconography.one_liners.gesture.TranslationGestureListener;
 import jp.caliconography.one_liners.model.Line;
+import jp.caliconography.one_liners.model.PaintConfig;
 import jp.caliconography.one_liners.model.PointInFloat;
 import jp.caliconography.one_liners.util.BusHolder;
+import jp.caliconography.one_liners.widget.ColorPopupItem;
 import jp.caliconography.one_liners.widget.PopupMenu;
 import jp.caliconography.one_liners.widget.PopupMenuItem;
 
@@ -88,7 +90,7 @@ public class PhotoDetailFragment extends Fragment {
     private float mPrevX, mPrevY;       // matrixのtranslateで前回からの差分で計算すつるための前回検出点
     private float mOriginX, mOriginY;   // 一本指でスワイプを開始した点
     private float mCurrentX, mCurrentY; // 一本指の現在点
-
+    private PaintConfig mPaintConfig = new PaintConfig();
 
     private boolean mSurfaceCreated;
     private Paint mPaint;
@@ -123,8 +125,10 @@ public class PhotoDetailFragment extends Fragment {
 
         // ポップアップメニューを構成
         ArrayList<PopupMenuItem> menuItems = new ArrayList<PopupMenuItem>();
-        menuItems.add(new PopupMenuItem(getActivity().getApplicationContext(), 1, R.drawable.icon_reflection_heart_red));
-        menuItems.add(new PopupMenuItem(getActivity().getApplicationContext(), 2, R.drawable.icon_reflection_arrow_red));
+        menuItems.add(new ColorPopupItem(getActivity().getApplicationContext(), 1, PaintConfig.Color.RED, R.drawable.icon_reflection_heart_red));
+        menuItems.add(new ColorPopupItem(getActivity().getApplicationContext(), 2, PaintConfig.Color.BLUE, R.drawable.icon_reflection_arrow_red));
+        menuItems.add(new ColorPopupItem(getActivity().getApplicationContext(), 3, PaintConfig.Color.GREEN, R.drawable.icon_reflection_arrow_red));
+        menuItems.add(new ColorPopupItem(getActivity().getApplicationContext(), 4, PaintConfig.Color.BLACK, R.drawable.icon_reflection_arrow_red));
         mColorPopup.addItems(menuItems);
 
         mSurfaceHolder = mPhotoView.getHolder();
@@ -362,15 +366,13 @@ public class PhotoDetailFragment extends Fragment {
             // 線の中点を原点(0, 0)へ配置。
             setLineOnOrigin(line, path);
 
-            Matrix tmpMatrix = buildMatrixForPanZoom(line);
-
-            path.transform(tmpMatrix);
+            path.transform(buildMatrixForPanZoom(line));
 
             // 各Path用のPaintを生成（line.getPaint().setStrokeWidth()すると累乗になってしまうため。
-            Paint tmpPaint = new Paint(line.getPaint());
-            tmpPaint.setStrokeWidth(line.getPaint().getStrokeWidth() * mScale);
+            Paint paint = new Paint(line.getPaint());
+            paint.setStrokeWidth(line.getPaint().getStrokeWidth() * mScale);
 
-            canvas.drawPath(path, tmpPaint);
+            canvas.drawPath(path, paint);
 
             path.reset();
 
@@ -383,22 +385,22 @@ public class PhotoDetailFragment extends Fragment {
 
         float[] valueHolder = getMatrixFloats(line.getMatrix());
 
-        Matrix tmpMatrix = new Matrix();
+        Matrix matrix = new Matrix();
 
         float scaleOfThisLine = mScale / valueHolder[0];
 
         // 最初に線を描いた時点のscale(valueHolder[0])から今(mScale)何倍になっているか。 = mScale / valueHolder[0]
-        tmpMatrix.postScale(scaleOfThisLine, scaleOfThisLine);
+        matrix.postScale(scaleOfThisLine, scaleOfThisLine);
 
         // 本来の位置にtranslate
-        tmpMatrix.postTranslate(lineCenter.x * scaleOfThisLine, lineCenter.y * scaleOfThisLine);
+        matrix.postTranslate(lineCenter.x * scaleOfThisLine, lineCenter.y * scaleOfThisLine);
 
         // 描いた時点の移動分
-        tmpMatrix.postTranslate(-line.getTranslateX() * scaleOfThisLine, -line.getTranslateY() * scaleOfThisLine);
+        matrix.postTranslate(-line.getTranslateX() * scaleOfThisLine, -line.getTranslateY() * scaleOfThisLine);
 
         // 移動分
-        tmpMatrix.postTranslate(mTranslateX, mTranslateY);
-        return tmpMatrix;
+        matrix.postTranslate(mTranslateX, mTranslateY);
+        return matrix;
     }
 
     private float[] getMatrixFloats(Matrix matrix) {
@@ -496,30 +498,31 @@ public class PhotoDetailFragment extends Fragment {
     private void drawPath(Canvas canvas) {
 
         // 各Path用のPaintを生成（line.getPaint().setStrokeWidth()すると累乗になってしまうため。
-        Paint tmpPaint = new Paint(mPaint);
-        tmpPaint.setColor(0x88cdcdcd);
-        tmpPaint.setStrokeWidth(mPaint.getStrokeWidth() * mScale);
+        Paint paint = new Paint(mPaint);
+        paint.setColor(0x88cdcdcd);
+        paint.setStrokeWidth(mPaint.getStrokeWidth() * mScale);
 
         Path path = new Path();
         path.moveTo(mOriginX, mOriginY);
         path.lineTo(mCurrentX, mCurrentY);
 
-        canvas.drawPath(path, tmpPaint);
+        canvas.drawPath(path, paint);
         path.reset();
     }
 
     private void fixPath(Canvas canvas) {
 
         // 各Path用のPaintを生成（line.getPaint().setStrokeWidth()すると累乗になってしまうため。
-        Paint tmpPaint = new Paint(mPaint);
-        tmpPaint.setColor(0x88ff0000);
-        tmpPaint.setStrokeWidth(mPaint.getStrokeWidth() * mScale);
+        Paint paint = new Paint(mPaint);
+        paint.setColor(mPaintConfig.getColor().getColorInt());
+        paint.setAlpha(0x88);
+        paint.setStrokeWidth(mPaint.getStrokeWidth() * mScale);
 
         Path path = new Path();
         path.moveTo(mOriginX, mOriginY);
         path.lineTo(mCurrentX, mCurrentY);
 
-        canvas.drawPath(path, tmpPaint);
+        canvas.drawPath(path, paint);
         path.reset();
     }
 
@@ -559,12 +562,7 @@ public class PhotoDetailFragment extends Fragment {
 
     @Subscribe
     public void onItemClicked(PopupMenuItemClickedEvent event) {
-        switch (event.getId()) {
-            case 1:
-                break;
-            case 2:
-                break;
-        }
+        mPaintConfig.setColor(((ColorPopupItem) event.getItem()).getValue());
         mColorPopup.close();
     }
 }

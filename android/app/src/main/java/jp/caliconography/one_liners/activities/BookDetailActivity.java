@@ -2,6 +2,7 @@ package jp.caliconography.one_liners.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
@@ -49,6 +50,14 @@ public class BookDetailActivity extends Activity {
             getFragmentManager().beginTransaction()
                     .add(R.id.book_detail_container, fragment)
                     .commit();
+        }
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        Bitmap photoBitmap = (Bitmap) intent.getParcelableExtra("paintedPhoto");
+        if (photoBitmap != null) {
+
         }
     }
 

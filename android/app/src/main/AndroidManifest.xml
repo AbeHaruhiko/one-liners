@@ -23,6 +23,7 @@
         <activity
             android:name=".activities.BookDetailActivity"
             android:label="@string/title_book_detail"
+            android:launchMode="singleTop"
             android:parentActivityName=".activities.BookListActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import butterknife.ButterKnife;
@@ -26,6 +27,8 @@ import jp.caliconography.one_liners.dummy.DummyContent;
  */
 public class BookDetailFragment extends Fragment {
 
+    public static final String INTENT_KEY_PAINTED_PHOTO = "paintedPhoto";
+
     /**
      * The fragment argument representing the item ID that this fragment
      * represents.
@@ -41,6 +44,8 @@ public class BookDetailFragment extends Fragment {
      */
     private DummyContent.DummyItem mItem;
 
+    @InjectView(R.id.book_photo)
+    Button mBookPhoto;
     @InjectView(R.id.txt_title)
     TextView mTxtTitle;
     @InjectView(R.id.txt_author)
@@ -81,6 +86,9 @@ public class BookDetailFragment extends Fragment {
         if (requestCode == REQ_CODE_BOOK_SEARCH && resultCode == Activity.RESULT_OK) {
             mTxtTitle.setText(intent.getCharSequenceExtra("title"));
             mTxtAuthor.setText(intent.getCharSequenceExtra("author"));
+        } else if (requestCode == REQ_CODE_PHOTO_DETAIL && resultCode == Activity.RESULT_OK) {
+//            Bitmap photoBitmap = (Bitmap) intent.getParcelableExtra(INTENT_KEY_PAINTED_PHOTO);
+//            mBookPhoto.setBackground(new BitmapDrawable(getActivity().getResources(), photoBitmap));
         }
     }
 
@@ -105,7 +113,11 @@ public class BookDetailFragment extends Fragment {
 
     static Intent createPaintedPhotoIntent(Bitmap paintedPhoto) {
         Intent intent = new Intent();
-        intent.putExtra("paintedPhoto", paintedPhoto);
+        intent.putExtra(INTENT_KEY_PAINTED_PHOTO, paintedPhoto);
         return intent;
+    }
+
+    static void putPaintedPhotoIntent(Intent intent, Bitmap paintedPhoto) {
+        intent.putExtra(INTENT_KEY_PAINTED_PHOTO, paintedPhoto);
     }
 }

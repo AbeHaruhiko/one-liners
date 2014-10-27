@@ -109,6 +109,8 @@ public class PhotoDetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // FragmentでMenuを表示する為に必要
+        this.setHasOptionsMenu(true);
 
         if (getArguments().containsKey(ARG_ITEM_ID)) {
             // Load the dummy content specified by the fragment
@@ -464,6 +466,23 @@ public class PhotoDetailFragment extends Fragment {
             //
             NavUtils.navigateUpTo(this.getActivity(), new Intent(this.getActivity(), BookDetailActivity.class));
             return true;
+        } else if (id == R.id.save_photo) {
+
+            // 描いたbitmapの取得
+//            Intent intent = BookDetailFragment.putPaintedPhotoIntent(getViewBitmap(mPhotoView));
+//            intent.setClass(getActivity().getApplicationContext(), BookDetailActivity.class);
+
+            Intent intent = NavUtils.getParentActivityIntent(getActivity());
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            BookDetailFragment.putPaintedPhotoIntent(intent, getViewBitmap(mPhotoView));
+
+            Activity photoDetailActivity = this.getActivity();
+            photoDetailActivity.setResult(Activity.RESULT_OK);
+
+            // TODO: Upはおかしいよ・・・
+            NavUtils.navigateUpTo(photoDetailActivity, intent)
+//            photoDetailActivity.finish();
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -589,6 +608,17 @@ public class PhotoDetailFragment extends Fragment {
         i.setType("image/*");
         i.addCategory(Intent.CATEGORY_OPENABLE);
         return i;
+    }
+
+    public Bitmap getViewBitmap(View view) {
+        view.setDrawingCacheEnabled(true);
+        Bitmap cache = view.getDrawingCache();
+        if (cache == null) {
+            return null;
+        }
+        Bitmap bitmap = Bitmap.createBitmap(cache);
+        view.setDrawingCacheEnabled(false);
+        return bitmap;
     }
 
     @Subscribe

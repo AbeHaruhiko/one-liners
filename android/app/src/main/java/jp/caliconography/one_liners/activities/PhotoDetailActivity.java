@@ -2,6 +2,7 @@ package jp.caliconography.one_liners.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.Menu;
 
 import jp.caliconography.one_liners.R;
 import jp.caliconography.one_liners.fragments.PhotoDetailFragment;
@@ -47,5 +48,12 @@ public class PhotoDetailActivity extends Activity {
                     .add(R.id.photo_detail_container, fragment)
                     .commit();
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.photo_detail, menu);
+        return true;
     }
 }

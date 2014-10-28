@@ -26,6 +26,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.SaveCallback;
 import com.squareup.otto.Subscribe;
 
 import java.io.IOException;
@@ -40,6 +43,7 @@ import hugo.weaving.DebugLog;
 import jp.caliconography.one_liners.R;
 import jp.caliconography.one_liners.activities.BookDetailActivity;
 import jp.caliconography.one_liners.dummy.DummyContent;
+import jp.caliconography.one_liners.event.PhotoSavedEvent;
 import jp.caliconography.one_liners.event.PopupMenuItemClickedEvent;
 import jp.caliconography.one_liners.gesture.TranslationBy1FingerGestureDetector;
 import jp.caliconography.one_liners.gesture.TranslationBy2FingerGestureDetector;
@@ -48,6 +52,7 @@ import jp.caliconography.one_liners.gesture.TranslationGestureListener;
 import jp.caliconography.one_liners.model.LineConfig;
 import jp.caliconography.one_liners.model.PaintConfig;
 import jp.caliconography.one_liners.model.PointInFloat;
+import jp.caliconography.one_liners.model.parseobject.Review;
 import jp.caliconography.one_liners.util.BusHolder;
 import jp.caliconography.one_liners.widget.ColorPopupItem;
 import jp.caliconography.one_liners.widget.PopupMenu;
@@ -472,16 +477,15 @@ public class PhotoDetailFragment extends Fragment {
 //            Intent intent = BookDetailFragment.putPaintedPhotoIntent(getViewBitmap(mPhotoView));
 //            intent.setClass(getActivity().getApplicationContext(), BookDetailActivity.class);
 
-            Intent intent = NavUtils.getParentActivityIntent(getActivity());
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            BookDetailFragment.putPaintedPhotoIntent(intent, getViewBitmap(mPhotoView));
+            // Fileとして保存してみる
+            final ParseFile file = new ParseFile("photo.png", Review.bitmapToByte(getViewBitmap(mPhotoView)));
+            file.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    BusHolder.get().post(new PhotoSavedEvent(file));
+                }
+            });
 
-            Activity photoDetailActivity = this.getActivity();
-            photoDetailActivity.setResult(Activity.RESULT_OK);
-
-            // TODO: Upはおかしいよ・・・
-            NavUtils.navigateUpTo(photoDetailActivity, intent)
-//            photoDetailActivity.finish();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -625,5 +629,35 @@ public class PhotoDetailFragment extends Fragment {
     public void onItemClicked(PopupMenuItemClickedEvent event) {
         mPaintConfig.setColor(((ColorPopupItem) event.getItem()).getValue());
         mColorPopup.close();
+    }
+
+    @Subscribe
+    public void onPhotoSaved(PhotoSavedEvent event) {
+
+        final Review review = new Review();
+        review.setPhotoFile(event.getFile());
+        review.setPhoto(getViewBitmap(mPhotoView));
+//        review.pinInBackground();
+        review.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                Log.d(TAG, "bytes saved.");
+
+//                Intent intent = NavUtils.getParentActivityIntent(getActivity());
+                Intent intent = new Intent();
+//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+//                BookDetailFragment.putPaintedPhotoIntent(intent, getViewBitmap(mPhotoView));
+                intent.putExtra("reviewId", review.getObjectId());
+
+                Activity photoDetailActivity = getActivity();
+                photoDetailActivity.setResult(Activity.RESULT_OK, intent);
+
+                // TODO: Upはおかしいよ・・・
+//                NavUtils.navigateUpTo(photoDetailActivity, intent);
+                photoDetailActivity.finish();
+
+            }
+        });
+
     }
 }

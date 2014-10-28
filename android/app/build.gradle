@@ -54,4 +54,7 @@ dependencies {
 
     // otto(Event bus)
     compile 'com.squareup:otto:1.3.5'
+
+    // bolts(tasks, capture...)
+    compile 'com.parse.bolts:bolts-android:1.1.3'
 }

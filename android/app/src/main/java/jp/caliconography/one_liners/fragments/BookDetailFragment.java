@@ -4,12 +4,15 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.parse.ParseObject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -18,6 +21,7 @@ import jp.caliconography.one_liners.R;
 import jp.caliconography.one_liners.activities.BookSearchResultListActivity;
 import jp.caliconography.one_liners.activities.PhotoDetailActivity;
 import jp.caliconography.one_liners.dummy.DummyContent;
+import jp.caliconography.one_liners.model.parseobject.Review;
 
 /**
  * A fragment representing a single book detail screen.
@@ -89,6 +93,8 @@ public class BookDetailFragment extends Fragment {
         } else if (requestCode == REQ_CODE_PHOTO_DETAIL && resultCode == Activity.RESULT_OK) {
 //            Bitmap photoBitmap = (Bitmap) intent.getParcelableExtra(INTENT_KEY_PAINTED_PHOTO);
 //            mBookPhoto.setBackground(new BitmapDrawable(getActivity().getResources(), photoBitmap));
+            Review review = ParseObject.createWithoutData(Review.class, intent.getCharSequenceExtra("reviewId").toString());
+            mBookPhoto.setBackground(new BitmapDrawable(getActivity().getResources(), review.getPhoto()));
         }
     }
 

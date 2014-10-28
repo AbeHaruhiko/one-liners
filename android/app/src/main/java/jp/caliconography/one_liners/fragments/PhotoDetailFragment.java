@@ -24,6 +24,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 
 import com.parse.ParseException;
@@ -78,6 +79,8 @@ public class PhotoDetailFragment extends Fragment {
      */
     private DummyContent.DummyItem mItem;
 
+    @InjectView(R.id.progressContainer)
+    View mProgressContainer;
     @InjectView(R.id.photo)
     SurfaceView mPhotoView;
     @InjectView(R.id.load_image)
@@ -473,22 +476,34 @@ public class PhotoDetailFragment extends Fragment {
             return true;
         } else if (id == R.id.save_photo) {
 
-            // 描いたbitmapの取得
-//            Intent intent = BookDetailFragment.putPaintedPhotoIntent(getViewBitmap(mPhotoView));
-//            intent.setClass(getActivity().getApplicationContext(), BookDetailActivity.class);
+            showProgressBar();
 
-            // Fileとして保存してみる
+            // Fileとして保存
             final ParseFile file = new ParseFile("photo.png", Review.bitmapToByte(getViewBitmap(mPhotoView)));
             file.saveInBackground(new SaveCallback() {
                 @Override
                 public void done(ParseException e) {
-                    BusHolder.get().post(new PhotoSavedEvent(file));
+                    if (e == null) {
+                        BusHolder.get().post(new PhotoSavedEvent(file));
+                    } else {
+                        hideProgressBar();
+                    }
                 }
             });
 
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void hideProgressBar() {
+        mProgressContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_out));
+        mProgressContainer.setVisibility(View.GONE);
+    }
+
+    private void showProgressBar() {
+        mProgressContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_in));
+        mProgressContainer.setVisibility(View.VISIBLE);
     }
 
     private void getScaleForFitBitmapToView() {
@@ -643,19 +658,12 @@ public class PhotoDetailFragment extends Fragment {
             public void done(ParseException e) {
                 Log.d(TAG, "bytes saved.");
 
-//                Intent intent = NavUtils.getParentActivityIntent(getActivity());
                 Intent intent = new Intent();
-//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-//                BookDetailFragment.putPaintedPhotoIntent(intent, getViewBitmap(mPhotoView));
                 intent.putExtra("reviewId", review.getObjectId());
 
                 Activity photoDetailActivity = getActivity();
                 photoDetailActivity.setResult(Activity.RESULT_OK, intent);
-
-                // TODO: Upはおかしいよ・・・
-//                NavUtils.navigateUpTo(photoDetailActivity, intent);
                 photoDetailActivity.finish();
-
             }
         });
 

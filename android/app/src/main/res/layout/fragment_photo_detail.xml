@@ -3,20 +3,6 @@
     android:layout_height="fill_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!--<WebView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
-        <!--android:id="@+id/webView"-->
-        <!--android:layout_above="@+id/loadImage" />-->
-
-    <!--<ImageView-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:id="@+id/photo"-->
-        <!--android:layout_above="@+id/load_image"-->
-        <!--android:scaleType="centerInside"/>-->
-
     <SurfaceView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -43,5 +29,28 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         one-liners:item_interval="100.0" />
+
+    <LinearLayout
+        android:id="@+id/progressContainer"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:gravity="center">
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text=""
+            android:paddingTop="4dip"
+            android:singleLine="true" />
+
+    </LinearLayout>
 
 </RelativeLayout>

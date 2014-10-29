@@ -14,14 +14,14 @@ import java.io.FileOutputStream;
 /**
  * Created by abeharuhiko on 2014/08/14.
  */
-public class Util {
+public class Utils {
 
     public static File getScreenShotFile(View view, Context context) {
         return saveImageToCacheDir(getScreenBitmap(view, context), context);
     }
 
     private static Bitmap getScreenBitmap(View view, Context context) {
-        return getViewBitmap(view.getRootView(), context);
+        return getViewBitmap(view, context);
     }
 
     private static Bitmap getViewBitmap(View view, Context context) {

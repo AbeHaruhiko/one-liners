@@ -32,6 +32,7 @@ import com.parse.ParseFile;
 import com.parse.SaveCallback;
 import com.squareup.otto.Subscribe;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -55,6 +56,7 @@ import jp.caliconography.one_liners.model.PaintConfig;
 import jp.caliconography.one_liners.model.PointInFloat;
 import jp.caliconography.one_liners.model.parseobject.Review;
 import jp.caliconography.one_liners.util.BusHolder;
+import jp.caliconography.one_liners.util.Utils;
 import jp.caliconography.one_liners.widget.ColorPopupItem;
 import jp.caliconography.one_liners.widget.PopupMenu;
 import jp.caliconography.one_liners.widget.PopupMenuItem;
@@ -477,6 +479,9 @@ public class PhotoDetailFragment extends Fragment {
         } else if (id == R.id.save_photo) {
 
             showProgressBar();
+
+            File file_ = Utils.getScreenShotFile(mPhotoView, getActivity());
+            Log.d(TAG, file_.getAbsolutePath());
 
             // Fileとして保存
             final ParseFile file = new ParseFile("photo.png", Review.bitmapToByte(getViewBitmap(mPhotoView)));

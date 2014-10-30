@@ -100,7 +100,7 @@ public class BookDetailFragment extends Fragment {
 
 //            Bitmap photoBitmap = (Bitmap) intent.getParcelableExtra(INTENT_KEY_PAINTED_PHOTO);
 //            mBookPhoto.setBackground(new BitmapDrawable(getActivity().getResources(), photoBitmap));
-            Review review = ParseObject.createWithoutData(Review.class, intent.getCharSequenceExtra("reviewId").toString());
+            Review review = ParseObject.createWithoutData(Review.class, intent.getSerializableExtra("reviewId").toString());
             review.getPhotoBitmapInBackground();
         }
     }

@@ -661,27 +661,26 @@ public class PhotoDetailFragment extends Fragment {
     public void onPhotoSaved(PhotoSavedEvent event) {
 
         final Review review = new Review();
-        review.setObjectId();
         review.setPhotoFile(event.getFile());
         review.saveEventually(new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 Log.d(TAG, "bytes saved.");
 
-//                Intent intent = new Intent();
-//                intent.putExtra("reviewId", review.getObjectId());
-//
-//                Activity photoDetailActivity = getActivity();
-//                photoDetailActivity.setResult(Activity.RESULT_OK, intent);
-//                photoDetailActivity.finish();
+                Intent intent = new Intent();
+                intent.putExtra("reviewId", review.getObjectId());
+
+                Activity photoDetailActivity = getActivity();
+                photoDetailActivity.setResult(Activity.RESULT_OK, intent);
+                photoDetailActivity.finish();
             }
         });
-        // Eventuallyで保存する場合、Local DataStoreにpinされるのでdoneを待つ必要なし。
-        Intent intent = new Intent();
-        intent.putExtra("review", new ParsePrreview);
-
-        Activity photoDetailActivity = getActivity();
-        photoDetailActivity.setResult(Activity.RESULT_OK, intent);
-        photoDetailActivity.finish();
+//        // Eventuallyで保存する場合、Local DataStoreにpinされるのでdoneを待つ必要なし。
+//        Intent intent = new Intent();
+//        intent.putExtra("review", new ParseProxyObject(review));
+//
+//        Activity photoDetailActivity = getActivity();
+//        photoDetailActivity.setResult(Activity.RESULT_OK, intent);
+//        photoDetailActivity.finish();
     }
 }

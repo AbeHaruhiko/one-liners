@@ -32,7 +32,6 @@ import com.parse.ParseFile;
 import com.parse.SaveCallback;
 import com.squareup.otto.Subscribe;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -480,11 +479,18 @@ public class PhotoDetailFragment extends Fragment {
 
             showProgressBar();
 
-            File file_ = Utils.getScreenShotFile(mPhotoView, getActivity());
-            Log.d(TAG, file_.getAbsolutePath());
+            Bitmap bmp = Bitmap.createBitmap((int) (mBitmap.getWidth() * mScale), (int) (mBitmap.getHeight() * mScale), Bitmap.Config.ARGB_8888);
+            // view のサイズで Bitmap を作成
+            Canvas canvas = new Canvas(bmp);        // bmp をターゲットにした Canvas を作成
+            setPhotoBitmapToCanvas(canvas);
+            renderAllPath(canvas);
+
+//            File file_ = Utils.getScreenShotFile(mPhotoView, getActivity());
+//            Log.d(TAG, file_.getAbsolutePath());
 
             // Fileとして保存
-            final ParseFile file = new ParseFile("photo.png", Review.bitmapToByte(getViewBitmap(mPhotoView)));
+            final ParseFile file = new ParseFile("photo.png", Utils.bitmapToByte(bmp));
+            // TODO: プログレスを処理すべし。
             file.saveInBackground(new SaveCallback() {
                 @Override
                 public void done(ParseException e) {
@@ -655,22 +661,27 @@ public class PhotoDetailFragment extends Fragment {
     public void onPhotoSaved(PhotoSavedEvent event) {
 
         final Review review = new Review();
+        review.setObjectId();
         review.setPhotoFile(event.getFile());
-        review.setPhoto(getViewBitmap(mPhotoView));
-//        review.pinInBackground();
-        review.saveInBackground(new SaveCallback() {
+        review.saveEventually(new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 Log.d(TAG, "bytes saved.");
 
-                Intent intent = new Intent();
-                intent.putExtra("reviewId", review.getObjectId());
-
-                Activity photoDetailActivity = getActivity();
-                photoDetailActivity.setResult(Activity.RESULT_OK, intent);
-                photoDetailActivity.finish();
+//                Intent intent = new Intent();
+//                intent.putExtra("reviewId", review.getObjectId());
+//
+//                Activity photoDetailActivity = getActivity();
+//                photoDetailActivity.setResult(Activity.RESULT_OK, intent);
+//                photoDetailActivity.finish();
             }
         });
+        // Eventuallyで保存する場合、Local DataStoreにpinされるのでdoneを待つ必要なし。
+        Intent intent = new Intent();
+        intent.putExtra("review", new ParsePrreview);
 
+        Activity photoDetailActivity = getActivity();
+        photoDetailActivity.setResult(Activity.RESULT_OK, intent);
+        photoDetailActivity.finish();
     }
 }

@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.parse.ParseObject;
+import com.squareup.otto.Subscribe;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -21,7 +22,9 @@ import jp.caliconography.one_liners.R;
 import jp.caliconography.one_liners.activities.BookSearchResultListActivity;
 import jp.caliconography.one_liners.activities.PhotoDetailActivity;
 import jp.caliconography.one_liners.dummy.DummyContent;
+import jp.caliconography.one_liners.event.PhotoBitmapGottenEvent;
 import jp.caliconography.one_liners.model.parseobject.Review;
+import jp.caliconography.one_liners.util.BusHolder;
 
 /**
  * A fragment representing a single book detail screen.
@@ -87,15 +90,33 @@ public class BookDetailFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+
         if (requestCode == REQ_CODE_BOOK_SEARCH && resultCode == Activity.RESULT_OK) {
+
             mTxtTitle.setText(intent.getCharSequenceExtra("title"));
             mTxtAuthor.setText(intent.getCharSequenceExtra("author"));
+
         } else if (requestCode == REQ_CODE_PHOTO_DETAIL && resultCode == Activity.RESULT_OK) {
+
 //            Bitmap photoBitmap = (Bitmap) intent.getParcelableExtra(INTENT_KEY_PAINTED_PHOTO);
 //            mBookPhoto.setBackground(new BitmapDrawable(getActivity().getResources(), photoBitmap));
             Review review = ParseObject.createWithoutData(Review.class, intent.getCharSequenceExtra("reviewId").toString());
-            mBookPhoto.setBackground(new BitmapDrawable(getActivity().getResources(), review.getPhoto()));
+            review.getPhotoBitmapInBackground();
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        BusHolder.get().register(this);
+    }
+
+    @Override
+    public void onPause() {
+        BusHolder.get().unregister(this);
+
+        super.onPause();
     }
 
     @OnClick(R.id.book_photo)
@@ -125,5 +146,11 @@ public class BookDetailFragment extends Fragment {
 
     static void putPaintedPhotoIntent(Intent intent, Bitmap paintedPhoto) {
         intent.putExtra(INTENT_KEY_PAINTED_PHOTO, paintedPhoto);
+    }
+
+    @Subscribe
+    public void onPhotoBitmapGotten(PhotoBitmapGottenEvent event) {
+        // TODO API levelごとの対応
+        mBookPhoto.setBackground(new BitmapDrawable(getActivity().getResources(), event.getBitmap()));
     }
 }

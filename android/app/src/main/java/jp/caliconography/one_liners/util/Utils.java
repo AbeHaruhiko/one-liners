@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.view.View;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 
@@ -94,5 +95,11 @@ public class Utils {
                 return null;
             }
         }
+    }
+
+    public static byte[] bitmapToByte(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        return stream.toByteArray();
     }
 }

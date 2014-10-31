@@ -662,7 +662,7 @@ public class PhotoDetailFragment extends Fragment {
 
         final Review review = new Review();
         review.setPhotoFile(event.getFile());
-        review.saveEventually(new SaveCallback() {
+        review.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
                 Log.d(TAG, "bytes saved.");

@@ -481,22 +481,6 @@ public class PhotoDetailFragment extends Fragment {
             setPhotoBitmapToCanvas(canvas);
             renderAllPath(canvas);
 
-//            File file_ = Utils.getScreenShotFile(mPhotoView, getActivity());
-//            Log.d(TAG, file_.getAbsolutePath());
-
-            // Fileとして保存
-//            final ParseFile file = new ParseFile("photo.png", Utils.bitmapToByte(bitmap));
-//            // TODO: プログレスを処理すべし。
-//            file.saveInBackground(new SaveCallback() {
-//                @Override
-//                public void done(ParseException e) {
-//                    if (e == null) {
-//                        BusHolder.get().post(new PhotoSavedEvent(file));
-//                    } else {
-//                        hideProgressBar();
-//                    }
-//                }
-//            });
             File file = Utils.saveImageToCacheDir(bitmap, getActivity());
 
             Intent intent = new Intent();
@@ -596,22 +580,6 @@ public class PhotoDetailFragment extends Fragment {
         }
     }
 
-//    private void fixPath(Canvas canvas) {
-//
-//        // 各Path用のPaintを生成（line.getPaint().setStrokeWidth()すると累乗になってしまうため。
-//        Paint paint = new Paint(mPaint);
-//        paint.setColor(mPaintConfig.getColor().getColorInt());
-//        paint.setAlpha(0x88);
-//        paint.setStrokeWidth(mPaint.getStrokeWidth() * mScale);
-//
-//        Path path = new Path();
-//        path.moveTo(mOriginX, mOriginY);
-//        path.lineTo(mCurrentX, mCurrentY);
-//
-//        canvas.drawPath(path, paint);
-//        path.reset();
-//    }
-
     private void launchChooser() {
         // ギャラリーから選択
         Intent imagePickIntent = getImagePickIntent();
@@ -662,31 +630,4 @@ public class PhotoDetailFragment extends Fragment {
         mPaintConfig.setColor(((ColorPopupItem) event.getItem()).getValue());
         mColorPopup.close();
     }
-
-//    @Subscribe
-//    public void onPhotoSaved(PhotoSavedEvent event) {
-//
-//        final Review review = new Review();
-//        review.setPhotoFile(event.getFile());
-//        review.saveInBackground(new SaveCallback() {
-//            @Override
-//            public void done(ParseException e) {
-//                Log.d(TAG, "bytes saved.");
-//
-//                Intent intent = new Intent();
-//                intent.putExtra("reviewId", review.getObjectId());
-//
-//                Activity photoDetailActivity = getActivity();
-//                photoDetailActivity.setResult(Activity.RESULT_OK, intent);
-//                photoDetailActivity.finish();
-//            }
-//        });
-////        // Eventuallyで保存する場合、Local DataStoreにpinされるのでdoneを待つ必要なし。
-////        Intent intent = new Intent();
-////        intent.putExtra("review", new ParseProxyObject(review));
-////
-////        Activity photoDetailActivity = getActivity();
-////        photoDetailActivity.setResult(Activity.RESULT_OK, intent);
-////        photoDetailActivity.finish();
-//    }
 }

@@ -436,7 +436,7 @@ public class PhotoDetailFragment extends Fragment {
                 }
                 return;
             }
-            mBitmap = getBitmap(data);
+            mBitmap = getBitmapFromLocalFile(data);
 
             if (mSurfaceCreated) {
                 getScaleForFitBitmapToView();
@@ -529,7 +529,7 @@ public class PhotoDetailFragment extends Fragment {
         mScale = Math.min(heightScale, widthScale);
     }
 
-    private Bitmap getBitmap(Intent intent) {
+    private Bitmap getBitmapFromLocalFile(Intent intent) {
         // 戻り値からInputStreamを取得
         InputStream in = null;
         Bitmap bitmap = null;

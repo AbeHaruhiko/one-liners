@@ -27,11 +27,9 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 
-import com.parse.ParseException;
-import com.parse.ParseFile;
-import com.parse.SaveCallback;
 import com.squareup.otto.Subscribe;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -44,7 +42,6 @@ import hugo.weaving.DebugLog;
 import jp.caliconography.one_liners.R;
 import jp.caliconography.one_liners.activities.BookDetailActivity;
 import jp.caliconography.one_liners.dummy.DummyContent;
-import jp.caliconography.one_liners.event.PhotoSavedEvent;
 import jp.caliconography.one_liners.event.PopupMenuItemClickedEvent;
 import jp.caliconography.one_liners.gesture.TranslationBy1FingerGestureDetector;
 import jp.caliconography.one_liners.gesture.TranslationBy2FingerGestureDetector;
@@ -53,7 +50,6 @@ import jp.caliconography.one_liners.gesture.TranslationGestureListener;
 import jp.caliconography.one_liners.model.LineConfig;
 import jp.caliconography.one_liners.model.PaintConfig;
 import jp.caliconography.one_liners.model.PointInFloat;
-import jp.caliconography.one_liners.model.parseobject.Review;
 import jp.caliconography.one_liners.util.BusHolder;
 import jp.caliconography.one_liners.util.Utils;
 import jp.caliconography.one_liners.widget.ColorPopupItem;
@@ -479,9 +475,9 @@ public class PhotoDetailFragment extends Fragment {
 
             showProgressBar();
 
-            Bitmap bmp = Bitmap.createBitmap((int) (mBitmap.getWidth() * mScale), (int) (mBitmap.getHeight() * mScale), Bitmap.Config.ARGB_8888);
+            Bitmap bitmap = Bitmap.createBitmap((int) (mBitmap.getWidth() * mScale), (int) (mBitmap.getHeight() * mScale), Bitmap.Config.ARGB_8888);
             // view のサイズで Bitmap を作成
-            Canvas canvas = new Canvas(bmp);        // bmp をターゲットにした Canvas を作成
+            Canvas canvas = new Canvas(bitmap);        // bitmap をターゲットにした Canvas を作成
             setPhotoBitmapToCanvas(canvas);
             renderAllPath(canvas);
 
@@ -489,18 +485,28 @@ public class PhotoDetailFragment extends Fragment {
 //            Log.d(TAG, file_.getAbsolutePath());
 
             // Fileとして保存
-            final ParseFile file = new ParseFile("photo.png", Utils.bitmapToByte(bmp));
-            // TODO: プログレスを処理すべし。
-            file.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    if (e == null) {
-                        BusHolder.get().post(new PhotoSavedEvent(file));
-                    } else {
-                        hideProgressBar();
-                    }
-                }
-            });
+//            final ParseFile file = new ParseFile("photo.png", Utils.bitmapToByte(bitmap));
+//            // TODO: プログレスを処理すべし。
+//            file.saveInBackground(new SaveCallback() {
+//                @Override
+//                public void done(ParseException e) {
+//                    if (e == null) {
+//                        BusHolder.get().post(new PhotoSavedEvent(file));
+//                    } else {
+//                        hideProgressBar();
+//                    }
+//                }
+//            });
+            File file = Utils.saveImageToCacheDir(bitmap, getActivity());
+
+            Intent intent = new Intent();
+            intent.putExtra("photoFilePath", file.getAbsolutePath());
+
+            Activity photoDetailActivity = getActivity();
+            photoDetailActivity.setResult(Activity.RESULT_OK, intent);
+            photoDetailActivity.finish();
+
+            hideProgressBar();
 
             return true;
         }
@@ -657,30 +663,30 @@ public class PhotoDetailFragment extends Fragment {
         mColorPopup.close();
     }
 
-    @Subscribe
-    public void onPhotoSaved(PhotoSavedEvent event) {
-
-        final Review review = new Review();
-        review.setPhotoFile(event.getFile());
-        review.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                Log.d(TAG, "bytes saved.");
-
-                Intent intent = new Intent();
-                intent.putExtra("reviewId", review.getObjectId());
-
-                Activity photoDetailActivity = getActivity();
-                photoDetailActivity.setResult(Activity.RESULT_OK, intent);
-                photoDetailActivity.finish();
-            }
-        });
-//        // Eventuallyで保存する場合、Local DataStoreにpinされるのでdoneを待つ必要なし。
-//        Intent intent = new Intent();
-//        intent.putExtra("review", new ParseProxyObject(review));
+//    @Subscribe
+//    public void onPhotoSaved(PhotoSavedEvent event) {
 //
-//        Activity photoDetailActivity = getActivity();
-//        photoDetailActivity.setResult(Activity.RESULT_OK, intent);
-//        photoDetailActivity.finish();
-    }
+//        final Review review = new Review();
+//        review.setPhotoFile(event.getFile());
+//        review.saveInBackground(new SaveCallback() {
+//            @Override
+//            public void done(ParseException e) {
+//                Log.d(TAG, "bytes saved.");
+//
+//                Intent intent = new Intent();
+//                intent.putExtra("reviewId", review.getObjectId());
+//
+//                Activity photoDetailActivity = getActivity();
+//                photoDetailActivity.setResult(Activity.RESULT_OK, intent);
+//                photoDetailActivity.finish();
+//            }
+//        });
+////        // Eventuallyで保存する場合、Local DataStoreにpinされるのでdoneを待つ必要なし。
+////        Intent intent = new Intent();
+////        intent.putExtra("review", new ParseProxyObject(review));
+////
+////        Activity photoDetailActivity = getActivity();
+////        photoDetailActivity.setResult(Activity.RESULT_OK, intent);
+////        photoDetailActivity.finish();
+//    }
 }

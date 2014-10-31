@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +15,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.parse.ParseObject;
 import com.squareup.otto.Subscribe;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -23,7 +29,6 @@ import jp.caliconography.one_liners.activities.BookSearchResultListActivity;
 import jp.caliconography.one_liners.activities.PhotoDetailActivity;
 import jp.caliconography.one_liners.dummy.DummyContent;
 import jp.caliconography.one_liners.event.PhotoBitmapGottenEvent;
-import jp.caliconography.one_liners.model.parseobject.Review;
 import jp.caliconography.one_liners.util.BusHolder;
 
 /**
@@ -100,8 +105,29 @@ public class BookDetailFragment extends Fragment {
 
 //            Bitmap photoBitmap = (Bitmap) intent.getParcelableExtra(INTENT_KEY_PAINTED_PHOTO);
 //            mBookPhoto.setBackground(new BitmapDrawable(getActivity().getResources(), photoBitmap));
-            Review review = ParseObject.createWithoutData(Review.class, intent.getSerializableExtra("reviewId").toString());
-            review.getPhotoBitmapInBackground();
+//            Review review = ParseObject.createWithoutData(Review.class, intent.getSerializableExtra("reviewId").toString());
+            File file = null;
+            Bitmap bitmap = null;
+            try {
+                file = new File(intent.getStringExtra("photoFilePath"));
+                bitmap = BitmapFactory.decodeStream(new FileInputStream(file));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } finally {
+                if (file != null && file.exists()) {
+                    file.delete();
+                }
+            }
+//            mBookPhoto.setImageBitmap(bitmap);
+            setBackgroundDrawable(mBookPhoto, new BitmapDrawable(getActivity().getResources(), bitmap));
+        }
+    }
+
+    public void setBackgroundDrawable(View view, Drawable drawable) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            view.setBackground(drawable);
+        } else {
+            view.setBackgroundDrawable(drawable);
         }
     }
 

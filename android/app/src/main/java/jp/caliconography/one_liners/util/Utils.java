@@ -53,7 +53,7 @@ public class Utils {
         return bitmap;
     }
 
-    private static File saveImageToCacheDir(Bitmap bmp, Context context) {
+    public static File saveImageToCacheDir(Bitmap bmp, Context context) {
         String fileName = String.valueOf(System.currentTimeMillis()) + ".png";
 
         File file = new File(context.getExternalCacheDir(), fileName);

@@ -12,7 +12,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.otto.Subscribe;
@@ -57,7 +57,7 @@ public class BookDetailFragment extends Fragment {
     private DummyContent.DummyItem mItem;
 
     @InjectView(R.id.book_photo)
-    Button mBookPhoto;
+    ImageView mBookPhoto;
     @InjectView(R.id.txt_title)
     TextView mTxtTitle;
     @InjectView(R.id.txt_author)
@@ -119,7 +119,10 @@ public class BookDetailFragment extends Fragment {
                 }
             }
 //            mBookPhoto.setImageBitmap(bitmap);
-            setBackgroundDrawable(mBookPhoto, new BitmapDrawable(getActivity().getResources(), bitmap));
+//            mBookPhoto.setText("");
+//            mBookPhoto.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
+//            setBackgroundDrawable(mBookPhoto, new BitmapDrawable(getActivity().getResources(), bitmap));
+            mBookPhoto.setImageBitmap(bitmap);
         }
     }
 

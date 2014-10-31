@@ -8,6 +8,7 @@
     <string name="drawing_service_url">http://one-liners.parseapp.com</string>
     <string name="book_search_query_hint">タイトル/著者名/ISBN/JAN</string>
     <string name="rakuten_api_endpoint">https://app.rakuten.co.jp/</string>
+    <string name="click_to_register_photo">Click here to register Photo!</string>
     <!--<string name="drawing_service_url">http://10.0.3.2:9000</string>-->
 
 </resources>

@@ -3,7 +3,9 @@ package jp.caliconography.one_liners;
 import android.app.Application;
 
 import com.parse.Parse;
+import com.parse.ParseACL;
 import com.parse.ParseObject;
+import com.parse.ParseUser;
 
 import jp.caliconography.one_liners.model.parseobject.Review;
 
@@ -20,11 +22,10 @@ public class App extends Application {
 
         ParseObject.registerSubclass(Review.class);
 
+        Parse.enableLocalDatastore(getApplicationContext());
         Parse.initialize(this, PARSE_APPLICATION_ID, PARSE_CLIENT_KEY);
-
-        Parse.enableLocalDatastore(this);
-//        ParseUser.enableAutomaticUser();
-
-//        ParseACL.setDefaultACL(new ParseACL(), true);
+        ParseUser.enableAutomaticUser();
+        ParseACL defaultACL = new ParseACL();
+        ParseACL.setDefaultACL(defaultACL, true);
     }
 }

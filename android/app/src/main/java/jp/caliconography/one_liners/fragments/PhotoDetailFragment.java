@@ -365,14 +365,14 @@ public class PhotoDetailFragment extends Fragment {
         }
     };
 
-    private void renderAllPath(Canvas canvas) {
+    private void renderAllPath(Canvas canvas, boolean withTranslate) {
         for (LineConfig lineConfig : mLineConfigArray) {
             Path path = new Path();
 
             // 線の中点を原点(0, 0)へ配置。
             setLineOnOrigin(lineConfig, path);
 
-            path.transform(buildMatrixForPanZoom(lineConfig));
+            path.transform(buildMatrixForPanZoom(lineConfig, withTranslate));
 
             // 各Path用のPaintを生成（line.getPaint().setStrokeWidth()すると累乗になってしまうため。
             Paint paint = new Paint(lineConfig.getPaint());
@@ -385,7 +385,15 @@ public class PhotoDetailFragment extends Fragment {
         }
     }
 
-    private Matrix buildMatrixForPanZoom(LineConfig lineConfig) {
+    private void renderAllPath(Canvas canvas) {
+        renderAllPath(canvas, true);
+    }
+
+    private void renderAllPathIgnoreTranslate(Canvas canvas) {
+        renderAllPath(canvas, false);
+    }
+
+    private Matrix buildMatrixForPanZoom(LineConfig lineConfig, boolean withTranslate) {
         // 線の中点を求める
         PointInFloat lineCenter = PointInFloat.getMidpoint(new PointInFloat(lineConfig.getStartX(), lineConfig.getStartY()), new PointInFloat(lineConfig.getEndX(), lineConfig.getEndY()));
 
@@ -405,7 +413,9 @@ public class PhotoDetailFragment extends Fragment {
         matrix.postTranslate(-lineConfig.getTranslateX() * scaleOfThisLine, -lineConfig.getTranslateY() * scaleOfThisLine);
 
         // 移動分
-        matrix.postTranslate(mTranslateX, mTranslateY);
+        if (withTranslate) {
+            matrix.postTranslate(mTranslateX, mTranslateY);
+        }
         return matrix;
     }
 
@@ -478,8 +488,8 @@ public class PhotoDetailFragment extends Fragment {
             Bitmap bitmap = Bitmap.createBitmap((int) (mBitmap.getWidth() * mScale), (int) (mBitmap.getHeight() * mScale), Bitmap.Config.ARGB_8888);
             // view のサイズで Bitmap を作成
             Canvas canvas = new Canvas(bitmap);        // bitmap をターゲットにした Canvas を作成
-            setPhotoBitmapToCanvas(canvas);
-            renderAllPath(canvas);
+            setPhotoBitmapToCanvasIgnoreTranslate(canvas);
+            renderAllPathIgnoreTranslate(canvas);
 
             File file = Utils.saveImageToCacheDir(bitmap, getActivity());
 
@@ -540,14 +550,24 @@ public class PhotoDetailFragment extends Fragment {
         return bitmap;
     }
 
-    private void setPhotoBitmapToCanvas(Canvas canvas) {
+    private void setPhotoBitmapToCanvas(Canvas canvas, boolean withTranslate) {
 
         mMatrix.reset();
         mMatrix.postScale(mScale, mScale);
-        mMatrix.postTranslate(mTranslateX, mTranslateY);
+        if (withTranslate) {
+            mMatrix.postTranslate(mTranslateX, mTranslateY);
+        }
 
         canvas.drawColor(Color.WHITE);       // 画像部分はmatrixで縮小されるので余白ができる。余白部分を白で表示させるための処理。
         canvas.drawBitmap(mBitmap, mMatrix, null);
+    }
+
+    private void setPhotoBitmapToCanvas(Canvas canvas) {
+        setPhotoBitmapToCanvas(canvas, true);
+    }
+
+    private void setPhotoBitmapToCanvasIgnoreTranslate(Canvas canvas) {
+        setPhotoBitmapToCanvas(canvas, false);
     }
 
     private LineConfig drawPath(Canvas canvas, int color) {

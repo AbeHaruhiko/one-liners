@@ -493,6 +493,9 @@ public class PhotoDetailFragment extends Fragment {
 
             File file = Utils.saveImageToCacheDir(bitmap, getActivity());
 
+            bitmap.recycle();
+            mBitmap.recycle();
+
             Intent intent = new Intent();
             intent.putExtra("photoFilePath", file.getAbsolutePath());
 

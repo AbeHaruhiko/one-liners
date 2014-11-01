@@ -9,12 +9,18 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.SaveCallback;
 import com.squareup.otto.Subscribe;
 
 import java.io.File;
@@ -25,11 +31,15 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import jp.caliconography.one_liners.R;
+import jp.caliconography.one_liners.activities.BookListActivity;
 import jp.caliconography.one_liners.activities.BookSearchResultListActivity;
 import jp.caliconography.one_liners.activities.PhotoDetailActivity;
 import jp.caliconography.one_liners.dummy.DummyContent;
 import jp.caliconography.one_liners.event.PhotoBitmapGottenEvent;
+import jp.caliconography.one_liners.event.PhotoSavedEvent;
+import jp.caliconography.one_liners.model.parseobject.Review;
 import jp.caliconography.one_liners.util.BusHolder;
+import jp.caliconography.one_liners.util.Utils;
 
 /**
  * A fragment representing a single book detail screen.
@@ -56,12 +66,15 @@ public class BookDetailFragment extends Fragment {
      */
     private DummyContent.DummyItem mItem;
 
+    @InjectView(R.id.progressContainer)
+    View mProgressContainer;
     @InjectView(R.id.book_photo)
     ImageView mBookPhoto;
     @InjectView(R.id.txt_title)
     TextView mTxtTitle;
     @InjectView(R.id.txt_author)
     TextView mTxtAuthor;
+    private Bitmap mPhotoBitmap;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -73,6 +86,8 @@ public class BookDetailFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // FragmentでMenuを表示する為に必要
+        this.setHasOptionsMenu(true);
 
         if (getArguments().containsKey(ARG_ITEM_ID)) {
             // Load the dummy content specified by the fragment
@@ -107,10 +122,10 @@ public class BookDetailFragment extends Fragment {
 //            mBookPhoto.setBackground(new BitmapDrawable(getActivity().getResources(), photoBitmap));
 //            Review review = ParseObject.createWithoutData(Review.class, intent.getSerializableExtra("reviewId").toString());
             File file = null;
-            Bitmap bitmap = null;
+            mPhotoBitmap = null;
             try {
                 file = new File(intent.getStringExtra("photoFilePath"));
-                bitmap = BitmapFactory.decodeStream(new FileInputStream(file));
+                mPhotoBitmap = BitmapFactory.decodeStream(new FileInputStream(file));
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } finally {
@@ -122,8 +137,54 @@ public class BookDetailFragment extends Fragment {
 //            mBookPhoto.setText("");
 //            mBookPhoto.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
 //            setBackgroundDrawable(mBookPhoto, new BitmapDrawable(getActivity().getResources(), bitmap));
-            mBookPhoto.setImageBitmap(bitmap);
+            mBookPhoto.setImageBitmap(mPhotoBitmap);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            // This ID represents the Home or Up button. In the case of this
+            // activity, the Up button is shown. Use NavUtils to allow users
+            // to navigate up one level in the application structure. For
+            // more details, see the Navigation pattern on Android Design:
+            //
+            // http://developer.android.com/design/patterns/navigation.html#up-vs-back
+            //
+            NavUtils.navigateUpTo(this.getActivity(), new Intent(this.getActivity(), BookListActivity.class));
+            return true;
+        } else if (id == R.id.save_book) {
+
+            showProgressBar();
+
+            // TODO: 入力チェック
+
+            final ParseFile file = new ParseFile("photo.png", Utils.bitmapToByte(mPhotoBitmap));
+            file.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e == null) {
+                        BusHolder.get().post(new PhotoSavedEvent(file));
+                    } else {
+                        hideProgressBar();
+                    }
+                }
+            });
+
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void hideProgressBar() {
+        mProgressContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_out));
+        mProgressContainer.setVisibility(View.GONE);
+    }
+
+    private void showProgressBar() {
+        mProgressContainer.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_in));
+        mProgressContainer.setVisibility(View.VISIBLE);
     }
 
     public void setBackgroundDrawable(View view, Drawable drawable) {
@@ -181,5 +242,24 @@ public class BookDetailFragment extends Fragment {
     public void onPhotoBitmapGotten(PhotoBitmapGottenEvent event) {
         // TODO API levelごとの対応
         mBookPhoto.setBackground(new BitmapDrawable(getActivity().getResources(), event.getBitmap()));
+    }
+
+    @Subscribe
+    public void onPhotoSaved(PhotoSavedEvent event) {
+
+        final Review review = new Review();
+        review.setTitle(mTxtTitle.getText().toString());
+        review.setAuthor(mTxtAuthor.getText().toString());
+        review.setPhotoFile(event.getFile());
+        review.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+
+                Activity bookDetailActivity = getActivity();
+                bookDetailActivity.setResult(Activity.RESULT_OK);
+                bookDetailActivity.finish();
+            }
+        });
+
     }
 }

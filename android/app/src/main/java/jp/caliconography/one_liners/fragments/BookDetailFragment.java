@@ -2,6 +2,7 @@ package jp.caliconography.one_liners.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,11 +16,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseImageView;
 import com.parse.ProgressCallback;
 import com.parse.SaveCallback;
 import com.squareup.otto.Subscribe;
@@ -32,9 +34,8 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import jp.caliconography.one_liners.R;
+import jp.caliconography.one_liners.activities.BookDetailActivity;
 import jp.caliconography.one_liners.activities.BookListActivity;
-import jp.caliconography.one_liners.activities.BookSearchResultListActivity;
-import jp.caliconography.one_liners.activities.PhotoDetailActivity;
 import jp.caliconography.one_liners.dummy.DummyContent;
 import jp.caliconography.one_liners.event.PhotoBitmapGottenEvent;
 import jp.caliconography.one_liners.event.PhotoSavedEvent;
@@ -70,7 +71,7 @@ public class BookDetailFragment extends Fragment {
     @InjectView(R.id.progressContainer)
     View mProgressContainer;
     @InjectView(R.id.book_photo)
-    ImageView mBookPhoto;
+    ParseImageView mBookPhoto;
     @InjectView(R.id.txt_title)
     TextView mTxtTitle;
     @InjectView(R.id.txt_author)
@@ -155,7 +156,7 @@ public class BookDetailFragment extends Fragment {
             //
             NavUtils.navigateUpTo(this.getActivity(), new Intent(this.getActivity(), BookListActivity.class));
             return true;
-        } else if (id == R.id.save_book) {
+        } else if (id == R.id.save) {
 
             if (!Utils.isOnline(getActivity())) {
                 // TODO: エラーメッセージ表示
@@ -211,6 +212,18 @@ public class BookDetailFragment extends Fragment {
         super.onResume();
 
         BusHolder.get().register(this);
+        ParseFile photoFile = ((BookDetailActivity) getActivity())
+                .getCurrentReview().getPhotoFile();
+        if (photoFile != null) {
+            mBookPhoto.setParseFile(photoFile);
+            mBookPhoto.loadInBackground(new GetDataCallback() {
+                @Override
+                public void done(byte[] data, ParseException e) {
+                    mBookPhoto.setVisibility(View.VISIBLE);
+                }
+            });
+        }
+
     }
 
     @Override
@@ -222,14 +235,28 @@ public class BookDetailFragment extends Fragment {
 
     @OnClick(R.id.book_photo)
     void onClickBookPhoto() {
-        Intent intent = new Intent(getActivity(), PhotoDetailActivity.class);
-        startActivityForResult(intent, REQ_CODE_PHOTO_DETAIL);
+//        Intent intent = new Intent(getActivity(), PhotoDetailActivity.class);
+//        startActivityForResult(intent, REQ_CODE_PHOTO_DETAIL);
+
+        Fragment photoDetailFragment = new PhotoDetailFragment();
+        FragmentTransaction transaction = getActivity().getFragmentManager()
+                .beginTransaction();
+        transaction.replace(R.id.book_detail_container, photoDetailFragment);
+        transaction.addToBackStack(TAG);
+        transaction.commit();
     }
 
     @OnClick(R.id.btn_search_book)
     void onClickSearchBook() {
-        Intent intent = new Intent(getActivity(), BookSearchResultListActivity.class);
-        startActivityForResult(intent, REQ_CODE_BOOK_SEARCH);
+//        Intent intent = new Intent(getActivity(), BookSearchResultListActivity.class);
+//        startActivityForResult(intent, REQ_CODE_BOOK_SEARCH);
+
+        Fragment bookSearchResultListFragment = new BookSearchResultListFragment();
+        FragmentTransaction transaction = getActivity().getFragmentManager()
+                .beginTransaction();
+        transaction.replace(R.id.book_detail_container, bookSearchResultListFragment);
+        transaction.addToBackStack(TAG);
+        transaction.commit();
     }
 
     static Intent createSearchResultIntent(String title, String author) {

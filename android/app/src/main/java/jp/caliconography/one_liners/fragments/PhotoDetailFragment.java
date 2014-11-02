@@ -2,6 +2,7 @@ package jp.caliconography.one_liners.fragments;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -27,9 +28,12 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 
+import com.parse.ParseException;
+import com.parse.ParseFile;
+import com.parse.ProgressCallback;
+import com.parse.SaveCallback;
 import com.squareup.otto.Subscribe;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -116,14 +120,6 @@ public class PhotoDetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
         // FragmentでMenuを表示する為に必要
         this.setHasOptionsMenu(true);
-
-        if (getArguments().containsKey(ARG_ITEM_ID)) {
-            // Load the dummy content specified by the fragment
-            // arguments. In a real-world scenario, use a Loader
-            // to load content from a content provider.
-            mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
-        }
-
     }
 
     @Override
@@ -481,7 +477,7 @@ public class PhotoDetailFragment extends Fragment {
             //
             NavUtils.navigateUpTo(this.getActivity(), new Intent(this.getActivity(), BookDetailActivity.class));
             return true;
-        } else if (id == R.id.save_photo) {
+        } else if (id == R.id.save) {
 
             showProgressBar();
 
@@ -491,17 +487,33 @@ public class PhotoDetailFragment extends Fragment {
             setPhotoBitmapToCanvasIgnoreTranslate(canvas);
             renderAllPathIgnoreTranslate(canvas);
 
-            File file = Utils.saveImageToCacheDir(bitmap, getActivity());
+            final ParseFile file = new ParseFile("photo.png", Utils.bitmapToByte(bitmap));
+            file.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e == null) {
+                        addPhotoToReviewAndReturn(file);
+                    } else {
+                        hideProgressBar();
+                    }
+                }
+            }, new ProgressCallback() {
+                @Override
+                public void done(Integer integer) {
+                    // TODO: 進捗どうですか。
+                }
+            });
 
             bitmap.recycle();
             mBitmap.recycle();
 
-            Intent intent = new Intent();
-            intent.putExtra("photoFilePath", file.getAbsolutePath());
-
-            Activity photoDetailActivity = getActivity();
-            photoDetailActivity.setResult(Activity.RESULT_OK, intent);
-            photoDetailActivity.finish();
+//            Intent intent = new Intent();
+//            intent.putExtra("photoFilePath", file.getAbsolutePath());
+//
+//            Activity photoDetailActivity = getActivity();
+//            photoDetailActivity.setResult(Activity.RESULT_OK, intent);
+//            photoDetailActivity.finish();
+//            addPhotoToReviewAndReturn(file);
 
             hideProgressBar();
 
@@ -652,5 +664,11 @@ public class PhotoDetailFragment extends Fragment {
     public void onItemClicked(PopupMenuItemClickedEvent event) {
         mPaintConfig.setColor(((ColorPopupItem) event.getItem()).getValue());
         mColorPopup.close();
+    }
+
+    private void addPhotoToReviewAndReturn(ParseFile photoFile) {
+        ((BookDetailActivity) getActivity()).getCurrentReview().setPhotoFile(photoFile);
+        FragmentManager fm = getActivity().getFragmentManager();
+        fm.popBackStack(BookDetailFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 }

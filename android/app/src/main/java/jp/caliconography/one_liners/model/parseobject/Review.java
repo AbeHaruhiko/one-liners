@@ -19,6 +19,10 @@ public class Review extends ParseObject {
         put(KEY_PHOTO, file);
     }
 
+    public ParseFile getPhotoFile() {
+        return getParseFile(KEY_PHOTO);
+    }
+
     public void setTitle(String title) {
         put(KEY_TITLE, title);
     }

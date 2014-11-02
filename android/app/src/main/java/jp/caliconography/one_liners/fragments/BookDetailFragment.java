@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ProgressCallback;
 import com.parse.SaveCallback;
 import com.squareup.otto.Subscribe;
 
@@ -156,6 +157,11 @@ public class BookDetailFragment extends Fragment {
             return true;
         } else if (id == R.id.save_book) {
 
+            if (!Utils.isOnline(getActivity())) {
+                // TODO: エラーメッセージ表示
+                return false;
+            }
+
             showProgressBar();
 
             // TODO: 入力チェック
@@ -169,6 +175,11 @@ public class BookDetailFragment extends Fragment {
                     } else {
                         hideProgressBar();
                     }
+                }
+            }, new ProgressCallback() {
+                @Override
+                public void done(Integer integer) {
+                    // TODO: 進捗どうですか。
                 }
             });
 
@@ -251,15 +262,14 @@ public class BookDetailFragment extends Fragment {
         review.setTitle(mTxtTitle.getText().toString());
         review.setAuthor(mTxtAuthor.getText().toString());
         review.setPhotoFile(event.getFile());
-        review.saveInBackground(new SaveCallback() {
+        review.saveEventually(new SaveCallback() {
             @Override
             public void done(ParseException e) {
-
-                Activity bookDetailActivity = getActivity();
-                bookDetailActivity.setResult(Activity.RESULT_OK);
-                bookDetailActivity.finish();
             }
         });
+        Activity bookDetailActivity = getActivity();
+        bookDetailActivity.setResult(Activity.RESULT_OK);
+        bookDetailActivity.finish();
 
     }
 }

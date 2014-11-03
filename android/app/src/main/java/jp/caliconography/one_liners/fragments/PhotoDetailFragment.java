@@ -516,14 +516,6 @@ public class PhotoDetailFragment extends Fragment {
             bitmap.recycle();
             mBitmap.recycle();
 
-//            Intent intent = new Intent();
-//            intent.putExtra("photoFilePath", file.getAbsolutePath());
-//
-//            Activity photoDetailActivity = getActivity();
-//            photoDetailActivity.setResult(Activity.RESULT_OK, intent);
-//            photoDetailActivity.finish();
-//            addPhotoToReviewAndReturn(file);
-
             hideProgressBar();
 
             return true;
@@ -656,17 +648,6 @@ public class PhotoDetailFragment extends Fragment {
         i.setType("image/*");
         i.addCategory(Intent.CATEGORY_OPENABLE);
         return i;
-    }
-
-    public Bitmap getViewBitmap(View view) {
-        view.setDrawingCacheEnabled(true);
-        Bitmap cache = view.getDrawingCache();
-        if (cache == null) {
-            return null;
-        }
-        Bitmap bitmap = Bitmap.createBitmap(cache);
-        view.setDrawingCacheEnabled(false);
-        return bitmap;
     }
 
     @Subscribe

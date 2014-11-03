@@ -5,10 +5,6 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.LayoutInflater;
@@ -28,10 +24,6 @@ import com.parse.ProgressCallback;
 import com.parse.SaveCallback;
 import com.squareup.otto.Subscribe;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -39,7 +31,6 @@ import jp.caliconography.one_liners.R;
 import jp.caliconography.one_liners.activities.BookDetailActivity;
 import jp.caliconography.one_liners.activities.BookListActivity;
 import jp.caliconography.one_liners.dummy.DummyContent;
-import jp.caliconography.one_liners.event.PhotoBitmapGottenEvent;
 import jp.caliconography.one_liners.event.PhotoSavedEvent;
 import jp.caliconography.one_liners.model.parseobject.Review;
 import jp.caliconography.one_liners.util.BusHolder;
@@ -114,32 +105,6 @@ public class BookDetailFragment extends Fragment {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
-
-        if (requestCode == REQ_CODE_BOOK_SEARCH && resultCode == Activity.RESULT_OK) {
-
-            mTxtTitle.setText(intent.getCharSequenceExtra("title"));
-            mTxtAuthor.setText(intent.getCharSequenceExtra("author"));
-
-        } else if (requestCode == REQ_CODE_PHOTO_DETAIL && resultCode == Activity.RESULT_OK) {
-
-            File file = null;
-            mPhotoBitmap = null;
-            try {
-                file = new File(intent.getStringExtra("photoFilePath"));
-                mPhotoBitmap = BitmapFactory.decodeStream(new FileInputStream(file));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } finally {
-                if (file != null && file.exists()) {
-                    file.delete();
-                }
-            }
-            mBookPhoto.setImageBitmap(mPhotoBitmap);
-        }
-    }
-
-    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -202,14 +167,6 @@ public class BookDetailFragment extends Fragment {
         mProgressContainer.setVisibility(View.VISIBLE);
     }
 
-    public void setBackgroundDrawable(View view, Drawable drawable) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            view.setBackground(drawable);
-        } else {
-            view.setBackgroundDrawable(drawable);
-        }
-    }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -258,29 +215,6 @@ public class BookDetailFragment extends Fragment {
         transaction.replace(R.id.book_detail_container, bookSearchResultListFragment);
         transaction.addToBackStack(TAG);
         transaction.commit();
-    }
-
-    static Intent createSearchResultIntent(String title, String author) {
-        Intent intent = new Intent();
-        intent.putExtra("title", title);
-        intent.putExtra("author", author);
-        return intent;
-    }
-
-    static Intent createPaintedPhotoIntent(Bitmap paintedPhoto) {
-        Intent intent = new Intent();
-        intent.putExtra(INTENT_KEY_PAINTED_PHOTO, paintedPhoto);
-        return intent;
-    }
-
-    static void putPaintedPhotoIntent(Intent intent, Bitmap paintedPhoto) {
-        intent.putExtra(INTENT_KEY_PAINTED_PHOTO, paintedPhoto);
-    }
-
-    @Subscribe
-    public void onPhotoBitmapGotten(PhotoBitmapGottenEvent event) {
-        // TODO API levelごとの対応
-        mBookPhoto.setBackground(new BitmapDrawable(getActivity().getResources(), event.getBitmap()));
     }
 
     @Subscribe

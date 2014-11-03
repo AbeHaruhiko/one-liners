@@ -46,6 +46,7 @@ import jp.caliconography.one_liners.R;
 import jp.caliconography.one_liners.activities.BookDetailActivity;
 import jp.caliconography.one_liners.event.BookSearchCompletedEvent;
 import jp.caliconography.one_liners.model.BookSearchResult;
+import jp.caliconography.one_liners.model.parseobject.Review;
 import jp.caliconography.one_liners.services.RakutenBooksTotalSearchClient;
 import jp.caliconography.one_liners.util.BusHolder;
 
@@ -211,8 +212,9 @@ public class BookSearchResultListFragment extends BaseListFragment {
     }
 
     private void addSearchResultToReviewAndReturn(String title, String author) {
-        ((BookDetailActivity) getActivity()).getCurrentReview().setTitle(title);
-        ((BookDetailActivity) getActivity()).getCurrentReview().setAuthor(author);
+        Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
+        review.setTitle(title);
+        review.setAuthor(author);
         FragmentManager fm = getActivity().getFragmentManager();
         fm.popBackStack(BookDetailFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }

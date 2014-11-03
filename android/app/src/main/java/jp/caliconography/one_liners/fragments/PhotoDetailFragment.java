@@ -28,6 +28,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.parse.ParseException;
 import com.parse.ParseFile;
@@ -81,8 +83,10 @@ public class PhotoDetailFragment extends Fragment {
      */
     private DummyContent.DummyItem mItem;
 
-    @InjectView(R.id.progressContainer)
+    @InjectView(R.id.progress_container)
     View mProgressContainer;
+    @InjectView(R.id.progress_text)
+    TextView mProgressText;
     @InjectView(R.id.photo)
     SurfaceView mPhotoView;
     @InjectView(R.id.load_image)
@@ -499,19 +503,25 @@ public class PhotoDetailFragment extends Fragment {
                         addPhotoToReviewAndReturn(file);
                     } else {
                         hideProgressBar();
+                        // TODO: エラーメッセージ表示が仮
+                        Toast.makeText(
+                                getActivity().getApplicationContext(),
+                                "Error saving: " + e.getMessage(),
+                                Toast.LENGTH_SHORT).show();
                     }
                 }
             }, new ProgressCallback() {
                 @Override
                 public void done(Integer integer) {
-                    // TODO: 進捗どうですか。
+                    if (integer != 100) {
+                        // 100%になった後、数秒かかるので100%は表示しない
+                        mProgressText.setText(String.format("...%d%%", integer));
+                    }
                 }
             });
 
             bitmap.recycle();
             mBitmap.recycle();
-
-            hideProgressBar();
 
             return true;
         }

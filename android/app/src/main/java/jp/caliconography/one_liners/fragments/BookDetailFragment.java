@@ -15,12 +15,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseImageView;
-import com.parse.ProgressCallback;
 import com.parse.SaveCallback;
 import com.squareup.otto.Subscribe;
 
@@ -61,7 +61,7 @@ public class BookDetailFragment extends Fragment {
      */
     private DummyContent.DummyItem mItem;
 
-    @InjectView(R.id.progressContainer)
+    @InjectView(R.id.progress_container)
     View mProgressContainer;
     @InjectView(R.id.book_photo)
     ParseImageView mBookPhoto;
@@ -127,7 +127,11 @@ public class BookDetailFragment extends Fragment {
         } else if (id == R.id.save_book) {
 
             if (!Utils.isOnline(getActivity())) {
-                // TODO: エラーメッセージ表示
+                // TODO: エラーメッセージ表示が仮
+                Toast.makeText(
+                        getActivity().getApplicationContext(),
+                        "Error saving: ネットワークに接続できません。",
+                        Toast.LENGTH_SHORT).show();
                 return false;
             }
 
@@ -135,20 +139,21 @@ public class BookDetailFragment extends Fragment {
 
             // TODO: 入力チェック
 
-            final ParseFile file = new ParseFile("photo.png", Utils.bitmapToByte(mPhotoBitmap));
-            file.saveInBackground(new SaveCallback() {
+            Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
+            review.saveInBackground(new SaveCallback() {
                 @Override
                 public void done(ParseException e) {
                     if (e == null) {
-                        BusHolder.get().post(new PhotoSavedEvent(file));
+                        Activity bookDetailActivity = getActivity();
+                        bookDetailActivity.setResult(Activity.RESULT_OK);
+                        bookDetailActivity.finish();
                     } else {
-                        hideProgressBar();
+                        // TODO: エラーメッセージ表示が仮
+                        Toast.makeText(
+                                getActivity().getApplicationContext(),
+                                "Error saving: " + e.getMessage(),
+                                Toast.LENGTH_SHORT).show();
                     }
-                }
-            }, new ProgressCallback() {
-                @Override
-                public void done(Integer integer) {
-                    // TODO: 進捗どうですか。
                 }
             });
 

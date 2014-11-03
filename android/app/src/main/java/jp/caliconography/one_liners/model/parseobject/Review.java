@@ -27,8 +27,16 @@ public class Review extends ParseObject {
         put(KEY_TITLE, title);
     }
 
+    public String getTitle() {
+        return getString(KEY_TITLE);
+    }
+
     public void setAuthor(String author) {
         put(KEY_AUTHOR, author);
+    }
+
+    public String getAuthor() {
+        return getString(KEY_AUTHOR);
     }
 
 //    public void setShareScope(ShareScope scope) {

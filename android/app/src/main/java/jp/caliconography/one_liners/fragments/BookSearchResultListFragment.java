@@ -19,7 +19,7 @@
 package jp.caliconography.one_liners.fragments;
 
 import android.app.Activity;
-import android.content.Intent;
+import android.app.FragmentManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -43,6 +43,7 @@ import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
 import it.gmariotti.cardslib.library.view.CardListView;
 import jp.caliconography.one_liners.R;
+import jp.caliconography.one_liners.activities.BookDetailActivity;
 import jp.caliconography.one_liners.event.BookSearchCompletedEvent;
 import jp.caliconography.one_liners.model.BookSearchResult;
 import jp.caliconography.one_liners.services.RakutenBooksTotalSearchClient;
@@ -123,8 +124,13 @@ public class BookSearchResultListFragment extends BaseListFragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
 
+        inflater.inflate(R.menu.book_search, menu);
+
+        // SearchViewを取得する
         MenuItem menuItem = menu.findItem(R.id.search_view);
         final SearchView searchView = (SearchView) menuItem.getActionView();
+        searchView.setQueryHint(getString(R.string.book_search_query_hint));
+        searchView.setIconified(false);
 
         final SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
             @Override
@@ -169,10 +175,7 @@ public class BookSearchResultListFragment extends BaseListFragment {
                 @Override
                 public void onClick(Card card, View view) {
                     PicassoCard picassoCard = (PicassoCard) card;
-
-                    Intent intent = BookDetailFragment.createSearchResultIntent(picassoCard.getTitle(), picassoCard.getSecondaryTitle());
-                    getActivity().setResult(Activity.RESULT_OK, intent);
-                    getActivity().finish();
+                    addSearchResultToReviewAndReturn(picassoCard.getTitle(), picassoCard.getSecondaryTitle());
                 }
             });
             card.setTitle(itemHolder.Item.title);
@@ -193,6 +196,13 @@ public class BookSearchResultListFragment extends BaseListFragment {
             mCardArrayAdapter.addAll(cards);
             mCardArrayAdapter.notifyDataSetChanged();
         }
+    }
+
+    private void addSearchResultToReviewAndReturn(String title, String author) {
+        ((BookDetailActivity) getActivity()).getCurrentReview().setTitle(title);
+        ((BookDetailActivity) getActivity()).getCurrentReview().setAuthor(author);
+        FragmentManager fm = getActivity().getFragmentManager();
+        fm.popBackStack(BookDetailFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 
     @Override

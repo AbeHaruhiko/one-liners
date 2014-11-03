@@ -18,6 +18,8 @@ import android.provider.MediaStore;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -465,6 +467,13 @@ public class PhotoDetailFragment extends Fragment {
     }
 
     @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        // Inflate the menu; this adds items to the action bar if it is present.
+        inflater.inflate(R.menu.photo_detail, menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
@@ -477,7 +486,7 @@ public class PhotoDetailFragment extends Fragment {
             //
             NavUtils.navigateUpTo(this.getActivity(), new Intent(this.getActivity(), BookDetailActivity.class));
             return true;
-        } else if (id == R.id.save) {
+        } else if (id == R.id.save_photo) {
 
             showProgressBar();
 

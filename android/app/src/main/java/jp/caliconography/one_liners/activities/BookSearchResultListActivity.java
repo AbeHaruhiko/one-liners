@@ -5,9 +5,7 @@ import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.SearchView;
 
 import jp.caliconography.one_liners.R;
 import jp.caliconography.one_liners.fragments.BookSearchResultListFragment;
@@ -91,20 +89,20 @@ public class BookSearchResultListActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    // 2014/09/20 searchViewを追加
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.book_search, menu);
-
-        // SearchViewを取得する
-        MenuItem searchItem = menu.findItem(R.id.search_view);
-        final SearchView searchView = (SearchView) searchItem.getActionView();
-        searchView.setQueryHint(getString(R.string.book_search_query_hint));
-        searchView.setIconified(false);
-//        searchView.setOnQueryTextListener(this);
-
-
-        return true;
-    }
+//    // 2014/09/20 searchViewを追加
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.book_search, menu);
+//
+//        // SearchViewを取得する
+//        MenuItem searchItem = menu.findItem(R.id.search_view);
+//        final SearchView searchView = (SearchView) searchItem.getActionView();
+//        searchView.setQueryHint(getString(R.string.book_search_query_hint));
+//        searchView.setIconified(false);
+////        searchView.setOnQueryTextListener(this);
+//
+//
+//        return true;
+//    }
 }

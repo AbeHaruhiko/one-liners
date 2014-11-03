@@ -37,7 +37,6 @@
         android:layout_height="300dp"
         android:background="@drawable/btn_rect_common_back"
         android:scaleType="centerInside"
-        android:src="@drawable/photo_placeholder"
         android:text="@string/click_to_register_photo"
         android:layout_margin="8dp"
         android:focusable="true"

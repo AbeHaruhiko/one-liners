@@ -12,6 +12,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -106,6 +108,7 @@ public class BookDetailFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_book_detail, container, false);
 
         ButterKnife.inject(this, rootView);
+        mBookPhoto.setPlaceholder(getActivity().getResources().getDrawable(R.drawable.photo_placeholder));
 
         return rootView;
     }
@@ -120,9 +123,6 @@ public class BookDetailFragment extends Fragment {
 
         } else if (requestCode == REQ_CODE_PHOTO_DETAIL && resultCode == Activity.RESULT_OK) {
 
-//            Bitmap photoBitmap = (Bitmap) intent.getParcelableExtra(INTENT_KEY_PAINTED_PHOTO);
-//            mBookPhoto.setBackground(new BitmapDrawable(getActivity().getResources(), photoBitmap));
-//            Review review = ParseObject.createWithoutData(Review.class, intent.getSerializableExtra("reviewId").toString());
             File file = null;
             mPhotoBitmap = null;
             try {
@@ -135,12 +135,15 @@ public class BookDetailFragment extends Fragment {
                     file.delete();
                 }
             }
-//            mBookPhoto.setImageBitmap(bitmap);
-//            mBookPhoto.setText("");
-//            mBookPhoto.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
-//            setBackgroundDrawable(mBookPhoto, new BitmapDrawable(getActivity().getResources(), bitmap));
             mBookPhoto.setImageBitmap(mPhotoBitmap);
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        // Inflate the menu; this adds items to the action bar if it is present.
+        inflater.inflate(R.menu.book_detail, menu);
     }
 
     @Override
@@ -156,7 +159,7 @@ public class BookDetailFragment extends Fragment {
             //
             NavUtils.navigateUpTo(this.getActivity(), new Intent(this.getActivity(), BookListActivity.class));
             return true;
-        } else if (id == R.id.save) {
+        } else if (id == R.id.save_book) {
 
             if (!Utils.isOnline(getActivity())) {
                 // TODO: エラーメッセージ表示
@@ -212,8 +215,10 @@ public class BookDetailFragment extends Fragment {
         super.onResume();
 
         BusHolder.get().register(this);
-        ParseFile photoFile = ((BookDetailActivity) getActivity())
-                .getCurrentReview().getPhotoFile();
+        Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
+        mTxtTitle.setText(review.getTitle());
+        mTxtAuthor.setText(review.getAuthor());
+        ParseFile photoFile = review.getPhotoFile();
         if (photoFile != null) {
             mBookPhoto.setParseFile(photoFile);
             mBookPhoto.loadInBackground(new GetDataCallback() {
@@ -235,8 +240,6 @@ public class BookDetailFragment extends Fragment {
 
     @OnClick(R.id.book_photo)
     void onClickBookPhoto() {
-//        Intent intent = new Intent(getActivity(), PhotoDetailActivity.class);
-//        startActivityForResult(intent, REQ_CODE_PHOTO_DETAIL);
 
         Fragment photoDetailFragment = new PhotoDetailFragment();
         FragmentTransaction transaction = getActivity().getFragmentManager()
@@ -248,8 +251,6 @@ public class BookDetailFragment extends Fragment {
 
     @OnClick(R.id.btn_search_book)
     void onClickSearchBook() {
-//        Intent intent = new Intent(getActivity(), BookSearchResultListActivity.class);
-//        startActivityForResult(intent, REQ_CODE_BOOK_SEARCH);
 
         Fragment bookSearchResultListFragment = new BookSearchResultListFragment();
         FragmentTransaction transaction = getActivity().getFragmentManager()

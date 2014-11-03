@@ -153,6 +153,25 @@ public class BookSearchResultListFragment extends BaseListFragment {
         searchView.setOnQueryTextListener(queryTextListener);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+//            // This ID represents the Home or Up button. In the case of this
+//            // activity, the Up button is shown. Use NavUtils to allow users
+//            // to navigate up one level in the application structure. For
+//            // more details, see the Navigation pattern on Android Design:
+//            //
+//            // http://developer.android.com/design/patterns/navigation.html#up-vs-back
+//            //
+//            NavUtils.navigateUpTo(this.getActivity(), new Intent(this.getActivity(), BookDetailActivity.class));
+            FragmentManager fm = getActivity().getFragmentManager();
+            fm.popBackStack(BookDetailFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     @Subscribe
     public void onBookSearchCompleted(BookSearchCompletedEvent event) {
         displayResult(event.getBookSearchResult());

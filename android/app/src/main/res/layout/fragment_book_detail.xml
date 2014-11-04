@@ -1,54 +1,59 @@
-<ScrollView
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/scrollView">
+    android:layout_height="fill_parent">
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:padding="8dp"
-        android:orientation="vertical">
-
-        <!--<view-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--class="com.etsy.android.grid.util.DynamicHeightImageView"-->
-        <!--android:id="@+id/view"-->
-        <!--android:layout_alignParentTop="true"-->
-        <!--android:layout_alignParentLeft="true"-->
-        <!--android:layout_alignParentStart="true" />-->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <LinearLayout
-            style="@style/card.main_layout"
-            android:orientation="vertical"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="fill_parent"
+            android:orientation="vertical"
+            android:padding="8dp">
 
-            <it.gmariotti.cardslib.library.view.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:card="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/card_book_detail"
+            <!--<view-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--class="com.etsy.android.grid.util.DynamicHeightImageView"-->
+            <!--android:id="@+id/view"-->
+            <!--android:layout_alignParentTop="true"-->
+            <!--android:layout_alignParentLeft="true"-->
+            <!--android:layout_alignParentStart="true" />-->
+
+            <LinearLayout
+                style="@style/card.main_layout"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="4dp"
-                android:layout_marginRight="4dp"
-                card:card_layout_resourceID="@layout/card_book_detail" />
+                android:orientation="vertical">
+
+                <it.gmariotti.cardslib.library.view.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:card="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/card_book_detail"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginRight="4dp"
+                    card:card_layout_resourceID="@layout/card_book_detail" />
+
+            </LinearLayout>
+
+            <it.gmariotti.cardslib.library.view.component.CardShadowView
+                android:id="@+id/card_shadow_layout"
+                style="@style/card.shadow_outer_layout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 
-        <it.gmariotti.cardslib.library.view.component.CardShadowView
-            style="@style/card.shadow_outer_layout"
-            android:id="@+id/card_shadow_layout"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content" />
-
         <LinearLayout
             android:id="@+id/progress_container"
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="gone"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <ProgressBar
                 style="?android:attr/progressBarStyleLarge"
@@ -58,14 +63,14 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:text=""
                 android:paddingTop="4dip"
-                android:singleLine="true" />
+                android:singleLine="true"
+                android:text=""
+                android:textAppearance="?android:attr/textAppearanceSmall" />
 
         </LinearLayout>
 
-    </LinearLayout>
+    </FrameLayout>
 
 </ScrollView>
 

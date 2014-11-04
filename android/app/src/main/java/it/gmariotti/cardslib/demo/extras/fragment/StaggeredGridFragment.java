@@ -30,6 +30,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.melnykov.fab.FloatingActionButton;
+import com.parse.ParseQuery;
+import com.parse.ParseQueryAdapter;
 
 import java.util.ArrayList;
 
@@ -44,6 +46,7 @@ import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardThumbnail;
 import jp.caliconography.one_liners.R;
 import jp.caliconography.one_liners.activities.BookDetailActivity;
+import jp.caliconography.one_liners.model.parseobject.Review;
 
 /**
  * This example uses a staggered card with different different photos and text.
@@ -115,11 +118,42 @@ public class StaggeredGridFragment extends BaseListFragment {
         //Set the empty view
         staggeredView.setEmptyView(getActivity().findViewById(android.R.id.empty));
         if (staggeredView != null) {
-            staggeredView.setAdapter(mCardArrayAdapter);
+            ParseQueryAdapter<Review> adapter =
+                    new ParseQueryAdapter<Review>(this.getActivity(), new ParseQueryAdapter.QueryFactory<Review>() {
+                        public ParseQuery<Review> create() {
+                            // Here we can configure a ParseQuery to our heart's desire.
+                            ParseQuery query = new ParseQuery(Review.class);
+                            query.orderByDescending("createdAt");
+                            return query;
+                        }
+                    });
+            adapter.setImageKey(Review.KEY_PHOTO);
+            staggeredView.setAdapter(adapter);
+//            staggeredView.setExternalAdapter(adapter, mCardArrayAdapter);
         }
 
+//        // 2014/11/04 安部追加
+//        staggeredView.setOnScrollListener(new AbsListView.OnScrollListener() {
+//            @Override
+//            public void onScrollStateChanged(AbsListView absListView, int scrollState) {
+//            }
+//
+//            @Override
+//            public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+//                if (totalItemCount != 0 && totalItemCount == firstVisibleItem + visibleItemCount) {
+//                    // 最後尾までスクロールしたので、何かデータ取得する処理
+//                    Log.d(this.getClass().getSimpleName(), "scrolled to last!!!!!!");
+//                }
+//            }
+//        });
+//        // 2014/11/04 安部追加
         //Load cards
         new LoaderAsyncTask().execute();
+//        // 2014/11/04 安部追加
+//        ParseQuery<Review> query = ParseQuery.getQuery(Review.class);
+//        query.orderByDescending("createdAt");
+//        // 2014/11/04 安部追加
+
     }
 
 

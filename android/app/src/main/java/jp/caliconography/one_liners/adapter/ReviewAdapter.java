@@ -25,6 +25,8 @@ public class ReviewAdapter extends ParseQueryAdapter<Review> {
                 return query;
             }
         });
+        setPlaceholder(context.getResources().getDrawable(R.drawable.photo_placeholder));
+        setObjectsPerPage(1);
     }
 
     @Override

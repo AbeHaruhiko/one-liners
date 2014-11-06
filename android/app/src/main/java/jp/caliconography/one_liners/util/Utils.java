@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -39,7 +40,7 @@ public class Utils {
         return bitmap;
     }
 
-    private static Bitmap scaleDownBitmap(Bitmap bitmap, int newHeight, Context context) {
+    public static Bitmap scaleDownBitmap(Bitmap bitmap, int newHeight, Context context) {
 
         if (newHeight >= bitmap.getHeight()) {
             return bitmap;
@@ -103,6 +104,10 @@ public class Utils {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         return stream.toByteArray();
+    }
+
+    public static Bitmap getBitmapFromByteArray(byte[] bytes) {
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
     }
 
     public static boolean isOnline(Context context) {

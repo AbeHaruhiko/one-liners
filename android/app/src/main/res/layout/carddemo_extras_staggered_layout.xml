@@ -19,10 +19,9 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:card="http://schemas.android.com/apk/res-auto"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content">
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <!-- Card visible layout -->
     <it.gmariotti.cardslib.library.view.ForegroundLinearLayout
@@ -38,14 +37,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <it.gmariotti.cardslib.demo.extras.staggered.DynamicHeightPicassoCardThumbnailView
-                style="@style/card_thumbnail_outer_layout"
-                android:id="@+id/card_thumbnail_layout"
+            <!--<it.gmariotti.cardslib.demo.extras.staggered.DynamicHeightPicassoCardThumbnailView-->
+            <!--style="@style/card_thumbnail_outer_layout"-->
+            <!--android:id="@+id/card_thumbnail_layout"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:paddingTop="0dp"-->
+            <!--android:layout_gravity="left"-->
+            <!--card:card_thumbnail_layout_resourceID="@layout/carddemo_extras_staggered_thumbnail_layout"-->
+            <!--android:layout_height="wrap_content"/>-->
+            <jp.caliconography.one_liners.widget.DynamicHeightParseImageView xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/card_thumbnail_image"
+                android:scaleType="centerCrop"
                 android:layout_width="match_parent"
-                android:paddingTop="0dp"
-                android:layout_gravity="left"
-                card:card_thumbnail_layout_resourceID="@layout/carddemo_extras_staggered_thumbnail_layout"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" />
 
 
             <!-- Main Content View -->

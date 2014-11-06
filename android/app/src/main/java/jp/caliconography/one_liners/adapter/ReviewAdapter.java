@@ -9,10 +9,9 @@ import com.parse.ParseFile;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 
-import it.gmariotti.cardslib.demo.extras.staggered.DynamicHeightPicassoCardThumbnailView;
-import it.gmariotti.cardslib.demo.extras.staggered.data.Image;
 import jp.caliconography.one_liners.R;
 import jp.caliconography.one_liners.model.parseobject.Review;
+import jp.caliconography.one_liners.widget.DynamicHeightParseImageView;
 
 public class ReviewAdapter extends ParseQueryAdapter<Review> {
 
@@ -48,10 +47,14 @@ public class ReviewAdapter extends ParseQueryAdapter<Review> {
 //                }
 //            });
 //        }
-        DynamicHeightPicassoCardThumbnailView photoView = (DynamicHeightPicassoCardThumbnailView) v.findViewById(R.id.card_thumbnail_layout);
+
+        // Picassoを通さず直接ParseImageViewにセットしている。
+        DynamicHeightParseImageView photoView = (DynamicHeightParseImageView) v.findViewById(R.id.card_thumbnail_image);
+        photoView.setHeightRatio(1d * review.getPhotoFileWidth() / review.getPhotoFileHeight());
         ParseFile photoFile = review.getParseFile("photo");
         if (photoFile != null) {
-            photoView.bindTo(new Image(null, photoFile.getUrl(), null, review.getPhotoFileWidth(), review.getPhotoFileHeight(), 0, 0));
+            photoView.setParseFile(photoFile);
+            photoView.loadInBackground();
         }
 
         TextView titleTextView = (TextView) v.findViewById(R.id.carddemo_staggered_inner_title);

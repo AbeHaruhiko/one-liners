@@ -14,6 +14,8 @@ public class Review extends ParseObject {
     public static final String KEY_TITLE = "title";
     public static final String KEY_AUTHOR = "author";
     private static final String KEY_SHARE_SCOPE = "shareScope";
+    public static final String KEY_PHOTO_WIDTH = "photo_width";
+    private static final String KEY_PHOTO_HEIGHT = "photo_height";
 
     public void setPhotoFile(ParseFile file) {
         put(KEY_PHOTO, file);
@@ -21,6 +23,22 @@ public class Review extends ParseObject {
 
     public ParseFile getPhotoFile() {
         return getParseFile(KEY_PHOTO);
+    }
+
+    public void setPhotoFileWidth(int width) {
+        put(KEY_PHOTO_WIDTH, width);
+    }
+
+    public int getPhotoFileWidth() {
+        return (Integer) get(KEY_PHOTO_WIDTH);
+    }
+
+    public void setPhotoFileHeight(int height) {
+        put(KEY_PHOTO_HEIGHT, height);
+    }
+
+    public int getPhotoFileHeight() {
+        return (Integer) get(KEY_PHOTO_HEIGHT);
     }
 
     public void setTitle(String title) {

@@ -5,13 +5,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.parse.GetDataCallback;
-import com.parse.ParseException;
 import com.parse.ParseFile;
-import com.parse.ParseImageView;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 
+import it.gmariotti.cardslib.demo.extras.staggered.DynamicHeightPicassoCardThumbnailView;
+import it.gmariotti.cardslib.demo.extras.staggered.data.Image;
 import jp.caliconography.one_liners.R;
 import jp.caliconography.one_liners.model.parseobject.Review;
 
@@ -30,31 +29,33 @@ public class ReviewAdapter extends ParseQueryAdapter<Review> {
     }
 
     @Override
-    public View getItemView(Review mereviewl, View v, ViewGroup parent) {
+    public View getItemView(Review review, View v, ViewGroup parent) {
 
         if (v == null) {
             v = View.inflate(getContext(), R.layout.carddemo_extras_staggered_card, null);
         }
 
-        super.getItemView(mereviewl, v, parent);
+        super.getItemView(review, v, parent);
 
-        ParseImageView mealImage = (ParseImageView) v.findViewById(R.id.icon);
-        ParseFile photoFile = mereviewl.getParseFile("photo");
+//        ParseImageView photoView = (ParseImageView) v.findViewById(R.id.card_thumbnail_image);
+//        ParseFile photoFile = review.getParseFile("photoView");
+//        if (photoFile != null) {
+//            photoView.setParseFile(photoFile);
+//            photoView.loadInBackground(new GetDataCallback() {
+//                @Override
+//                public void done(byte[] data, ParseException e) {
+//                    // nothing to do
+//                }
+//            });
+//        }
+        DynamicHeightPicassoCardThumbnailView photoView = (DynamicHeightPicassoCardThumbnailView) v.findViewById(R.id.card_thumbnail_layout);
+        ParseFile photoFile = review.getParseFile("photo");
         if (photoFile != null) {
-            mealImage.setParseFile(photoFile);
-            mealImage.loadInBackground(new GetDataCallback() {
-                @Override
-                public void done(byte[] data, ParseException e) {
-                    // nothing to do
-                }
-            });
+            photoView.bindTo(new Image(null, photoFile.getUrl(), null, review.getPhotoFileWidth(), review.getPhotoFileHeight(), 0, 0));
         }
 
-        TextView titleTextView = (TextView) v.findViewById(R.id.text1);
-        titleTextView.setText(mereviewl.getTitle());
-        TextView ratingTextView = (TextView) v
-                .findViewById(R.id.favorite_meal_rating);
-        ratingTextView.setText(mereviewl.getRating());
+        TextView titleTextView = (TextView) v.findViewById(R.id.carddemo_staggered_inner_title);
+//        titleTextView.setText(review.getTitle());
         return v;
     }
 }

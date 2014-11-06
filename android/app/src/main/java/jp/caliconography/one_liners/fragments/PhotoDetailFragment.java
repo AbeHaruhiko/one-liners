@@ -57,6 +57,7 @@ import jp.caliconography.one_liners.gesture.TranslationGestureListener;
 import jp.caliconography.one_liners.model.LineConfig;
 import jp.caliconography.one_liners.model.PaintConfig;
 import jp.caliconography.one_liners.model.PointInFloat;
+import jp.caliconography.one_liners.model.parseobject.Review;
 import jp.caliconography.one_liners.util.BusHolder;
 import jp.caliconography.one_liners.util.Utils;
 import jp.caliconography.one_liners.widget.ColorPopupItem;
@@ -662,7 +663,10 @@ public class PhotoDetailFragment extends Fragment {
     }
 
     private void addPhotoToReviewAndReturn(ParseFile photoFile) {
-        ((BookDetailActivity) getActivity()).getCurrentReview().setPhotoFile(photoFile);
+        Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
+        review.setPhotoFile(photoFile);
+        review.setPhotoFileWidth(mBitmap.getWidth());
+        review.setPhotoFileHeight(mBitmap.getHeight());
         FragmentManager fm = getActivity().getFragmentManager();
         fm.popBackStack(BookDetailFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }

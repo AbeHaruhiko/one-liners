@@ -30,8 +30,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.melnykov.fab.FloatingActionButton;
-import com.parse.ParseQuery;
-import com.parse.ParseQueryAdapter;
 
 import java.util.ArrayList;
 
@@ -46,7 +44,7 @@ import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardThumbnail;
 import jp.caliconography.one_liners.R;
 import jp.caliconography.one_liners.activities.BookDetailActivity;
-import jp.caliconography.one_liners.model.parseobject.Review;
+import jp.caliconography.one_liners.adapter.ReviewAdapter;
 
 /**
  * This example uses a staggered card with different different photos and text.
@@ -118,16 +116,18 @@ public class StaggeredGridFragment extends BaseListFragment {
         //Set the empty view
         staggeredView.setEmptyView(getActivity().findViewById(android.R.id.empty));
         if (staggeredView != null) {
-            ParseQueryAdapter<Review> adapter =
-                    new ParseQueryAdapter<Review>(this.getActivity(), new ParseQueryAdapter.QueryFactory<Review>() {
-                        public ParseQuery<Review> create() {
-                            // Here we can configure a ParseQuery to our heart's desire.
-                            ParseQuery query = new ParseQuery(Review.class);
-                            query.orderByDescending("createdAt");
-                            return query;
-                        }
-                    });
-            adapter.setImageKey(Review.KEY_PHOTO);
+//            ParseQueryAdapter<Review> adapter =
+//                    new ParseQueryAdapter<Review>(this.getActivity(), new ParseQueryAdapter.QueryFactory<Review>() {
+//                        public ParseQuery<Review> create() {
+//                            // Here we can configure a ParseQuery to our heart's desire.
+//                            ParseQuery query = new ParseQuery(Review.class);
+//                            query.orderByDescending("createdAt");
+//                            return query;
+//                        }
+//                    });
+//            adapter.setImageKey(Review.KEY_PHOTO);
+//            adapter.setTextKey(Review.KEY_TITLE);
+            ReviewAdapter adapter = new ReviewAdapter(getActivity());
             staggeredView.setAdapter(adapter);
 //            staggeredView.setExternalAdapter(adapter, mCardArrayAdapter);
         }
@@ -147,12 +147,19 @@ public class StaggeredGridFragment extends BaseListFragment {
 //            }
 //        });
 //        // 2014/11/04 安部追加
+
+
         //Load cards
-        new LoaderAsyncTask().execute();
+//        new LoaderAsyncTask().execute();
+
+
 //        // 2014/11/04 安部追加
 //        ParseQuery<Review> query = ParseQuery.getQuery(Review.class);
 //        query.orderByDescending("createdAt");
 //        // 2014/11/04 安部追加
+
+
+        displayList();
 
     }
 

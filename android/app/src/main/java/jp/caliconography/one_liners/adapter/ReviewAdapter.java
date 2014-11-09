@@ -73,15 +73,4 @@ public class ReviewAdapter extends ParseQueryAdapter<Review> {
 
         return convertView;
     }
-//
-//    private static class ViewHolder {
-//        DynamicHeightParseImageView mPhotoView;
-//        TextView mTitleTextView;
-//
-//        public ViewHolder(View view) {
-//            // Picassoを通さず直接ParseImageViewにセットしている。
-//            this.mPhotoView = (DynamicHeightParseImageView) view.findViewById(R.id.card_thumbnail_image);
-//            this.mTitleTextView = (TextView) view.findViewById(R.id.carddemo_staggered_inner_title);
-//        }
-//    }
 }

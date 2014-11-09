@@ -32,47 +32,48 @@ public class ReviewAdapter extends ParseQueryAdapter<Review> {
             }
         });
         setPlaceholder(context.getResources().getDrawable(R.drawable.photo_placeholder));
-        setObjectsPerPage(3);
+        setObjectsPerPage(4);
     }
 
     @Override
-    public View getItemView(Review review, View v, ViewGroup parent) {
+    public View getItemView(Review review, View convertView, ViewGroup parent) {
 
-        if (v == null) {
-            v = View.inflate(getContext(), R.layout.carddemo_extras_staggered_card, null);
+        if (convertView == null) {
+            // recycle poolにviewがなかった場合。
+            convertView = View.inflate(getContext(), R.layout.carddemo_extras_staggered_card, null);
+
+            DynamicHeightParseImageView photoView = (DynamicHeightParseImageView) convertView.findViewById(R.id.card_thumbnail_image);
+            photoView.setHeightRatio(1d * review.getPhotoFileWidth() / review.getPhotoFileHeight());
+            ParseFile photoFile = review.getParseFile(Review.KEY_PHOTO);
+            if (photoFile != null) {
+                photoView.setParseFile(photoFile);
+                photoView.loadInBackground();
+            }
+
+            TextView titleTextView = (TextView) convertView.findViewById(R.id.carddemo_staggered_inner_title);
+            titleTextView.setText(review.getTitle());
+
+            // フェイドインアニメーション
+            ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(convertView, ALPHA, TRANSPARENT, OPAQUE);
+            objectAnimator.setDuration(FADEIN_DURATION);
+            objectAnimator.start();
+
+
         }
 
-        super.getItemView(review, v, parent);
+        super.getItemView(review, convertView, parent);
 
-//        ParseImageView photoView = (ParseImageView) v.findViewById(R.id.card_thumbnail_image);
-//        ParseFile photoFile = review.getParseFile("photoView");
-//        if (photoFile != null) {
-//            photoView.setParseFile(photoFile);
-//            photoView.loadInBackground(new GetDataCallback() {
-//                @Override
-//                public void done(byte[] data, ParseException e) {
-//                    // nothing to do
-//                }
-//            });
-//        }
-
-        // Picassoを通さず直接ParseImageViewにセットしている。
-        DynamicHeightParseImageView photoView = (DynamicHeightParseImageView) v.findViewById(R.id.card_thumbnail_image);
-        photoView.setHeightRatio(1d * review.getPhotoFileWidth() / review.getPhotoFileHeight());
-        ParseFile photoFile = review.getParseFile(Review.KEY_PHOTO);
-        if (photoFile != null) {
-            photoView.setParseFile(photoFile);
-            photoView.loadInBackground();
-        }
-
-        TextView titleTextView = (TextView) v.findViewById(R.id.carddemo_staggered_inner_title);
-//        titleTextView.setText(review.getTitle());
-
-        // フェイドインアニメーション
-        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(v, ALPHA, TRANSPARENT, OPAQUE);
-        objectAnimator.setDuration(FADEIN_DURATION);
-        objectAnimator.start();
-
-        return v;
+        return convertView;
     }
+//
+//    private static class ViewHolder {
+//        DynamicHeightParseImageView mPhotoView;
+//        TextView mTitleTextView;
+//
+//        public ViewHolder(View view) {
+//            // Picassoを通さず直接ParseImageViewにセットしている。
+//            this.mPhotoView = (DynamicHeightParseImageView) view.findViewById(R.id.card_thumbnail_image);
+//            this.mTitleTextView = (TextView) view.findViewById(R.id.carddemo_staggered_inner_title);
+//        }
+//    }
 }

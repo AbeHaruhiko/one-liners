@@ -73,4 +73,13 @@ public class ReviewAdapter extends ParseQueryAdapter<Review> {
 
         return convertView;
     }
+
+    @Override
+    public View getNextPageView(View convertView, ViewGroup parent) {
+        if (convertView == null) {
+            // recycle poolにviewがなかった場合。
+            convertView = View.inflate(getContext(), R.layout.list_loading, null);
+        }
+        return convertView;
+    }
 }

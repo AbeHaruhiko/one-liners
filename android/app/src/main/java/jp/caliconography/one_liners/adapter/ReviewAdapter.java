@@ -1,5 +1,6 @@
 package jp.caliconography.one_liners.adapter;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,18 +16,23 @@ import jp.caliconography.one_liners.widget.DynamicHeightParseImageView;
 
 public class ReviewAdapter extends ParseQueryAdapter<Review> {
 
+    public static final float TRANSPARENT = 0f;
+    public static final float OPAQUE = 1f;
+    public static final String ALPHA = "alpha";
+    public static final int FADEIN_DURATION = 400;
+
     public ReviewAdapter(Context context) {
         super(context, new ParseQueryAdapter.QueryFactory<Review>() {
             public ParseQuery<Review> create() {
                 // Here we can configure a ParseQuery to display
                 // only top-rated meals.
                 ParseQuery query = new ParseQuery(Review.class);
-                query.orderByDescending("createdAt");
+                query.orderByDescending(Review.KEY_CREATEDAT);
                 return query;
             }
         });
         setPlaceholder(context.getResources().getDrawable(R.drawable.photo_placeholder));
-        setObjectsPerPage(1);
+        setObjectsPerPage(3);
     }
 
     @Override
@@ -53,7 +59,7 @@ public class ReviewAdapter extends ParseQueryAdapter<Review> {
         // Picassoを通さず直接ParseImageViewにセットしている。
         DynamicHeightParseImageView photoView = (DynamicHeightParseImageView) v.findViewById(R.id.card_thumbnail_image);
         photoView.setHeightRatio(1d * review.getPhotoFileWidth() / review.getPhotoFileHeight());
-        ParseFile photoFile = review.getParseFile("photo");
+        ParseFile photoFile = review.getParseFile(Review.KEY_PHOTO);
         if (photoFile != null) {
             photoView.setParseFile(photoFile);
             photoView.loadInBackground();
@@ -61,6 +67,12 @@ public class ReviewAdapter extends ParseQueryAdapter<Review> {
 
         TextView titleTextView = (TextView) v.findViewById(R.id.carddemo_staggered_inner_title);
 //        titleTextView.setText(review.getTitle());
+
+        // フェイドインアニメーション
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(v, ALPHA, TRANSPARENT, OPAQUE);
+        objectAnimator.setDuration(FADEIN_DURATION);
+        objectAnimator.start();
+
         return v;
     }
 }

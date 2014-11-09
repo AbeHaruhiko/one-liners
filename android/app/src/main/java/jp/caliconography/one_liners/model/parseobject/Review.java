@@ -10,6 +10,7 @@ import com.parse.ParseObject;
 @ParseClassName("Review")
 public class Review extends ParseObject {
 
+    public static final String KEY_CREATEDAT = "createdAt";
     public static final String KEY_PHOTO = "photo";
     public static final String KEY_TITLE = "title";
     public static final String KEY_AUTHOR = "author";

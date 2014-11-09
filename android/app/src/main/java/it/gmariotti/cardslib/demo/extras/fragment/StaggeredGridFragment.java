@@ -24,9 +24,11 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.TextView;
 
 import com.melnykov.fab.FloatingActionButton;
@@ -63,6 +65,8 @@ public class StaggeredGridFragment extends BaseListFragment {
 
     ServerDatabase mServerDatabase;
     CardGridStaggeredArrayAdapter mCardArrayAdapter;
+    private boolean mIsLoading;
+    private ReviewAdapter mReviewAdapter;
 
     public StaggeredGridFragment() {
         super();
@@ -120,8 +124,8 @@ public class StaggeredGridFragment extends BaseListFragment {
         staggeredView.setEmptyView(getActivity().findViewById(android.R.id.empty));
         if (staggeredView != null) {
 
-            ReviewAdapter adapter = new ReviewAdapter(getActivity());
-            adapter.addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener<Review>() {
+            mReviewAdapter = new ReviewAdapter(getActivity());
+            mReviewAdapter.addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener<Review>() {
                 @Override
                 public void onLoading() {
                     // do nothing
@@ -130,26 +134,30 @@ public class StaggeredGridFragment extends BaseListFragment {
                 @Override
                 public void onLoaded(List<Review> reviews, Exception e) {
                     displayList();
+                    mIsLoading = false;
                 }
             });
-            staggeredView.setAdapter(adapter);
+            staggeredView.setAdapter(mReviewAdapter);
         }
 
-//        // 2014/11/04 安部追加
-//        staggeredView.setOnScrollListener(new AbsListView.OnScrollListener() {
-//            @Override
-//            public void onScrollStateChanged(AbsListView absListView, int scrollState) {
-//            }
-//
-//            @Override
-//            public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-//                if (totalItemCount != 0 && totalItemCount == firstVisibleItem + visibleItemCount) {
-//                    // 最後尾までスクロールしたので、何かデータ取得する処理
-//                    Log.d(this.getClass().getSimpleName(), "scrolled to last!!!!!!");
-//                }
-//            }
-//        });
-//        // 2014/11/04 安部追加
+        // 2014/11/04 安部追加
+        staggeredView.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView absListView, int scrollState) {
+            }
+
+            @Override
+            public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                if (!mIsLoading && totalItemCount != 0 && totalItemCount == firstVisibleItem + visibleItemCount) {
+                    // 最後尾までスクロールしたので、何かデータ取得する処理
+                    Log.d(this.getClass().getSimpleName(), "scrolled to last!!!!!!");
+                    mIsLoading = true;
+                    mReviewAdapter.loadNextPage();
+
+                }
+            }
+        });
+        // 2014/11/04 安部追加
 
 
         //Load cards

@@ -47,7 +47,7 @@ public class Review extends ParseObject {
     }
 
     public String getTitle() {
-        return getString(KEY_TITLE) == null ? "" : getString(KEY_TITLE);
+        return getString(KEY_TITLE);
     }
 
     public void setAuthor(String author) {
@@ -55,7 +55,7 @@ public class Review extends ParseObject {
     }
 
     public String getAuthor() {
-        return getString(KEY_AUTHOR) == null ? "" : getString(KEY_AUTHOR);
+        return getString(KEY_AUTHOR);
     }
 
 //    public void setShareScope(ShareScope scope) {

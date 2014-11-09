@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.parse.ParseFile;
@@ -50,15 +51,22 @@ public class ReviewAdapter extends ParseQueryAdapter<Review> {
                 photoView.loadInBackground();
             }
 
+            // カードのコンテンツ部分
+            FrameLayout mainContent = (FrameLayout) convertView.findViewById(R.id.card_main_content_layout);
+
+            // レイアウトを読み込んで、FrameLayoutにセットする。
+            View innerContent = View.inflate(getContext(), R.layout.carddemo_extras_staggered_inner_main, mainContent);
+
             TextView titleTextView = (TextView) convertView.findViewById(R.id.carddemo_staggered_inner_title);
             titleTextView.setText(review.getTitle());
+
+            TextView authorTextView = (TextView) convertView.findViewById(R.id.carddemo_staggered_inner_subtitle);
+            authorTextView.setText(review.getAuthor());
 
             // フェイドインアニメーション
             ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(convertView, ALPHA, TRANSPARENT, OPAQUE);
             objectAnimator.setDuration(FADEIN_DURATION);
             objectAnimator.start();
-
-
         }
 
         super.getItemView(review, convertView, parent);

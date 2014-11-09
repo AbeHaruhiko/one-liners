@@ -30,8 +30,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.melnykov.fab.FloatingActionButton;
+import com.parse.ParseQueryAdapter;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import it.gmariotti.cardslib.demo.extras.staggered.DynamicHeightPicassoCardThumbnailView;
 import it.gmariotti.cardslib.demo.extras.staggered.data.Image;
@@ -45,6 +47,7 @@ import it.gmariotti.cardslib.library.internal.CardThumbnail;
 import jp.caliconography.one_liners.R;
 import jp.caliconography.one_liners.activities.BookDetailActivity;
 import jp.caliconography.one_liners.adapter.ReviewAdapter;
+import jp.caliconography.one_liners.model.parseobject.Review;
 
 /**
  * This example uses a staggered card with different different photos and text.
@@ -116,20 +119,20 @@ public class StaggeredGridFragment extends BaseListFragment {
         //Set the empty view
         staggeredView.setEmptyView(getActivity().findViewById(android.R.id.empty));
         if (staggeredView != null) {
-//            ParseQueryAdapter<Review> adapter =
-//                    new ParseQueryAdapter<Review>(this.getActivity(), new ParseQueryAdapter.QueryFactory<Review>() {
-//                        public ParseQuery<Review> create() {
-//                            // Here we can configure a ParseQuery to our heart's desire.
-//                            ParseQuery query = new ParseQuery(Review.class);
-//                            query.orderByDescending("createdAt");
-//                            return query;
-//                        }
-//                    });
-//            adapter.setImageKey(Review.KEY_PHOTO);
-//            adapter.setTextKey(Review.KEY_TITLE);
+
             ReviewAdapter adapter = new ReviewAdapter(getActivity());
+            adapter.addOnQueryLoadListener(new ParseQueryAdapter.OnQueryLoadListener<Review>() {
+                @Override
+                public void onLoading() {
+                    // do nothing
+                }
+
+                @Override
+                public void onLoaded(List<Review> reviews, Exception e) {
+                    displayList();
+                }
+            });
             staggeredView.setAdapter(adapter);
-//            staggeredView.setExternalAdapter(adapter, mCardArrayAdapter);
         }
 
 //        // 2014/11/04 安部追加
@@ -159,7 +162,6 @@ public class StaggeredGridFragment extends BaseListFragment {
 //        // 2014/11/04 安部追加
 
 
-        displayList();
 
     }
 

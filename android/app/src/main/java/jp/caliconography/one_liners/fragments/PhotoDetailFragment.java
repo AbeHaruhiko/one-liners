@@ -482,8 +482,7 @@ public class PhotoDetailFragment extends Fragment {
         int id = item.getItemId();
         if (id == android.R.id.home) {
 
-            FragmentManager fm = getActivity().getFragmentManager();
-            fm.popBackStack(BookDetailFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            returnToBookDetail();
             return true;
 
         } else if (id == R.id.save_photo) {
@@ -496,12 +495,16 @@ public class PhotoDetailFragment extends Fragment {
             setPhotoBitmapToCanvasIgnoreTranslate(canvas);
             renderAllPathIgnoreTranslate(canvas);
 
+            //
+
+            // bitmap保存
             final ParseFile file = new ParseFile("photo.png", Utils.bitmapToByte(bitmap));
             file.saveInBackground(new SaveCallback() {
                 @Override
                 public void done(ParseException e) {
                     if (e == null) {
-                        addPhotoToReviewAndReturn(file);
+                        addPhotoToReview(file);
+                        returnToBookDetail();
                     } else {
                         hideProgressBar();
                         // TODO: エラーメッセージ表示が仮
@@ -662,12 +665,15 @@ public class PhotoDetailFragment extends Fragment {
         mColorPopup.close();
     }
 
-    private void addPhotoToReviewAndReturn(ParseFile photoFile) {
+    private void returnToBookDetail() {
+        FragmentManager fm = getActivity().getFragmentManager();
+        fm.popBackStack(BookDetailFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    }
+
+    private void addPhotoToReview(ParseFile photoFile) {
         Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
         review.setPhotoFile(photoFile);
         review.setPhotoFileWidth(mBitmap.getWidth());
         review.setPhotoFileHeight(mBitmap.getHeight());
-        FragmentManager fm = getActivity().getFragmentManager();
-        fm.popBackStack(BookDetailFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 }

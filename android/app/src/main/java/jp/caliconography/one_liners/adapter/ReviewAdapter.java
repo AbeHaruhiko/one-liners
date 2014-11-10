@@ -33,7 +33,7 @@ public class ReviewAdapter extends ParseQueryAdapter<Review> {
             }
         });
         setPlaceholder(context.getResources().getDrawable(R.drawable.photo_placeholder));
-        setObjectsPerPage(4);
+        setObjectsPerPage(7);
     }
 
     @Override

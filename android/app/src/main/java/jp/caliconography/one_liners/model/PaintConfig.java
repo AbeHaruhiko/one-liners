@@ -66,7 +66,7 @@ public class PaintConfig {
 
         private int width;
 
-        private StrokeWidth(int width) {
+        StrokeWidth(int width) {
             this.width = width;
         }
 

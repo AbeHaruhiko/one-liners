@@ -152,7 +152,8 @@ public class PhotoDetailFragment extends Fragment {
 
         createGetsureDetectors();
 
-        createDefaultPaint();
+//        createDefaultPaint();
+        mPaint = new jp.caliconography.one_liners.model.Paint(true);
 
         return rootView;
     }
@@ -177,16 +178,16 @@ public class PhotoDetailFragment extends Fragment {
         mTranslationBy2FingerGestureDetector = new TranslationBy2FingerGestureDetector(mTranslationBy2FingerListener);
     }
 
-    private void createDefaultPaint() {
-        mPaint = new Paint();
-        mPaint.setAntiAlias(true);
-        mPaint.setDither(true);
-        mPaint.setColor(0x88cdcdcd);
-        mPaint.setStyle(Paint.Style.STROKE);
-        mPaint.setStrokeJoin(Paint.Join.ROUND);
-        mPaint.setStrokeCap(Paint.Cap.ROUND);
-        mPaint.setStrokeWidth(20);
-    }
+//    private void createDefaultPaint() {
+//        mPaint = new Paint();
+//        mPaint.setAntiAlias(true);
+//        mPaint.setDither(true);
+//        mPaint.setColor(0x88cdcdcd);
+//        mPaint.setStyle(Paint.Style.STROKE);
+//        mPaint.setStrokeJoin(Paint.Join.ROUND);
+//        mPaint.setStrokeCap(Paint.Cap.ROUND);
+//        mPaint.setStrokeWidth(20);
+//    }
 
     @OnClick(R.id.load_image)
     void onClickLoadImage(View view) {
@@ -495,7 +496,8 @@ public class PhotoDetailFragment extends Fragment {
             setPhotoBitmapToCanvasIgnoreTranslate(canvas);
             renderAllPathIgnoreTranslate(canvas);
 
-            //
+            // 編集履歴を保存
+
 
             // bitmap保存
             final ParseFile file = new ParseFile("photo.png", Utils.bitmapToByte(bitmap));

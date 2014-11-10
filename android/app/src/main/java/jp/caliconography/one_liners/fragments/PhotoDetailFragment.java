@@ -516,7 +516,7 @@ public class PhotoDetailFragment extends Fragment {
                 public void done(Integer integer) {
                     if (integer != 100) {
                         // 100%になった後、数秒かかるので100%は表示しない
-                        mProgressText.setText(String.format("...%d%%", integer));
+                        mProgressText.setText(String.format("%d%%...", integer));
                     }
                 }
             });

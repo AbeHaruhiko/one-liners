@@ -4,6 +4,8 @@ import com.parse.ParseClassName;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 
+import org.json.JSONArray;
+
 /**
  * Created by abeharuhiko on 2014/10/28.
  */
@@ -14,9 +16,10 @@ public class Review extends ParseObject {
     public static final String KEY_PHOTO = "photo";
     public static final String KEY_TITLE = "title";
     public static final String KEY_AUTHOR = "author";
-    private static final String KEY_SHARE_SCOPE = "shareScope";
-    public static final String KEY_PHOTO_WIDTH = "photo_width";
-    private static final String KEY_PHOTO_HEIGHT = "photo_height";
+    //    private static final String KEY_SHARE_SCOPE = "shareScope";
+    public static final String KEY_PHOTO_WIDTH = "photoWidth";
+    private static final String KEY_PHOTO_HEIGHT = "photoHeight";
+    private static final String KEY_PAINT_CONFIGS = "paintConfigs";
 
     public void setPhotoFile(ParseFile file) {
         put(KEY_PHOTO, file);
@@ -56,6 +59,14 @@ public class Review extends ParseObject {
 
     public String getAuthor() {
         return getString(KEY_AUTHOR);
+    }
+
+    public void setPaintConfigs(JSONArray paintConfigs) {
+        put(KEY_PAINT_CONFIGS, paintConfigs);
+    }
+
+    public JSONArray getPaintConfigs() {
+        return getJSONArray(KEY_PAINT_CONFIGS);
     }
 
 //    public void setShareScope(ShareScope scope) {

@@ -7,6 +7,7 @@ import com.parse.ParseACL;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
+import jp.caliconography.one_liners.model.parseobject.ParseLineConfig;
 import jp.caliconography.one_liners.model.parseobject.Review;
 
 /**
@@ -21,6 +22,8 @@ public class App extends Application {
         super.onCreate();
 
         ParseObject.registerSubclass(Review.class);
+//        ParseObject.registerSubclass(ParseShapeConfig.class);
+        ParseObject.registerSubclass(ParseLineConfig.class);
 
         Parse.enableLocalDatastore(getApplicationContext());
         Parse.initialize(this, PARSE_APPLICATION_ID, PARSE_CLIENT_KEY);

@@ -37,6 +37,9 @@ import com.parse.ProgressCallback;
 import com.parse.SaveCallback;
 import com.squareup.otto.Subscribe;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -57,6 +60,7 @@ import jp.caliconography.one_liners.gesture.TranslationGestureListener;
 import jp.caliconography.one_liners.model.LineConfig;
 import jp.caliconography.one_liners.model.PaintConfig;
 import jp.caliconography.one_liners.model.PointInFloat;
+import jp.caliconography.one_liners.model.parseobject.ParseLineConfig;
 import jp.caliconography.one_liners.model.parseobject.Review;
 import jp.caliconography.one_liners.util.BusHolder;
 import jp.caliconography.one_liners.util.Utils;
@@ -497,7 +501,20 @@ public class PhotoDetailFragment extends Fragment {
             renderAllPathIgnoreTranslate(canvas);
 
             // 編集履歴を保存
+            JSONArray paintConfigs = new JSONArray();
+            for (LineConfig config : mLineConfigArray) {
+                try {
+                    ParseLineConfig confParseObj = new ParseLineConfig();
+                    confParseObj.setConfig(config);
+                    paintConfigs.put(confParseObj);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
+            }
+            Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
+            review.setPaintConfigs(paintConfigs);
+            review.saveInBackground();
 
             // bitmap保存
             final ParseFile file = new ParseFile("photo.png", Utils.bitmapToByte(bitmap));

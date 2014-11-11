@@ -2,6 +2,7 @@ package jp.caliconography.one_liners.model.parseobject;
 
 import android.graphics.Matrix;
 
+import com.parse.ParseClassName;
 import com.parse.ParseObject;
 
 import org.json.JSONArray;
@@ -10,21 +11,34 @@ import org.json.JSONObject;
 
 import jp.caliconography.one_liners.model.Paint;
 import jp.caliconography.one_liners.model.PaintConfig;
+import jp.caliconography.one_liners.model.ShapeConfig;
 
 /**
  * Created by abeharuhiko on 2014/11/10.
  */
-abstract public class ShapeConfig extends ParseObject {
-    private static final String KEY_TRANSLATE_X = "translatex";
-    private static final String KEY_TRANSLATE_Y = "translatey";
+@ParseClassName("ParseShapeConfig")
+abstract public class ParseShapeConfig extends ParseObject {
+    private static final String KEY_TRANSLATE_X = "translateX";
+    private static final String KEY_TRANSLATE_Y = "translateY";
     private static final String KEY_MATRIX = "matrix";
     private static final String KEY_PAINT = "paint";
     private static final String KEY_UNSCALED_STROKE_WIDTH = "unscaledStrokeWidth";
     private static final String KEY_COLOR = "color";
 
+    public void setConfig(ShapeConfig config) throws JSONException {
+        this.setConfig(config.getPaint(), config.getMatrix(), config.getTranslateX(), config.getTranslateY());
+    }
+
+    void setConfig(Paint paint, Matrix matrix, float translateX, float translateY) throws JSONException {
+        setPaint(paint);
+        setMatrix(matrix);
+        setTranslateX(translateX);
+        setTranslateY(translateY);
+    }
+
     public void setPaint(Paint paint) {
         // 線の太さと色のみ保存。（他の属性はデフォルト）
-        put(KEY_UNSCALED_STROKE_WIDTH, paint.getUnScaledStrokeWidth());
+        put(KEY_UNSCALED_STROKE_WIDTH, paint.getUnScaledStrokeWidth().getWidthInt());
         put(KEY_COLOR, paint.getColor());
     }
 

@@ -1,14 +1,29 @@
 package jp.caliconography.one_liners.model.parseobject;
 
+import com.parse.ParseClassName;
+
+import org.json.JSONException;
+
+import jp.caliconography.one_liners.model.LineConfig;
+
 /**
  * Created by abeharuhiko on 2014/10/17.
  */
-public class LineConfig extends ShapeConfig {
+@ParseClassName("ParseLineConfig")
+public class ParseLineConfig extends ParseShapeConfig {
 
     private static final String KEY_START_X = "startX";
     private static final String KEY_START_Y = "startY";
     private static final String KEY_END_X = "endX";
     private static final String KEY_END_Y = "endY";
+
+    public void setLineConfig(LineConfig config) throws JSONException {
+        super.setConfig(config);
+        setStartX(config.getStartX());
+        setStartY(config.getStartY());
+        setEndX(config.getEndX());
+        setEndY(config.getEndY());
+    }
 
     public void setStartX(float startX) {
         put(KEY_START_X, startX);

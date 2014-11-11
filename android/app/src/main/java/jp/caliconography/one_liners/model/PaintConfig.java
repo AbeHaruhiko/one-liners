@@ -66,12 +66,21 @@ public class PaintConfig {
 
         private int width;
 
-        StrokeWidth(int width) {
+        StrokeWidth(final int width) {
             this.width = width;
         }
 
         public int getWidthInt() {
             return width;
+        }
+
+        public static StrokeWidth valueOf(int widthInt) {
+            for (StrokeWidth strokeWidth : values()) {
+                if (strokeWidth.getWidthInt() == widthInt) {
+                    return strokeWidth;
+                }
+            }
+            throw new IllegalArgumentException("StrokeWidthに不正な値が指定されました。(" + widthInt + ")");
         }
     }
 

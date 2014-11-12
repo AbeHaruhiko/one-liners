@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.os.Bundle;
 
-import it.gmariotti.cardslib.demo.extras.fragment.StaggeredGridFragment;
+import jp.caliconography.one_liners.fragments.BookListFragment;
 
 
 /**
@@ -32,7 +32,7 @@ public class BookListActivity extends Activity {
         final FragmentManager fm = getFragmentManager();
 
         if (fm.findFragmentById(android.R.id.content) == null) {
-            final StaggeredGridFragment fragment = new StaggeredGridFragment();
+            final BookListFragment fragment = new BookListFragment();
             fm.beginTransaction().add(android.R.id.content, fragment).commit();
         }
     }

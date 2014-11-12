@@ -16,12 +16,11 @@
  *  *****************************************************************************
  */
 
-package it.gmariotti.cardslib.demo.extras.fragment;
+package jp.caliconography.one_liners.fragments;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +31,7 @@ import com.parse.ParseQueryAdapter;
 
 import java.util.List;
 
+import it.gmariotti.cardslib.demo.extras.fragment.BaseListFragment;
 import it.gmariotti.cardslib.library.extra.staggeredgrid.view.CardGridStaggeredView;
 import jp.caliconography.one_liners.R;
 import jp.caliconography.one_liners.activities.BookDetailActivity;
@@ -48,12 +48,12 @@ import jp.caliconography.one_liners.model.parseobject.Review;
  *
  * @author Gabriele Mariotti (gabri.mariotti@gmail.com)
  */
-public class StaggeredGridFragment extends BaseListFragment {
+public class BookListFragment extends BaseListFragment {
 
     private boolean mIsLoading;
     private ReviewAdapter mReviewAdapter;
 
-    public StaggeredGridFragment() {
+    public BookListFragment() {
         super();
     }
 
@@ -130,7 +130,6 @@ public class StaggeredGridFragment extends BaseListFragment {
             public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
                 if (!mIsLoading && totalItemCount != 0 && totalItemCount == firstVisibleItem + visibleItemCount) {
                     // 最後尾までスクロールしたので、何かデータ取得する処理
-                    Log.d(this.getClass().getSimpleName(), "scrolled to last!!!!!!");
                     mIsLoading = true;
                     mReviewAdapter.loadNextPage();
 

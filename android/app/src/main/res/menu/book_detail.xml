@@ -3,7 +3,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/save_book"
-        android:icon="@android:drawable/ic_menu_save"
+        android:icon="@drawable/ic_action_save"
         android:showAsAction="always"
         android:title="保存" />
 </menu>

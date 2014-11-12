@@ -77,6 +77,6 @@
         android:layout_margin="8dp"
         android:background="@drawable/btn_oval_common_back"
         android:padding="4dp"
-        android:src="@android:drawable/ic_menu_search" />
+        android:src="@drawable/ic_action_search" />
 
 </RelativeLayout>

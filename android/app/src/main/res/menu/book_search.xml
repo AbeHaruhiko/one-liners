@@ -3,7 +3,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 <item
         android:id="@+id/search_view"
-        android:icon="@android:drawable/ic_menu_search"
+    android:icon="@drawable/ic_action_search"
         android:showAsAction="always"
         android:title="書籍検索"
         android:actionViewClass="android.widget.SearchView"/>

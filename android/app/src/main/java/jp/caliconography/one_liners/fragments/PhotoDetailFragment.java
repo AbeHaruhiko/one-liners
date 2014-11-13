@@ -169,7 +169,35 @@ public class PhotoDetailFragment extends Fragment {
                 @Override
                 public void done(byte[] bytes, ParseException e) {
                     mBitmap = Utils.getBitmapFromByteArray(bytes);
-                    trySetPhotoBitmapToCanvas();
+                    if (mSurfaceCreated) {
+                        getScaleForFitBitmapToView();
+
+                        Canvas canvas = null;
+                        try {
+                            canvas = mSurfaceHolder.lockCanvas(null);
+                            if (canvas != null) {
+                                setPhotoBitmapToCanvas(canvas);
+
+                                // 線取得
+                                JSONArray paintConfigs = mReview.getPaintConfigs();
+                                for (LineConfig config : paintConfigs) {
+                                    try {
+                                        ParseLineConfig confParseObj = new ParseLineConfig();
+                                        mLineConfigArray.add(confParseObj.setConfig(config));
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                }
+                                for ()
+                                    renderAllPath(canvas);
+                            }
+                        } finally {
+                            if (canvas != null) {
+                                mSurfaceHolder.unlockCanvasAndPost(canvas);
+                            }
+                        }
+                    }
                 }
             }, new ProgressCallback() {
                 @Override
@@ -182,7 +210,7 @@ public class PhotoDetailFragment extends Fragment {
         return rootView;
     }
 
-    private void trySetPhotoBitmapToCanvas() {
+    private void tryToSetPhotoBitmapToCanvas() {
         if (mSurfaceCreated) {
             getScaleForFitBitmapToView();
 
@@ -493,7 +521,7 @@ public class PhotoDetailFragment extends Fragment {
             }
             mBitmap = getBitmapFromLocalFile(data);
 
-            trySetPhotoBitmapToCanvas();
+            tryToSetPhotoBitmapToCanvas();
 
             mPictureUri = null;
         }

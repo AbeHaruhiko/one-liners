@@ -31,6 +31,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ProgressCallback;
@@ -117,6 +118,8 @@ public class PhotoDetailFragment extends Fragment {
     private boolean mSurfaceCreated;
     private Paint mPaint;
     ArrayList<LineConfig> mLineConfigArray = new ArrayList<LineConfig>();
+    private Review mReview = null;
+
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -130,6 +133,7 @@ public class PhotoDetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
         // FragmentでMenuを表示する為に必要
         this.setHasOptionsMenu(true);
+        mReview = ((BookDetailActivity) getActivity()).getCurrentReview();
     }
 
     @Override
@@ -159,7 +163,41 @@ public class PhotoDetailFragment extends Fragment {
 //        createDefaultPaint();
         mPaint = new jp.caliconography.one_liners.model.Paint(true);
 
+        // 保存済みのbitmapがあれば表示
+        if (mReview.getPhotoFile() != null) {
+            mReview.getOriginalPhotoFile().getDataInBackground(new GetDataCallback() {
+                @Override
+                public void done(byte[] bytes, ParseException e) {
+                    mBitmap = Utils.getBitmapFromByteArray(bytes);
+                    trySetPhotoBitmapToCanvas();
+                }
+            }, new ProgressCallback() {
+                @Override
+                public void done(Integer integer) {
+
+                }
+            });
+        }
+
         return rootView;
+    }
+
+    private void trySetPhotoBitmapToCanvas() {
+        if (mSurfaceCreated) {
+            getScaleForFitBitmapToView();
+
+            Canvas canvas = null;
+            try {
+                canvas = mSurfaceHolder.lockCanvas(null);
+                if (canvas != null) {
+                    setPhotoBitmapToCanvas(canvas);
+                }
+            } finally {
+                if (canvas != null) {
+                    mSurfaceHolder.unlockCanvasAndPost(canvas);
+                }
+            }
+        }
     }
 
     @Override
@@ -455,21 +493,7 @@ public class PhotoDetailFragment extends Fragment {
             }
             mBitmap = getBitmapFromLocalFile(data);
 
-            if (mSurfaceCreated) {
-                getScaleForFitBitmapToView();
-
-                Canvas canvas = null;
-                try {
-                    canvas = mSurfaceHolder.lockCanvas(null);
-                    if (canvas != null) {
-                        setPhotoBitmapToCanvas(canvas);
-                    }
-                } finally {
-                    if (canvas != null) {
-                        mSurfaceHolder.unlockCanvasAndPost(canvas);
-                    }
-                }
-            }
+            trySetPhotoBitmapToCanvas();
 
             mPictureUri = null;
         }
@@ -720,16 +744,14 @@ public class PhotoDetailFragment extends Fragment {
     }
 
     private void addOriginalPhotoToReview(ParseFile photoFile) {
-        Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
-        review.setOriginalPhotoFile(photoFile);
-        review.setPhotoFileWidth(mBitmap.getWidth());
-        review.setPhotoFileHeight(mBitmap.getHeight());
+        mReview.setOriginalPhotoFile(photoFile);
+        mReview.setPhotoFileWidth(mBitmap.getWidth());
+        mReview.setPhotoFileHeight(mBitmap.getHeight());
     }
 
     private void addPhotoToReview(ParseFile photoFile) {
-        Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
-        review.setPhotoFile(photoFile);
-        review.setPhotoFileWidth(mBitmap.getWidth());
-        review.setPhotoFileHeight(mBitmap.getHeight());
+        mReview.setPhotoFile(photoFile);
+        mReview.setPhotoFileWidth(mBitmap.getWidth());
+        mReview.setPhotoFileHeight(mBitmap.getHeight());
     }
 }

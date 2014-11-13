@@ -494,12 +494,6 @@ public class PhotoDetailFragment extends Fragment {
 
             showProgressBar();
 
-            Bitmap bitmap = Bitmap.createBitmap((int) (mBitmap.getWidth() * mScale), (int) (mBitmap.getHeight() * mScale), Bitmap.Config.ARGB_8888);
-            // view のサイズで Bitmap を作成
-            Canvas canvas = new Canvas(bitmap);        // bitmap をターゲットにした Canvas を作成
-            setPhotoBitmapToCanvasIgnoreTranslate(canvas);
-            renderAllPathIgnoreTranslate(canvas);
-
             // 編集履歴を保存
             JSONArray paintConfigs = new JSONArray();
             for (LineConfig config : mLineConfigArray) {
@@ -515,6 +509,12 @@ public class PhotoDetailFragment extends Fragment {
             Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
             review.setPaintConfigs(paintConfigs);
             review.saveInBackground();
+
+            Bitmap bitmap = Bitmap.createBitmap((int) (mBitmap.getWidth() * mScale), (int) (mBitmap.getHeight() * mScale), Bitmap.Config.ARGB_8888);
+            // view のサイズで Bitmap を作成
+            Canvas canvas = new Canvas(bitmap);        // bitmap をターゲットにした Canvas を作成
+            setPhotoBitmapToCanvasIgnoreTranslate(canvas);
+            renderAllPathIgnoreTranslate(canvas);
 
             // bitmap保存
             final ParseFile file = new ParseFile("photo.png", Utils.bitmapToByte(bitmap));

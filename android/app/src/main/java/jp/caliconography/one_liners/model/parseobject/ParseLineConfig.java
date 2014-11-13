@@ -5,6 +5,7 @@ import com.parse.ParseClassName;
 import org.json.JSONException;
 
 import jp.caliconography.one_liners.model.LineConfig;
+import jp.caliconography.one_liners.model.ShapeConfig;
 
 /**
  * Created by abeharuhiko on 2014/10/17.
@@ -17,12 +18,14 @@ public class ParseLineConfig extends ParseShapeConfig {
     private static final String KEY_END_X = "endX";
     private static final String KEY_END_Y = "endY";
 
-    public void setLineConfig(LineConfig config) throws JSONException {
+    @Override
+    public void setConfig(ShapeConfig config) throws JSONException {
         super.setConfig(config);
-        setStartX(config.getStartX());
-        setStartY(config.getStartY());
-        setEndX(config.getEndX());
-        setEndY(config.getEndY());
+        LineConfig lineConfig = (LineConfig) config;
+        setStartX(lineConfig.getStartX());
+        setStartY(lineConfig.getStartY());
+        setEndX(lineConfig.getEndX());
+        setEndY(lineConfig.getEndY());
     }
 
     public void setStartX(float startX) {

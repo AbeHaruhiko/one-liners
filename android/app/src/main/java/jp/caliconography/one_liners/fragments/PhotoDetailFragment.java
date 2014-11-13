@@ -514,6 +514,35 @@ public class PhotoDetailFragment extends Fragment {
             // view のサイズで Bitmap を作成
             Canvas canvas = new Canvas(bitmap);        // bitmap をターゲットにした Canvas を作成
             setPhotoBitmapToCanvasIgnoreTranslate(canvas);
+
+            // 線の書き込み前にオリジナルを保存
+            final ParseFile originalPhotoFile = new ParseFile("original.png", Utils.bitmapToByte(bitmap));
+            originalPhotoFile.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e == null) {
+                        addOriginalPhotoToReview(originalPhotoFile);
+                    } else {
+                        hideProgressBar();
+                        // TODO: エラーメッセージ表示が仮
+                        Toast.makeText(
+                                getActivity().getApplicationContext(),
+                                "Error saving: " + e.getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }, new ProgressCallback() {
+                @Override
+                public void done(Integer integer) {
+//                    if (integer != 100) {
+//                        // 100%になった後、数秒かかるので100%は表示しない
+//                        mProgressText.setText(String.format("%d%%...", integer / 2));
+//                    }
+                    mProgressText.setText("saving...");
+                }
+            });
+
+
             renderAllPathIgnoreTranslate(canvas);
 
             // bitmap保存
@@ -536,10 +565,11 @@ public class PhotoDetailFragment extends Fragment {
             }, new ProgressCallback() {
                 @Override
                 public void done(Integer integer) {
-                    if (integer != 100) {
-                        // 100%になった後、数秒かかるので100%は表示しない
-                        mProgressText.setText(String.format("%d%%...", integer));
-                    }
+//                    if (integer != 100) {
+//                        // 100%になった後、数秒かかるので100%は表示しない
+//                        mProgressText.setText(String.format("%d%%...", integer / 2 + 50));
+//                    }
+                    mProgressText.setText("saving...");
                 }
             });
 
@@ -687,6 +717,13 @@ public class PhotoDetailFragment extends Fragment {
     private void returnToBookDetail() {
         FragmentManager fm = getActivity().getFragmentManager();
         fm.popBackStack(BookDetailFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+    }
+
+    private void addOriginalPhotoToReview(ParseFile photoFile) {
+        Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
+        review.setOriginalPhotoFile(photoFile);
+        review.setPhotoFileWidth(mBitmap.getWidth());
+        review.setPhotoFileHeight(mBitmap.getHeight());
     }
 
     private void addPhotoToReview(ParseFile photoFile) {

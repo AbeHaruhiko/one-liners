@@ -14,12 +14,21 @@ public class Review extends ParseObject {
 
     public static final String KEY_CREATEDAT = "createdAt";
     public static final String KEY_PHOTO = "photo";
+    public static final String KEY_ORIGINAL_PHOTO = "original_photo";
     public static final String KEY_TITLE = "title";
     public static final String KEY_AUTHOR = "author";
     //    private static final String KEY_SHARE_SCOPE = "shareScope";
     public static final String KEY_PHOTO_WIDTH = "photoWidth";
     private static final String KEY_PHOTO_HEIGHT = "photoHeight";
     private static final String KEY_PAINT_CONFIGS = "paintConfigs";
+
+    public void setOriginalPhotoFile(ParseFile file) {
+        put(KEY_ORIGINAL_PHOTO, file);
+    }
+
+    public ParseFile getOriginalPhotoFile() {
+        return getParseFile(KEY_ORIGINAL_PHOTO);
+    }
 
     public void setPhotoFile(ParseFile file) {
         put(KEY_PHOTO, file);

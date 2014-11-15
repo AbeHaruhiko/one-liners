@@ -118,4 +118,8 @@ public class Utils {
         }
         return false;
     }
+
+    public static boolean isOffline(Context context) {
+        return !isOnline(context);
+    }
 }

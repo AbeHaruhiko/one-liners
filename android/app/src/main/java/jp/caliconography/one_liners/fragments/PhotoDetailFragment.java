@@ -572,9 +572,9 @@ public class PhotoDetailFragment extends Fragment {
                 }
 
             }
-            Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
-            review.setPaintConfigs(paintConfigs);
-            tasks.add(ParseObjectAsyncUtil.saveAsync(review));
+
+            mReview.setPaintConfigs(paintConfigs);
+            tasks.add(ParseObjectAsyncUtil.saveAsync(mReview));
 
             Bitmap bitmap = Bitmap.createBitmap((int) (mBitmap.getWidth() * mScale), (int) (mBitmap.getHeight() * mScale), Bitmap.Config.ARGB_8888);
             // view のサイズで Bitmap を作成
@@ -584,62 +584,12 @@ public class PhotoDetailFragment extends Fragment {
             // 線の書き込み前にオリジナルを保存
             final ParseFile originalPhotoFile = new ParseFile("original.png", Utils.bitmapToByte(bitmap));
             tasks.add(ParseObjectAsyncUtil.saveAsync(originalPhotoFile));
-//            originalPhotoFile.saveInBackground(new SaveCallback() {
-//                @Override
-//                public void done(ParseException e) {
-//                    if (e == null) {
-//                        addOriginalPhotoToReview(originalPhotoFile);
-//                    } else {
-//                        hideProgressBar();
-//                        // TODO: エラーメッセージ表示が仮
-//                        Toast.makeText(
-//                                getActivity().getApplicationContext(),
-//                                "Error saving: " + e.getMessage(),
-//                                Toast.LENGTH_SHORT).show();
-//                    }
-//                }
-//            }, new ProgressCallback() {
-//                @Override
-//                public void done(Integer integer) {
-////                    if (integer != 100) {
-////                        // 100%になった後、数秒かかるので100%は表示しない
-////                        mProgressText.setText(String.format("%d%%...", integer / 2));
-////                    }
-//                    mProgressText.setText("saving...");
-//                }
-//            });
-
 
             renderAllPathIgnoreTranslate(canvas);
 
             // bitmap保存
             final ParseFile file = new ParseFile("photo.png", Utils.bitmapToByte(bitmap));
             tasks.add(ParseObjectAsyncUtil.saveAsync(file));
-//            file.saveInBackground(new SaveCallback() {
-//                @Override
-//                public void done(ParseException e) {
-//                    if (e == null) {
-//                        addPhotoToReview(file);
-//                        returnToBookDetail();
-//                    } else {
-//                        hideProgressBar();
-//                        // TODO: エラーメッセージ表示が仮
-//                        Toast.makeText(
-//                                getActivity().getApplicationContext(),
-//                                "Error saving: " + e.getMessage(),
-//                                Toast.LENGTH_SHORT).show();
-//                    }
-//                }
-//            }, new ProgressCallback() {
-//                @Override
-//                public void done(Integer integer) {
-////                    if (integer != 100) {
-////                        // 100%になった後、数秒かかるので100%は表示しない
-////                        mProgressText.setText(String.format("%d%%...", integer / 2 + 50));
-////                    }
-//                    mProgressText.setText("saving...");
-//                }
-//            });
 
             Task.whenAll(tasks).continueWith(new Continuation<Void, Void>() {
                 @Override

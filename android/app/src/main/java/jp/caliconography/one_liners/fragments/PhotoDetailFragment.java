@@ -29,13 +29,11 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ProgressCallback;
-import com.parse.SaveCallback;
 import com.squareup.otto.Subscribe;
 
 import org.json.JSONArray;
@@ -45,6 +43,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
+import bolts.Continuation;
+import bolts.Task;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -65,6 +65,8 @@ import jp.caliconography.one_liners.model.parseobject.ParseLineConfig;
 import jp.caliconography.one_liners.model.parseobject.Review;
 import jp.caliconography.one_liners.util.BusHolder;
 import jp.caliconography.one_liners.util.Utils;
+import jp.caliconography.one_liners.util.parse.ParseObjectAsyncProcResult;
+import jp.caliconography.one_liners.util.parse.ParseObjectAsyncUtil;
 import jp.caliconography.one_liners.widget.ColorPopupItem;
 import jp.caliconography.one_liners.widget.PopupMenu;
 import jp.caliconography.one_liners.widget.PopupMenuItem;
@@ -172,31 +174,31 @@ public class PhotoDetailFragment extends Fragment {
                     if (mSurfaceCreated) {
                         getScaleForFitBitmapToView();
 
-                        Canvas canvas = null;
-                        try {
-                            canvas = mSurfaceHolder.lockCanvas(null);
-                            if (canvas != null) {
-                                setPhotoBitmapToCanvas(canvas);
-
-                                // 線取得
-                                JSONArray paintConfigs = mReview.getPaintConfigs();
-                                for (LineConfig config : paintConfigs) {
-                                    try {
-                                        ParseLineConfig confParseObj = new ParseLineConfig();
-                                        mLineConfigArray.add(confParseObj.setConfig(config));
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-
-                                }
-                                for ()
-                                    renderAllPath(canvas);
-                            }
-                        } finally {
-                            if (canvas != null) {
-                                mSurfaceHolder.unlockCanvasAndPost(canvas);
-                            }
-                        }
+//                        Canvas canvas = null;
+//                        try {
+//                            canvas = mSurfaceHolder.lockCanvas(null);
+//                            if (canvas != null) {
+//                                setPhotoBitmapToCanvas(canvas);
+//
+//                                // 線取得
+//                                JSONArray paintConfigs = mReview.getPaintConfigs();
+//                                for (LineConfig config : paintConfigs) {
+//                                    try {
+//                                        ParseLineConfig confParseObj = new ParseLineConfig();
+//                                        mLineConfigArray.add(confParseObj.setConfig(config));
+//                                    } catch (JSONException e) {
+//                                        e.printStackTrace();
+//                                    }
+//
+//                                }
+//                                for ()
+//                                    renderAllPath(canvas);
+//                            }
+//                        } finally {
+//                            if (canvas != null) {
+//                                mSurfaceHolder.unlockCanvasAndPost(canvas);
+//                            }
+//                        }
                     }
                 }
             }, new ProgressCallback() {
@@ -546,6 +548,8 @@ public class PhotoDetailFragment extends Fragment {
 
             showProgressBar();
 
+            ArrayList<Task<ParseObjectAsyncProcResult>> tasks = new ArrayList<Task<ParseObjectAsyncProcResult>>();
+
             // 編集履歴を保存
             JSONArray paintConfigs = new JSONArray();
             for (LineConfig config : mLineConfigArray) {
@@ -560,7 +564,7 @@ public class PhotoDetailFragment extends Fragment {
             }
             Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
             review.setPaintConfigs(paintConfigs);
-            review.saveInBackground();
+            tasks.add(ParseObjectAsyncUtil.saveAsync(review));
 
             Bitmap bitmap = Bitmap.createBitmap((int) (mBitmap.getWidth() * mScale), (int) (mBitmap.getHeight() * mScale), Bitmap.Config.ARGB_8888);
             // view のサイズで Bitmap を作成
@@ -569,59 +573,71 @@ public class PhotoDetailFragment extends Fragment {
 
             // 線の書き込み前にオリジナルを保存
             final ParseFile originalPhotoFile = new ParseFile("original.png", Utils.bitmapToByte(bitmap));
-            originalPhotoFile.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    if (e == null) {
-                        addOriginalPhotoToReview(originalPhotoFile);
-                    } else {
-                        hideProgressBar();
-                        // TODO: エラーメッセージ表示が仮
-                        Toast.makeText(
-                                getActivity().getApplicationContext(),
-                                "Error saving: " + e.getMessage(),
-                                Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }, new ProgressCallback() {
-                @Override
-                public void done(Integer integer) {
-//                    if (integer != 100) {
-//                        // 100%になった後、数秒かかるので100%は表示しない
-//                        mProgressText.setText(String.format("%d%%...", integer / 2));
+            tasks.add(ParseObjectAsyncUtil.saveAsync(originalPhotoFile));
+//            originalPhotoFile.saveInBackground(new SaveCallback() {
+//                @Override
+//                public void done(ParseException e) {
+//                    if (e == null) {
+//                        addOriginalPhotoToReview(originalPhotoFile);
+//                    } else {
+//                        hideProgressBar();
+//                        // TODO: エラーメッセージ表示が仮
+//                        Toast.makeText(
+//                                getActivity().getApplicationContext(),
+//                                "Error saving: " + e.getMessage(),
+//                                Toast.LENGTH_SHORT).show();
 //                    }
-                    mProgressText.setText("saving...");
-                }
-            });
+//                }
+//            }, new ProgressCallback() {
+//                @Override
+//                public void done(Integer integer) {
+////                    if (integer != 100) {
+////                        // 100%になった後、数秒かかるので100%は表示しない
+////                        mProgressText.setText(String.format("%d%%...", integer / 2));
+////                    }
+//                    mProgressText.setText("saving...");
+//                }
+//            });
 
 
             renderAllPathIgnoreTranslate(canvas);
 
             // bitmap保存
             final ParseFile file = new ParseFile("photo.png", Utils.bitmapToByte(bitmap));
-            file.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    if (e == null) {
-                        addPhotoToReview(file);
-                        returnToBookDetail();
-                    } else {
-                        hideProgressBar();
-                        // TODO: エラーメッセージ表示が仮
-                        Toast.makeText(
-                                getActivity().getApplicationContext(),
-                                "Error saving: " + e.getMessage(),
-                                Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }, new ProgressCallback() {
-                @Override
-                public void done(Integer integer) {
-//                    if (integer != 100) {
-//                        // 100%になった後、数秒かかるので100%は表示しない
-//                        mProgressText.setText(String.format("%d%%...", integer / 2 + 50));
+            tasks.add(ParseObjectAsyncUtil.saveAsync(file));
+//            file.saveInBackground(new SaveCallback() {
+//                @Override
+//                public void done(ParseException e) {
+//                    if (e == null) {
+//                        addPhotoToReview(file);
+//                        returnToBookDetail();
+//                    } else {
+//                        hideProgressBar();
+//                        // TODO: エラーメッセージ表示が仮
+//                        Toast.makeText(
+//                                getActivity().getApplicationContext(),
+//                                "Error saving: " + e.getMessage(),
+//                                Toast.LENGTH_SHORT).show();
 //                    }
-                    mProgressText.setText("saving...");
+//                }
+//            }, new ProgressCallback() {
+//                @Override
+//                public void done(Integer integer) {
+////                    if (integer != 100) {
+////                        // 100%になった後、数秒かかるので100%は表示しない
+////                        mProgressText.setText(String.format("%d%%...", integer / 2 + 50));
+////                    }
+//                    mProgressText.setText("saving...");
+//                }
+//            });
+
+            Task.whenAll(tasks).onSuccess(new Continuation<Void, Void>() {
+                @Override
+                public Void then(Task<Void> task) throws Exception {
+                    addOriginalPhotoToReview(originalPhotoFile);
+                    addPhotoToReview(file);
+                    returnToBookDetail();
+                    return null;
                 }
             });
 

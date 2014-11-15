@@ -29,6 +29,7 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
@@ -546,6 +547,15 @@ public class PhotoDetailFragment extends Fragment {
 
         } else if (id == R.id.save_photo) {
 
+            if (Utils.isOffline(getActivity())) {
+                // TODO: エラーメッセージ表示が仮
+                Toast.makeText(
+                        getActivity().getApplicationContext(),
+                        "ネットワークに接続できません",
+                        Toast.LENGTH_SHORT).show();
+                return false;
+            }
+
             showProgressBar();
 
             ArrayList<Task<ParseObjectAsyncProcResult>> tasks = new ArrayList<Task<ParseObjectAsyncProcResult>>();
@@ -631,12 +641,21 @@ public class PhotoDetailFragment extends Fragment {
 //                }
 //            });
 
-            Task.whenAll(tasks).onSuccess(new Continuation<Void, Void>() {
+            Task.whenAll(tasks).continueWith(new Continuation<Void, Void>() {
                 @Override
                 public Void then(Task<Void> task) throws Exception {
-                    addOriginalPhotoToReview(originalPhotoFile);
-                    addPhotoToReview(file);
-                    returnToBookDetail();
+                    if (task.getError() == null) {
+                        addOriginalPhotoToReview(originalPhotoFile);
+                        addPhotoToReview(file);
+                        returnToBookDetail();
+                    } else {
+                        hideProgressBar();
+                        // TODO: エラーメッセージ表示が仮
+                        Toast.makeText(
+                                getActivity().getApplicationContext(),
+                                "Error saving: " + task.getError().getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    }
                     return null;
                 }
             });

@@ -7,7 +7,6 @@ import com.parse.ParseObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import jp.caliconography.one_liners.model.Paint;
 import jp.caliconography.one_liners.model.PaintConfig;
@@ -25,8 +24,9 @@ abstract public class ParseShapeConfig extends ParseObject {
     private static final String KEY_UNSCALED_STROKE_WIDTH = "unscaledStrokeWidth";
     private static final String KEY_COLOR = "color";
 
-    public void setConfig(ShapeConfig config) throws JSONException {
+    public ParseShapeConfig setConfig(ShapeConfig config) throws JSONException {
         this.setConfig(config.getPaint(), config.getMatrix(), config.getTranslateX(), config.getTranslateY());
+        return this;
     }
 
     void setConfig(Paint paint, Matrix matrix, float translateX, float translateY) throws JSONException {
@@ -45,9 +45,8 @@ abstract public class ParseShapeConfig extends ParseObject {
     public Paint getPaint() throws JSONException {
         // 線の太さと色のみ取得。（他の属性はデフォルト）
         Paint paint = new Paint(true);
-        JSONObject jsonObject = getJSONObject(KEY_PAINT);
-        paint.setUnScaledStrokeWidth(PaintConfig.StrokeWidth.valueOf(jsonObject.getInt(KEY_UNSCALED_STROKE_WIDTH)));
-        paint.setColor(jsonObject.getInt(KEY_COLOR));
+        paint.setUnScaledStrokeWidth(PaintConfig.StrokeWidth.valueOf(getInt(KEY_UNSCALED_STROKE_WIDTH)));
+        paint.setColor(getInt(KEY_COLOR));
         return paint;
     }
 

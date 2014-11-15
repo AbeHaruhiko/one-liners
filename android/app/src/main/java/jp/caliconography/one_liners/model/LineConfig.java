@@ -2,6 +2,10 @@ package jp.caliconography.one_liners.model;
 
 import android.graphics.Matrix;
 
+import org.json.JSONException;
+
+import jp.caliconography.one_liners.model.parseobject.ParseLineConfig;
+
 /**
  * Created by abeharuhiko on 2014/10/17.
  */
@@ -18,6 +22,17 @@ public class LineConfig extends ShapeConfig {
         this.mStartY = mStartY;
         this.mEndX = mEndX;
         this.mEndY = mEndY;
+    }
+
+    public LineConfig(ParseLineConfig config) throws JSONException {
+        this(config.getStartX(),
+                config.getStartY(),
+                config.getEndX(),
+                config.getEndY(),
+                config.getPaint(),
+                config.getMatrix(),
+                config.getTranslateX(),
+                config.getTranslateY());
     }
 
     public float getStartX() {

@@ -19,13 +19,14 @@ public class ParseLineConfig extends ParseShapeConfig {
     private static final String KEY_END_Y = "endY";
 
     @Override
-    public void setConfig(ShapeConfig config) throws JSONException {
+    public ParseLineConfig setConfig(ShapeConfig config) throws JSONException {
         super.setConfig(config);
         LineConfig lineConfig = (LineConfig) config;
         setStartX(lineConfig.getStartX());
         setStartY(lineConfig.getStartY());
         setEndX(lineConfig.getEndX());
         setEndY(lineConfig.getEndY());
+        return this;
     }
 
     public void setStartX(float startX) {

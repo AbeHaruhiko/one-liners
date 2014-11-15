@@ -172,34 +172,35 @@ public class PhotoDetailFragment extends Fragment {
                 @Override
                 public void done(byte[] bytes, ParseException e) {
                     mBitmap = Utils.getBitmapFromByteArray(bytes);
-                    if (mSurfaceCreated) {
-                        getScaleForFitBitmapToView();
+                    while (!mSurfaceCreated) {
+                    }
 
-//                        Canvas canvas = null;
-//                        try {
-//                            canvas = mSurfaceHolder.lockCanvas(null);
-//                            if (canvas != null) {
-//                                setPhotoBitmapToCanvas(canvas);
-//
-//                                // 線取得
-//                                JSONArray paintConfigs = mReview.getPaintConfigs();
-//                                for (LineConfig config : paintConfigs) {
-//                                    try {
-//                                        ParseLineConfig confParseObj = new ParseLineConfig();
-//                                        mLineConfigArray.add(confParseObj.setConfig(config));
-//                                    } catch (JSONException e) {
-//                                        e.printStackTrace();
-//                                    }
-//
-//                                }
-//                                for ()
-//                                    renderAllPath(canvas);
-//                            }
-//                        } finally {
-//                            if (canvas != null) {
-//                                mSurfaceHolder.unlockCanvasAndPost(canvas);
-//                            }
-//                        }
+                    getScaleForFitBitmapToView();
+
+                    Canvas canvas = null;
+                    try {
+                        canvas = mSurfaceHolder.lockCanvas(null);
+                        if (canvas != null) {
+                            setPhotoBitmapToCanvas(canvas);
+
+                            // 線取得
+                            // TODO: fetch
+                            JSONArray paintConfigs = mReview.getPaintConfigs();
+                            for (int i = 0; i < paintConfigs.length(); i++) {
+                                try {
+                                    ParseLineConfig config = (ParseLineConfig) paintConfigs.get(i);
+                                    LineConfig lineConfig = new LineConfig(config);
+                                    mLineConfigArray.add(lineConfig);
+                                } catch (JSONException e1) {
+                                    e1.printStackTrace();
+                                }
+                            }
+                            renderAllPath(canvas);
+                        }
+                    } finally {
+                        if (canvas != null) {
+                            mSurfaceHolder.unlockCanvasAndPost(canvas);
+                        }
                     }
                 }
             }, new ProgressCallback() {
@@ -441,18 +442,18 @@ public class PhotoDetailFragment extends Fragment {
         }
     };
 
-    private void renderAllPath(Canvas canvas, boolean withTranslate) {
+    private void renderAllPath(Canvas canvas, boolean withTranslate, boolean withScale) {
         for (LineConfig lineConfig : mLineConfigArray) {
             Path path = new Path();
 
             // 線の中点を原点(0, 0)へ配置。
             setLineOnOrigin(lineConfig, path);
 
-            path.transform(buildMatrixForPanZoom(lineConfig, withTranslate));
+            path.transform(buildMatrixForPanZoom(lineConfig, withTranslate, withScale));
 
             // 各Path用のPaintを生成（line.getPaint().setStrokeWidth()すると累乗になってしまうため。
             Paint paint = new Paint(lineConfig.getPaint());
-            paint.setStrokeWidth(lineConfig.getPaint().getUnScaledStrokeWidth().getWidthInt() * mScale);
+            paint.setStrokeWidth(lineConfig.getPaint().getUnScaledStrokeWidth().getWidthInt() * (withScale ? mScale : 1));
 
             canvas.drawPath(path, paint);
 
@@ -462,14 +463,14 @@ public class PhotoDetailFragment extends Fragment {
     }
 
     private void renderAllPath(Canvas canvas) {
-        renderAllPath(canvas, true);
+        renderAllPath(canvas, true, true);
     }
 
-    private void renderAllPathIgnoreTranslate(Canvas canvas) {
-        renderAllPath(canvas, false);
+    private void renderAllPathIgnoreTranslateAndScale(Canvas canvas) {
+        renderAllPath(canvas, false, false);
     }
 
-    private Matrix buildMatrixForPanZoom(LineConfig lineConfig, boolean withTranslate) {
+    private Matrix buildMatrixForPanZoom(LineConfig lineConfig, boolean withTranslate, boolean withScale) {
         // 線の中点を求める
         PointInFloat lineCenter = PointInFloat.getMidpoint(new PointInFloat(lineConfig.getStartX(), lineConfig.getStartY()), new PointInFloat(lineConfig.getEndX(), lineConfig.getEndY()));
 
@@ -477,7 +478,7 @@ public class PhotoDetailFragment extends Fragment {
 
         Matrix matrix = new Matrix();
 
-        float scaleOfThisLine = mScale / valueHolder[0];
+        float scaleOfThisLine = (withScale ? mScale : 1) / valueHolder[0];
 
         // 最初に線を描いた時点のscale(valueHolder[0])から今(mScale)何倍になっているか。 = mScale / valueHolder[0]
         matrix.postScale(scaleOfThisLine, scaleOfThisLine);
@@ -576,16 +577,16 @@ public class PhotoDetailFragment extends Fragment {
             mReview.setPaintConfigs(paintConfigs);
             tasks.add(ParseObjectAsyncUtil.saveAsync(mReview));
 
-            Bitmap bitmap = Bitmap.createBitmap((int) (mBitmap.getWidth() * mScale), (int) (mBitmap.getHeight() * mScale), Bitmap.Config.ARGB_8888);
+            Bitmap bitmap = Bitmap.createBitmap((int) (mBitmap.getWidth()), (int) (mBitmap.getHeight()), Bitmap.Config.ARGB_8888);
             // view のサイズで Bitmap を作成
             Canvas canvas = new Canvas(bitmap);        // bitmap をターゲットにした Canvas を作成
-            setPhotoBitmapToCanvasIgnoreTranslate(canvas);
+            setPhotoBitmapToCanvasIgnoreTranslateAndScale(canvas);
 
             // 線の書き込み前にオリジナルを保存
             final ParseFile originalPhotoFile = new ParseFile("original.png", Utils.bitmapToByte(bitmap));
             tasks.add(ParseObjectAsyncUtil.saveAsync(originalPhotoFile));
 
-            renderAllPathIgnoreTranslate(canvas);
+            renderAllPathIgnoreTranslateAndScale(canvas);
 
             // bitmap保存
             final ParseFile file = new ParseFile("photo.png", Utils.bitmapToByte(bitmap));
@@ -661,10 +662,12 @@ public class PhotoDetailFragment extends Fragment {
         return bitmap;
     }
 
-    private void setPhotoBitmapToCanvas(Canvas canvas, boolean withTranslate) {
+    private void setPhotoBitmapToCanvas(Canvas canvas, boolean withTranslate, boolean withScale) {
 
         mMatrix.reset();
-        mMatrix.postScale(mScale, mScale);
+        if (withScale) {
+            mMatrix.postScale(mScale, mScale);
+        }
         if (withTranslate) {
             mMatrix.postTranslate(mTranslateX, mTranslateY);
         }
@@ -674,11 +677,11 @@ public class PhotoDetailFragment extends Fragment {
     }
 
     private void setPhotoBitmapToCanvas(Canvas canvas) {
-        setPhotoBitmapToCanvas(canvas, true);
+        setPhotoBitmapToCanvas(canvas, true, true);
     }
 
-    private void setPhotoBitmapToCanvasIgnoreTranslate(Canvas canvas) {
-        setPhotoBitmapToCanvas(canvas, false);
+    private void setPhotoBitmapToCanvasIgnoreTranslateAndScale(Canvas canvas) {
+        setPhotoBitmapToCanvas(canvas, false, false);
     }
 
     private LineConfig drawPath(Canvas canvas, int color) {

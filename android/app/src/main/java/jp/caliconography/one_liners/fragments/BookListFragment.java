@@ -27,7 +27,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 
 import com.melnykov.fab.FloatingActionButton;
 import com.parse.ParseQueryAdapter;
@@ -130,23 +129,23 @@ public class BookListFragment extends BaseListFragment {
             staggeredView.setAdapter(mReviewAdapter);
         }
 
-        // 2014/11/04 安部追加
-        staggeredView.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView absListView, int scrollState) {
-            }
-
-            @Override
-            public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                if (!mIsLoading && totalItemCount != 0 && totalItemCount == firstVisibleItem + visibleItemCount) {
-                    // 最後尾までスクロールしたので、何かデータ取得する処理
-                    mIsLoading = true;
-                    mReviewAdapter.loadNextPage();
-
-                }
-            }
-        });
-        // 2014/11/04 安部追加
+//        // 2014/11/04 安部追加
+//        staggeredView.setOnScrollListener(new AbsListView.OnScrollListener() {
+//            @Override
+//            public void onScrollStateChanged(AbsListView absListView, int scrollState) {
+//            }
+//
+//            @Override
+//            public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+//                if (!mIsLoading && totalItemCount != 0 && totalItemCount == firstVisibleItem + visibleItemCount) {
+//                    // 最後尾までスクロールしたので、何かデータ取得する処理
+//                    mIsLoading = true;
+//                    mReviewAdapter.loadNextPage();
+//
+//                }
+//            }
+//        });
+//        // 2014/11/04 安部追加
     }
 
     @Override

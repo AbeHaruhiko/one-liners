@@ -17,12 +17,12 @@ import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.DeleteCallback;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseImageView;
 import com.parse.SaveCallback;
-import com.squareup.otto.Subscribe;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -31,9 +31,7 @@ import jp.caliconography.one_liners.R;
 import jp.caliconography.one_liners.activities.BookDetailActivity;
 import jp.caliconography.one_liners.activities.BookListActivity;
 import jp.caliconography.one_liners.dummy.DummyContent;
-import jp.caliconography.one_liners.event.PhotoSavedEvent;
 import jp.caliconography.one_liners.model.parseobject.Review;
-import jp.caliconography.one_liners.util.BusHolder;
 import jp.caliconography.one_liners.util.Utils;
 
 /**
@@ -157,6 +155,27 @@ public class BookDetailFragment extends Fragment {
             });
 
             return true;
+        } else if (id == R.id.delete_book) {
+
+            showProgressBar();
+            Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
+            review.deleteInBackground(new DeleteCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e == null) {
+
+                        ((BookDetailActivity) getActivity()).setCurrentReview(new Review());
+                        resetReview();
+                        hideProgressBar();
+                    } else {
+                        // TODO: エラーメッセージ表示が仮
+                        Toast.makeText(
+                                getActivity().getApplicationContext(),
+                                "Error deleting: " + e.getMessage(),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
         }
         return super.onOptionsItemSelected(item);
     }
@@ -175,13 +194,19 @@ public class BookDetailFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        BusHolder.get().register(this);
+        resetReview();
+
+    }
+
+    private void resetReview() {
         Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
+
         mTxtTitle.setText(review.getTitle());
         mTxtAuthor.setText(review.getAuthor());
+
         ParseFile photoFile = review.getPhotoFile();
+        mBookPhoto.setParseFile(photoFile);
         if (photoFile != null) {
-            mBookPhoto.setParseFile(photoFile);
             mBookPhoto.loadInBackground(new GetDataCallback() {
                 @Override
                 public void done(byte[] data, ParseException e) {
@@ -189,14 +214,6 @@ public class BookDetailFragment extends Fragment {
                 }
             });
         }
-
-    }
-
-    @Override
-    public void onPause() {
-        BusHolder.get().unregister(this);
-
-        super.onPause();
     }
 
     @OnClick(R.id.book_photo)
@@ -219,23 +236,5 @@ public class BookDetailFragment extends Fragment {
         transaction.replace(R.id.book_detail_container, bookSearchResultListFragment);
         transaction.addToBackStack(TAG);
         transaction.commit();
-    }
-
-    @Subscribe
-    public void onPhotoSaved(PhotoSavedEvent event) {
-
-        final Review review = new Review();
-        review.setTitle(mTxtTitle.getText().toString());
-        review.setAuthor(mTxtAuthor.getText().toString());
-        review.setPhotoFile(event.getFile());
-        review.saveEventually(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-            }
-        });
-        Activity bookDetailActivity = getActivity();
-        bookDetailActivity.setResult(Activity.RESULT_OK);
-        bookDetailActivity.finish();
-
     }
 }

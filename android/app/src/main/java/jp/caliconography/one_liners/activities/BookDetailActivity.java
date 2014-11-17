@@ -68,4 +68,8 @@ public class BookDetailActivity extends Activity {
     public Review getCurrentReview() {
         return mReview;
     }
+
+    public void setCurrentReview(Review review) {
+        this.mReview = review;
+    }
 }

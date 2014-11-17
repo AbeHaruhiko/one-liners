@@ -87,6 +87,7 @@ public class PhotoDetailFragment extends Fragment {
     public static final String ARG_ITEM_ID = "item_id";
     public static final int IMAGE_CHOOSER_RESULTCODE = 0;
     static final String TAG = PhotoDetailFragment.class.getSimpleName();
+    public static final int MAX_PHOTO_HEIGHT = 1200;
     /**
      * The dummy content this fragment is presenting.
      */
@@ -523,7 +524,7 @@ public class PhotoDetailFragment extends Fragment {
                 }
                 return;
             }
-            mBitmap = getBitmapFromLocalFile(data);
+            mBitmap = Utils.scaleDownBitmap(getBitmapFromLocalFile(data), MAX_PHOTO_HEIGHT, getActivity());
 
             tryToSetPhotoBitmapToCanvas();
 

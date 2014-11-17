@@ -9,6 +9,10 @@
     <string name="book_search_query_hint">タイトル/著者名/ISBN/JAN</string>
     <string name="rakuten_api_endpoint">https://app.rakuten.co.jp/</string>
     <string name="click_to_register_photo">Click here to register Photo!</string>
+    <string name="dialog_title_confirm">確認</string>
+    <string name="dialog_confirm_delete_message">削除しますか？</string>
+    <string name="dialog_posigive_button_text">OK</string>
+    <string name="dialog_negative_button_text">Cancel</string>
     <!--<string name="drawing_service_url">http://10.0.3.2:9000</string>-->
 
 </resources>

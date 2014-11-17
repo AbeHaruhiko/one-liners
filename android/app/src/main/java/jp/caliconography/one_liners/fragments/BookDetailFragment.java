@@ -107,6 +107,21 @@ public class BookDetailFragment extends Fragment {
         super.onCreateOptionsMenu(menu, inflater);
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.book_detail, menu);
+
+//        if (((BookDetailActivity) getActivity()).getCurrentReview().getObjectId() == null) {
+//            menu.getItem(R.id.delete_book).setEnabled(false);
+//        }
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+
+        if (((BookDetailActivity) getActivity()).getCurrentReview().getObjectId() == null) {
+            menu.findItem(R.id.delete_book).setVisible(false);
+        } else {
+            menu.findItem(R.id.delete_book).setVisible(true);
+        }
+        return;
     }
 
     @Override

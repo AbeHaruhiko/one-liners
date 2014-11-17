@@ -159,6 +159,8 @@ public class BookListFragment extends BaseListFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.refresh) {
+            hideList(true);
+            mReviewAdapter.clear();
             mReviewAdapter.loadObjects();
         }
         return super.onOptionsItemSelected(item);

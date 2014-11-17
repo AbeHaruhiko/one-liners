@@ -39,7 +39,7 @@ public class ReviewAdapter extends ParseQueryAdapter<Review> {
     @Override
     public View getItemView(Review review, View convertView, ViewGroup parent) {
 
-        if (convertView == null) {
+//        if (convertView == null) {
             // recycle poolにviewがなかった場合。
             convertView = View.inflate(getContext(), R.layout.carddemo_extras_staggered_card, null);
 
@@ -67,9 +67,9 @@ public class ReviewAdapter extends ParseQueryAdapter<Review> {
             ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(convertView, ALPHA, TRANSPARENT, OPAQUE);
             objectAnimator.setDuration(FADEIN_DURATION);
             objectAnimator.start();
-        }
+//        }
 
-        super.getItemView(review, convertView, parent);
+//        super.getItemView(review, convertView, parent);
 
         return convertView;
     }

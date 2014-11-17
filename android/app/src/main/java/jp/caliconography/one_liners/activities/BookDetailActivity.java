@@ -3,6 +3,8 @@ package jp.caliconography.one_liners.activities;
 import android.app.Activity;
 import android.os.Bundle;
 
+import com.parse.ParseObject;
+
 import jp.caliconography.one_liners.R;
 import jp.caliconography.one_liners.fragments.BookDetailFragment;
 import jp.caliconography.one_liners.model.parseobject.Review;
@@ -49,6 +51,10 @@ public class BookDetailActivity extends Activity {
             getFragmentManager().beginTransaction()
                     .add(R.id.book_detail_container, fragment)
                     .commit();
+        }
+
+        if (getIntent().getStringExtra(Review.KEY_OBJECT_ID) != null) {
+            mReview = ParseObject.createWithoutData(Review.class, getIntent().getStringExtra(Review.KEY_OBJECT_ID));
         }
     }
 

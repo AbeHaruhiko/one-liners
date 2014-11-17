@@ -4,7 +4,7 @@ import com.parse.ParseClassName;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 
-import org.json.JSONArray;
+import java.util.ArrayList;
 
 /**
  * Created by abeharuhiko on 2014/10/28.
@@ -12,6 +12,7 @@ import org.json.JSONArray;
 @ParseClassName("Review")
 public class Review extends ParseObject {
 
+    public static final String KEY_OBJECT_ID = "objectId";
     public static final String KEY_CREATEDAT = "createdAt";
     public static final String KEY_PHOTO = "photo";
     public static final String KEY_ORIGINAL_PHOTO = "original_photo";
@@ -70,12 +71,12 @@ public class Review extends ParseObject {
         return getString(KEY_AUTHOR);
     }
 
-    public void setPaintConfigs(JSONArray paintConfigs) {
+    public void setPaintConfigs(ArrayList<ParseShapeConfig> paintConfigs) {
         put(KEY_PAINT_CONFIGS, paintConfigs);
     }
 
-    public JSONArray getPaintConfigs() {
-        return getJSONArray(KEY_PAINT_CONFIGS);
+    public ArrayList<ParseShapeConfig> getPaintConfigs() {
+        return (ArrayList<ParseShapeConfig>) get(KEY_PAINT_CONFIGS);
     }
 
 //    public void setShareScope(ShareScope scope) {

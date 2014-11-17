@@ -37,7 +37,6 @@ import com.parse.ParseFile;
 import com.parse.ProgressCallback;
 import com.squareup.otto.Subscribe;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.io.IOException;
@@ -63,6 +62,7 @@ import jp.caliconography.one_liners.model.LineConfig;
 import jp.caliconography.one_liners.model.PaintConfig;
 import jp.caliconography.one_liners.model.PointInFloat;
 import jp.caliconography.one_liners.model.parseobject.ParseLineConfig;
+import jp.caliconography.one_liners.model.parseobject.ParseShapeConfig;
 import jp.caliconography.one_liners.model.parseobject.Review;
 import jp.caliconography.one_liners.util.BusHolder;
 import jp.caliconography.one_liners.util.Utils;
@@ -186,11 +186,10 @@ public class PhotoDetailFragment extends Fragment {
 
                             // 線取得
                             // TODO: fetch
-                            JSONArray paintConfigs = mReview.getPaintConfigs();
-                            for (int i = 0; i < paintConfigs.length(); i++) {
+                            ArrayList<ParseShapeConfig> paintConfigs = mReview.getPaintConfigs();
+                            for (ParseShapeConfig config : paintConfigs) {
                                 try {
-                                    ParseLineConfig config = (ParseLineConfig) paintConfigs.get(i);
-                                    LineConfig lineConfig = new LineConfig(config);
+                                    LineConfig lineConfig = new LineConfig((ParseLineConfig) config);
                                     mLineConfigArray.add(lineConfig);
                                 } catch (JSONException e1) {
                                     e1.printStackTrace();
@@ -563,12 +562,12 @@ public class PhotoDetailFragment extends Fragment {
             ArrayList<Task<ParseObjectAsyncProcResult>> tasks = new ArrayList<Task<ParseObjectAsyncProcResult>>();
 
             // 編集履歴を保存
-            JSONArray paintConfigs = new JSONArray();
+            ArrayList<ParseShapeConfig> paintConfigs = new ArrayList<ParseShapeConfig>();
             for (LineConfig config : mLineConfigArray) {
                 try {
                     ParseLineConfig confParseObj = new ParseLineConfig();
                     confParseObj.setConfig(config);
-                    paintConfigs.put(confParseObj);
+                    paintConfigs.add(confParseObj);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

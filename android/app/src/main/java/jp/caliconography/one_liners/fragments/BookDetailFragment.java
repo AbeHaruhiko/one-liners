@@ -90,7 +90,6 @@ public class BookDetailFragment extends Fragment {
             // to load content from a content provider.
             mItem = DummyContent.ITEM_MAP.get(getArguments().getString(ARG_ITEM_ID));
         }
-
     }
 
     @Override

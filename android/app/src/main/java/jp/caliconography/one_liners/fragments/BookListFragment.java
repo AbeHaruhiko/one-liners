@@ -27,6 +27,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 
 import com.melnykov.fab.FloatingActionButton;
 import com.parse.ParseQueryAdapter;
@@ -128,6 +129,17 @@ public class BookListFragment extends BaseListFragment {
             });
             staggeredView.setAdapter(mReviewAdapter);
         }
+
+        staggeredView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+//                Intent intent = new Intent();
+//                intent.putExtra(Review.KEY_OBJECT_ID, ((Review) adapterView.getSelectedItem()).getObjectId());
+                Intent detailIntent = new Intent(getActivity(), BookDetailActivity.class);
+                detailIntent.putExtra(Review.KEY_OBJECT_ID, ((Review) adapterView.getAdapter().getItem((int) id)).getObjectId());
+                startActivity(detailIntent);
+            }
+        });
 
 //        // 2014/11/04 安部追加
 //        staggeredView.setOnScrollListener(new AbsListView.OnScrollListener() {

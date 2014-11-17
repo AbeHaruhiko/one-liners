@@ -57,4 +57,7 @@ dependencies {
 
     // bolts(tasks, capture...)
     compile 'com.parse.bolts:bolts-android:1.1.3'
+
+    // styled dialogfragment
+    compile 'eu.inmite.android.lib:android-styled-dialogs:1.2.0'
 }

@@ -54,6 +54,7 @@ public class BookDetailFragment extends Fragment {
     static final String TAG = BookDetailFragment.class.getSimpleName();
     private static final int REQ_CODE_BOOK_SEARCH = 0;
     private static final int REQ_CODE_PHOTO_DETAIL = 1;
+    public static final int DELETE_DIALOG_LISTENER_ID = 0;
     /**
      * The dummy content this fragment is presenting.
      */
@@ -157,27 +158,56 @@ public class BookDetailFragment extends Fragment {
             return true;
         } else if (id == R.id.delete_book) {
 
-            showProgressBar();
-            Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
-            review.deleteInBackground(new DeleteCallback() {
-                @Override
-                public void done(ParseException e) {
-                    if (e == null) {
+            DialogFragment
+                    .newInstance(true)
+                    .setTitle("確認")
+                    .setMessage("削除しますか？")
+                    .setPositiveButtonText("OK")
+                    .setNegativeButtonText("Cancel")
+                    .setListener(DELETE_DIALOG_LISTENER_ID, new DialogFragment.IDialogFragmentListener() {
 
-                        ((BookDetailActivity) getActivity()).setCurrentReview(new Review());
-                        resetReview();
-                        hideProgressBar();
-                    } else {
-                        // TODO: エラーメッセージ表示が仮
-                        Toast.makeText(
-                                getActivity().getApplicationContext(),
-                                "Error deleting: " + e.getMessage(),
-                                Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
+                        @Override
+                        public void onEvent(int id, int event) {
+                            switch (event) {
+
+                                case DialogFragment.IDialogFragmentListener.ON_POSITIVE_BUTTON_CLICKED:
+                                    deleteReview();
+                                    break;
+
+                                case DialogFragment.IDialogFragmentListener.ON_NEGATIVE_BUTTON_CLICKED:
+                                case DialogFragment.IDialogFragmentListener.ON_NEUTRAL_BUTTON_CLICKED:
+                                case DialogFragment.IDialogFragmentListener.ON_CLOSE_BUTTON_CLICKED:
+                                case DialogFragment.IDialogFragmentListener.ON_CANCEL:
+                                    break;
+                            }
+                        }
+                    })
+                    .show(getFragmentManager());
+
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void deleteReview() {
+        showProgressBar();
+        Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
+        review.deleteInBackground(new DeleteCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+
+                    ((BookDetailActivity) getActivity()).setCurrentReview(new Review());
+                    resetReview();
+                    hideProgressBar();
+                } else {
+                    // TODO: エラーメッセージ表示が仮
+                    Toast.makeText(
+                            getActivity().getApplicationContext(),
+                            "Error deleting: " + e.getMessage(),
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void hideProgressBar() {

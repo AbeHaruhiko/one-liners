@@ -69,6 +69,7 @@ public class BookDetailFragment extends Fragment {
     @InjectView(R.id.txt_author)
     TextView mTxtAuthor;
     private Bitmap mPhotoBitmap;
+    private MenuItem mMenuDelete;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -108,20 +109,15 @@ public class BookDetailFragment extends Fragment {
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.book_detail, menu);
 
-//        if (((BookDetailActivity) getActivity()).getCurrentReview().getObjectId() == null) {
-//            menu.getItem(R.id.delete_book).setEnabled(false);
-//        }
+        mMenuDelete = menu.findItem(R.id.delete_book);
+        if (((BookDetailActivity) getActivity()).getCurrentReview().getObjectId() == null) {
+            mMenuDelete.setVisible(false);
+        }
     }
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
-
-        if (((BookDetailActivity) getActivity()).getCurrentReview().getObjectId() == null) {
-            menu.findItem(R.id.delete_book).setVisible(false);
-        } else {
-            menu.findItem(R.id.delete_book).setVisible(true);
-        }
-        return;
+        mMenuDelete = menu.findItem(R.id.delete_book);
     }
 
     @Override
@@ -251,11 +247,14 @@ public class BookDetailFragment extends Fragment {
 
         ParseFile photoFile = review.getPhotoFile();
         mBookPhoto.setParseFile(photoFile);
-        if (photoFile != null) {
+        if (photoFile == null) {
+            mMenuDelete.setVisible(false);
+        } else {
             mBookPhoto.loadInBackground(new GetDataCallback() {
                 @Override
                 public void done(byte[] data, ParseException e) {
                     mBookPhoto.setVisibility(View.VISIBLE);
+                    mMenuDelete.setVisible(true);
                 }
             });
         }

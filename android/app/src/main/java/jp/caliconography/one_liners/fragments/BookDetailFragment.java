@@ -70,6 +70,7 @@ public class BookDetailFragment extends Fragment {
     TextView mTxtAuthor;
     private Bitmap mPhotoBitmap;
     private MenuItem mMenuDelete;
+    private MenuItem mMenuSave;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -110,22 +111,17 @@ public class BookDetailFragment extends Fragment {
         inflater.inflate(R.menu.book_detail, menu);
 
         mMenuDelete = menu.findItem(R.id.delete_book);
-        if (((BookDetailActivity) getActivity()).getCurrentReview().getObjectId() == null) {
-            mMenuDelete.setVisible(false);
-        }
+        mMenuSave = menu.findItem(R.id.save_book);
+        setMenuItemVisibility();
     }
 
-    @Override
-    public void onPrepareOptionsMenu(Menu menu) {
-        Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
-
-        mMenuDelete = menu.findItem(R.id.delete_book);
-        if (review.isEmpty()) {
-            mMenuDelete.setVisible(false);
-        } else {
-            mMenuDelete.setVisible(true);
-        }
-    }
+//    @Override
+//    public void onPrepareOptionsMenu(Menu menu) {
+//        Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
+//
+//        mMenuDelete = menu.findItem(R.id.delete_book);
+//        setMenuItemVisibility(review);
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -264,11 +260,18 @@ public class BookDetailFragment extends Fragment {
             });
         }
 
+        setMenuItemVisibility();
+    }
+
+    private void setMenuItemVisibility() {
+        Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
         if (mMenuDelete != null) {
             if (review.isEmpty()) {
                 mMenuDelete.setVisible(false);
+                mMenuSave.setVisible(false);
             } else {
                 mMenuDelete.setVisible(true);
+                mMenuSave.setVisible(true);
             }
         }
     }

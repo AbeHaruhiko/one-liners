@@ -47,7 +47,6 @@ import bolts.Continuation;
 import bolts.Task;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnClick;
 import butterknife.OnTouch;
 import hugo.weaving.DebugLog;
 import jp.caliconography.one_liners.R;
@@ -89,6 +88,7 @@ public class PhotoDetailFragment extends Fragment {
     public static final int IMAGE_CHOOSER_RESULTCODE = 0;
     static final String TAG = PhotoDetailFragment.class.getSimpleName();
     public static final int MAX_PHOTO_HEIGHT = 1200;
+    private static final int NEW_PHOTO_DIALOG_LISTENER_ID = 0;
     /**
      * The dummy content this fragment is presenting.
      */
@@ -272,10 +272,10 @@ public class PhotoDetailFragment extends Fragment {
 //        mPaint.setStrokeWidth(20);
 //    }
 
-    @OnClick(R.id.load_image)
-    void onClickLoadImage(View view) {
-        launchChooser();
-    }
+//    @OnClick(R.id.load_image)
+//    void onClickLoadImage(View view) {
+//        launchChooser();
+//    }
 
     @OnTouch(R.id.photo)
     boolean onTouchPhoto(View view, MotionEvent motionEvent) {
@@ -554,6 +554,40 @@ public class PhotoDetailFragment extends Fragment {
 
             returnToBookDetail();
             return true;
+
+        } else if (id == R.id.new_photo) {
+
+            if (mBitmap != null) {
+
+                DialogFragment
+                        .newInstance(true)
+                        .setTitle(R.string.dialog_title_confirm)
+                        .setMessage(R.string.dialog_confirm_message_overwrite_photo)
+                        .setPositiveButtonText(R.string.dialog_posigive_button_text)
+                        .setNegativeButtonText(R.string.dialog_negative_button_text)
+                        .setListener(NEW_PHOTO_DIALOG_LISTENER_ID, new DialogFragment.IDialogFragmentListener() {
+
+                            @Override
+                            public void onEvent(int id, int event) {
+                                switch (event) {
+
+                                    case DialogFragment.IDialogFragmentListener.ON_POSITIVE_BUTTON_CLICKED:
+                                        launchChooser();
+                                        break;
+
+                                    case DialogFragment.IDialogFragmentListener.ON_NEGATIVE_BUTTON_CLICKED:
+                                    case DialogFragment.IDialogFragmentListener.ON_NEUTRAL_BUTTON_CLICKED:
+                                    case DialogFragment.IDialogFragmentListener.ON_CLOSE_BUTTON_CLICKED:
+                                    case DialogFragment.IDialogFragmentListener.ON_CANCEL:
+                                        break;
+                                }
+                            }
+                        })
+                        .show(getFragmentManager());
+
+            } else {
+                launchChooser();
+            }
 
         } else if (id == R.id.save_photo) {
 

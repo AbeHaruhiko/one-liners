@@ -7,19 +7,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/photo"
-        android:layout_above="@+id/load_image" />
-
-    <view xmlns:one-liners="http://schemas.android.com/apk/res-auto"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        class="jp.caliconography.one_liners.widget.PopupMenu"
-        android:id="@+id/color_popup"
-        android:layout_toEndOf="@+id/load_image"
-        android:layout_toRightOf="@+id/load_image"
-        android:layout_alignBottom="@+id/photo"
+        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        one-liners:item_interval="100.0" />
+        android:layout_alignParentStart="true" />
 
     <view xmlns:one-liners="http://schemas.android.com/apk/res-auto"
         android:layout_width="wrap_content"
@@ -54,5 +44,15 @@
             android:singleLine="true" />
 
     </LinearLayout>
+
+    <view xmlns:one-liners="http://schemas.android.com/apk/res-auto"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        class="jp.caliconography.one_liners.widget.PopupMenu"
+        android:id="@+id/color_popup"
+        android:layout_toEndOf="@+id/progress_container"
+        one-liners:item_interval="100.0"
+        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/progress_container" />
 
 </RelativeLayout>

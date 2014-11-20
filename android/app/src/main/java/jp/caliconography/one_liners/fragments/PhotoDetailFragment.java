@@ -27,7 +27,6 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -100,8 +99,8 @@ public class PhotoDetailFragment extends Fragment {
     TextView mProgressText;
     @InjectView(R.id.photo)
     SurfaceView mPhotoView;
-    @InjectView(R.id.load_image)
-    Button mBtnLoadImage;
+    //    @InjectView(R.id.load_image)
+//    Button mBtnLoadImage;
     @InjectView(R.id.color_popup)
     PopupMenu mColorPopup;
     @InjectView(R.id.stroke_width_popup)
@@ -151,18 +150,8 @@ public class PhotoDetailFragment extends Fragment {
         ButterKnife.inject(this, rootView);
 
         // ポップアップメニューを構成
-        ArrayList<PopupMenuItem> colorMenuItems = new ArrayList<PopupMenuItem>();
-        colorMenuItems.add(new ColorPopupItem(getActivity().getApplicationContext(), 1, PaintConfig.Color.RED, R.drawable.icon_reflection_heart_red));
-        colorMenuItems.add(new ColorPopupItem(getActivity().getApplicationContext(), 2, PaintConfig.Color.BLUE, R.drawable.icon_reflection_arrow_red));
-        colorMenuItems.add(new ColorPopupItem(getActivity().getApplicationContext(), 3, PaintConfig.Color.GREEN, R.drawable.icon_reflection_arrow_red));
-        colorMenuItems.add(new ColorPopupItem(getActivity().getApplicationContext(), 4, PaintConfig.Color.BLACK, R.drawable.icon_reflection_arrow_red));
-        mColorPopup.addItems(colorMenuItems);
-
-        ArrayList<PopupMenuItem> lineWidthMenuItems = new ArrayList<PopupMenuItem>();
-        lineWidthMenuItems.add(new StrokeWidthPopupItem(getActivity().getApplicationContext(), 1, PaintConfig.StrokeWidth.THIN, R.drawable.icon_reflection_heart_red));
-        lineWidthMenuItems.add(new StrokeWidthPopupItem(getActivity().getApplicationContext(), 2, PaintConfig.StrokeWidth.MID, R.drawable.icon_reflection_arrow_red));
-        lineWidthMenuItems.add(new StrokeWidthPopupItem(getActivity().getApplicationContext(), 3, PaintConfig.StrokeWidth.FAT, R.drawable.icon_reflection_arrow_red));
-        mStrokeWidthPopup.addItems(lineWidthMenuItems);
+        createColorPopupMenu();
+        createStrokeWidthPopupMenu();
 
         mSurfaceHolder = mPhotoView.getHolder();
         mSurfaceHolder.addCallback(mSurfaceHolderCallback);
@@ -221,6 +210,23 @@ public class PhotoDetailFragment extends Fragment {
         }
 
         return rootView;
+    }
+
+    private void createStrokeWidthPopupMenu() {
+        ArrayList<PopupMenuItem> lineWidthMenuItems = new ArrayList<PopupMenuItem>();
+        lineWidthMenuItems.add(new StrokeWidthPopupItem(getActivity().getApplicationContext(), 1, PaintConfig.StrokeWidth.THIN, R.drawable.icon_reflection_heart_red));
+        lineWidthMenuItems.add(new StrokeWidthPopupItem(getActivity().getApplicationContext(), 2, PaintConfig.StrokeWidth.MID, R.drawable.icon_reflection_arrow_red));
+        lineWidthMenuItems.add(new StrokeWidthPopupItem(getActivity().getApplicationContext(), 3, PaintConfig.StrokeWidth.FAT, R.drawable.icon_reflection_arrow_red));
+        mStrokeWidthPopup.addItems(lineWidthMenuItems);
+    }
+
+    private void createColorPopupMenu() {
+        ArrayList<PopupMenuItem> colorMenuItems = new ArrayList<PopupMenuItem>();
+        colorMenuItems.add(new ColorPopupItem(getActivity().getApplicationContext(), 1, PaintConfig.Color.RED, R.drawable.icon_reflection_heart_red));
+        colorMenuItems.add(new ColorPopupItem(getActivity().getApplicationContext(), 2, PaintConfig.Color.BLUE, R.drawable.icon_reflection_arrow_red));
+        colorMenuItems.add(new ColorPopupItem(getActivity().getApplicationContext(), 3, PaintConfig.Color.GREEN, R.drawable.icon_reflection_arrow_red));
+        colorMenuItems.add(new ColorPopupItem(getActivity().getApplicationContext(), 4, PaintConfig.Color.BLACK, R.drawable.icon_reflection_arrow_red));
+        mColorPopup.addItems(colorMenuItems);
     }
 
     private void tryToSetPhotoBitmapToCanvas() {

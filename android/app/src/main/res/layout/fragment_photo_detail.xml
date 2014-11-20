@@ -34,7 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         class="jp.caliconography.one_liners.widget.PopupMenu"
-        android:id="@+id/line_width_popup"
+        android:id="@+id/stroke_width_popup"
         android:layout_toEndOf="@+id/color_popup"
         one-liners:item_interval="100.0"
         android:layout_alignBottom="@+id/photo"

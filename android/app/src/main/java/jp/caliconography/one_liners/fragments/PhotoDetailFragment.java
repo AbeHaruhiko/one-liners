@@ -71,6 +71,7 @@ import jp.caliconography.one_liners.util.parse.ParseObjectAsyncUtil;
 import jp.caliconography.one_liners.widget.ColorPopupItem;
 import jp.caliconography.one_liners.widget.PopupMenu;
 import jp.caliconography.one_liners.widget.PopupMenuItem;
+import jp.caliconography.one_liners.widget.StrokeWidthPopupItem;
 
 /**
  * A fragment representing a single book detail screen.
@@ -103,6 +104,8 @@ public class PhotoDetailFragment extends Fragment {
     Button mBtnLoadImage;
     @InjectView(R.id.color_popup)
     PopupMenu mColorPopup;
+    @InjectView(R.id.stroke_width_popup)
+    PopupMenu mStrokeWidthPopup;
 
     private Uri mPictureUri;
     private SurfaceHolder mSurfaceHolder;
@@ -148,12 +151,18 @@ public class PhotoDetailFragment extends Fragment {
         ButterKnife.inject(this, rootView);
 
         // ポップアップメニューを構成
-        ArrayList<PopupMenuItem> menuItems = new ArrayList<PopupMenuItem>();
-        menuItems.add(new ColorPopupItem(getActivity().getApplicationContext(), 1, PaintConfig.Color.RED, R.drawable.icon_reflection_heart_red));
-        menuItems.add(new ColorPopupItem(getActivity().getApplicationContext(), 2, PaintConfig.Color.BLUE, R.drawable.icon_reflection_arrow_red));
-        menuItems.add(new ColorPopupItem(getActivity().getApplicationContext(), 3, PaintConfig.Color.GREEN, R.drawable.icon_reflection_arrow_red));
-        menuItems.add(new ColorPopupItem(getActivity().getApplicationContext(), 4, PaintConfig.Color.BLACK, R.drawable.icon_reflection_arrow_red));
-        mColorPopup.addItems(menuItems);
+        ArrayList<PopupMenuItem> colorMenuItems = new ArrayList<PopupMenuItem>();
+        colorMenuItems.add(new ColorPopupItem(getActivity().getApplicationContext(), 1, PaintConfig.Color.RED, R.drawable.icon_reflection_heart_red));
+        colorMenuItems.add(new ColorPopupItem(getActivity().getApplicationContext(), 2, PaintConfig.Color.BLUE, R.drawable.icon_reflection_arrow_red));
+        colorMenuItems.add(new ColorPopupItem(getActivity().getApplicationContext(), 3, PaintConfig.Color.GREEN, R.drawable.icon_reflection_arrow_red));
+        colorMenuItems.add(new ColorPopupItem(getActivity().getApplicationContext(), 4, PaintConfig.Color.BLACK, R.drawable.icon_reflection_arrow_red));
+        mColorPopup.addItems(colorMenuItems);
+
+        ArrayList<PopupMenuItem> lineWidthMenuItems = new ArrayList<PopupMenuItem>();
+        lineWidthMenuItems.add(new StrokeWidthPopupItem(getActivity().getApplicationContext(), 1, PaintConfig.StrokeWidth.THIN, R.drawable.icon_reflection_heart_red));
+        lineWidthMenuItems.add(new StrokeWidthPopupItem(getActivity().getApplicationContext(), 2, PaintConfig.StrokeWidth.MID, R.drawable.icon_reflection_arrow_red));
+        lineWidthMenuItems.add(new StrokeWidthPopupItem(getActivity().getApplicationContext(), 3, PaintConfig.StrokeWidth.FAT, R.drawable.icon_reflection_arrow_red));
+        mStrokeWidthPopup.addItems(lineWidthMenuItems);
 
         mSurfaceHolder = mPhotoView.getHolder();
         mSurfaceHolder.addCallback(mSurfaceHolderCallback);
@@ -750,8 +759,13 @@ public class PhotoDetailFragment extends Fragment {
 
     @Subscribe
     public void onItemClicked(PopupMenuItemClickedEvent event) {
-        mPaintConfig.setColor(((ColorPopupItem) event.getItem()).getValue());
-        mColorPopup.close();
+        if (event.getItem() instanceof ColorPopupItem) {
+            mPaintConfig.setColor(((ColorPopupItem) event.getItem()).getValue());
+            mColorPopup.close();
+        } else if (event.getItem() instanceof StrokeWidthPopupItem) {
+            mPaintConfig.setStrokeWidth(((StrokeWidthPopupItem) event.getItem()).getValue());
+            mStrokeWidthPopup.close();
+        }
     }
 
     private void returnToBookDetail() {

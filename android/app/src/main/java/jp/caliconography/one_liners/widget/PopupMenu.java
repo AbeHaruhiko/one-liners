@@ -6,7 +6,7 @@ import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.animation.AnticipateOvershootInterpolator;
+import android.view.animation.OvershootInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
@@ -25,7 +25,7 @@ public class PopupMenu extends FrameLayout {
 
     public static final String TRANSLATION_Y = "translationY";
     public static final int ITEM_INTERVAL_DEFAULT_VALUE = 100;
-    public static final int OPEN_DURATION_DEFAULT_VALUE = 500;
+    public static final int OPEN_DURATION_DEFAULT_VALUE = 300;
     public static final int CLOSE_DURATION_DEFAULT_VALUE = 200;
     @InjectView(R.id.popup_menu_base)
     ImageButton mBaseButton;
@@ -90,7 +90,7 @@ public class PopupMenu extends FrameLayout {
         for (int i = 0; i < mItemList.size(); i++) {
             ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(mItemList.get(i), TRANSLATION_Y, 0f, -mItemInterval * (i + 1));
             objectAnimator.setDuration(mOpenDuration);
-            objectAnimator.setInterpolator(new AnticipateOvershootInterpolator(2));
+            objectAnimator.setInterpolator(new OvershootInterpolator(2));
             objectAnimator.start();
         }
         this.isOpened = true;

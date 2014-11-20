@@ -117,7 +117,14 @@ public class BookDetailFragment extends Fragment {
 
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
+        Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
+
         mMenuDelete = menu.findItem(R.id.delete_book);
+        if (review.isEmpty()) {
+            mMenuDelete.setVisible(false);
+        } else {
+            mMenuDelete.setVisible(true);
+        }
     }
 
     @Override
@@ -247,9 +254,7 @@ public class BookDetailFragment extends Fragment {
 
         ParseFile photoFile = review.getPhotoFile();
         mBookPhoto.setParseFile(photoFile);
-        if (photoFile == null) {
-            mMenuDelete.setVisible(false);
-        } else {
+        if (photoFile != null) {
             mBookPhoto.loadInBackground(new GetDataCallback() {
                 @Override
                 public void done(byte[] data, ParseException e) {
@@ -257,6 +262,14 @@ public class BookDetailFragment extends Fragment {
                     mMenuDelete.setVisible(true);
                 }
             });
+        }
+
+        if (mMenuDelete != null) {
+            if (review.isEmpty()) {
+                mMenuDelete.setVisible(false);
+            } else {
+                mMenuDelete.setVisible(true);
+            }
         }
     }
 

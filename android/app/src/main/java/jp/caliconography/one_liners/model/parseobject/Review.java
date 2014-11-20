@@ -79,6 +79,9 @@ public class Review extends ParseObject {
         return (ArrayList<ParseShapeConfig>) get(KEY_PAINT_CONFIGS);
     }
 
+    public boolean isEmpty() {
+        return (getTitle() == null && getAuthor() == null && getPhotoFile() == null);
+    }
 //    public void setShareScope(ShareScope scope) {
 //        put(KEY_SHARE_SCOPE, scope);
 //    }

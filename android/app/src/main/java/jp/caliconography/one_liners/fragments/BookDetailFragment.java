@@ -33,6 +33,7 @@ import jp.caliconography.one_liners.activities.BookListActivity;
 import jp.caliconography.one_liners.dummy.DummyContent;
 import jp.caliconography.one_liners.model.parseobject.Review;
 import jp.caliconography.one_liners.util.Utils;
+import jp.caliconography.one_liners.widget.DynamicHeightPicassoImageView;
 
 /**
  * A fragment representing a single book detail screen.
@@ -68,6 +69,8 @@ public class BookDetailFragment extends Fragment {
     TextView mTxtTitle;
     @InjectView(R.id.txt_author)
     TextView mTxtAuthor;
+    @InjectView(R.id.book_thumbnail)
+    DynamicHeightPicassoImageView mThumbnail;
     private Bitmap mPhotoBitmap;
     private MenuItem mMenuDelete;
     private MenuItem mMenuSave;
@@ -247,6 +250,7 @@ public class BookDetailFragment extends Fragment {
 
         mTxtTitle.setText(review.getTitle());
         mTxtAuthor.setText(review.getAuthor());
+        mThumbnail.loadImage(review.getThumbnailUrl());
 
         ParseFile photoFile = review.getPhotoFile();
         mBookPhoto.setParseFile(photoFile);

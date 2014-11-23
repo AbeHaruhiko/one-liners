@@ -61,11 +61,13 @@ public class DynamicHeightParseImageView extends ParseImageView {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
         //Load the image
-        getParseFile().getDataInBackground(new GetDataCallback() {
-            @Override
-            public void done(byte[] bytes, ParseException e) {
-                setImageBitmap(Utils.getBitmapFromByteArray(bytes));
-            }
-        });
+        if (getParseFile() != null) {
+            getParseFile().getDataInBackground(new GetDataCallback() {
+                @Override
+                public void done(byte[] bytes, ParseException e) {
+                    setImageBitmap(Utils.getBitmapFromByteArray(bytes));
+                }
+            });
+        }
     }
 }

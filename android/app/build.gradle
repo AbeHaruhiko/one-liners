@@ -3,13 +3,13 @@ apply plugin: 'com.android.application'
 apply plugin: 'hugo'
 
 android {
-    compileSdkVersion 20
-    buildToolsVersion "20.0.0"
+    compileSdkVersion 21
+    buildToolsVersion "21.0.0"
 
     defaultConfig {
         applicationId "jp.caliconography.one_liners"
         minSdkVersion 15
-        targetSdkVersion 20
+        targetSdkVersion 21
         versionCode 1
         versionName "1.0"
     }
@@ -24,13 +24,30 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     // You must install or update the Support Repository through the SDK manager to use this dependency.
-    compile 'com.android.support:support-v4:20.+'
+    compile 'com.android.support:support-v4:21.+'
 
     // grid
-    compile 'com.etsy.android.grid:library:1.0.5'
+//    compile 'com.etsy.android.grid:library:1.0.5'
 
     //card
-    compile 'com.github.gabrielemariotti.cards:library:1.9.0'
+//    compile 'com.github.gabrielemariotti.cards:library:1.9.0'
+    //Core
+    compile 'com.github.gabrielemariotti.cards:cardslib-core:2.0.1'
+
+    //Optional for built-in cards
+//    compile 'com.github.gabrielemariotti.cards:cardslib-cards:2.0.1'
+
+    //Optional for RecyclerView
+//    compile 'com.github.gabrielemariotti.cards:cardslib-recyclerview:2.0.1'
+
+    //Optional for staggered grid view
+    compile 'com.github.gabrielemariotti.cards:cardslib-extra-staggeredgrid:2.0.1'
+
+    //Optional for drag and drop
+//    compile 'com.github.gabrielemariotti.cards:cardslib-extra-dragdrop:2.0.1'
+
+    //Optional for twoway  (coming soon)
+    //compile 'com.github.gabrielemariotti.cards:cardslib-extra-twoway:2.0.1'
 
     // REST
     compile 'com.squareup.retrofit:retrofit:1.6.1'
@@ -47,7 +64,7 @@ dependencies {
     compile 'com.nhaarman.listviewanimations:lib-manipulation:3.1.0'
 
     // zoomable imageview
-    compile 'com.github.chrisbanes.photoview:library:1.2.3'
+//    compile 'com.github.chrisbanes.photoview:library:1.2.3'
 
     // butter knife(view injection)
     compile 'com.jakewharton:butterknife:5.1.2'

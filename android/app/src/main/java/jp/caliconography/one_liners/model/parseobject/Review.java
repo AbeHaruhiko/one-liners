@@ -22,6 +22,7 @@ public class Review extends ParseObject {
     public static final String KEY_PHOTO_WIDTH = "photoWidth";
     private static final String KEY_PHOTO_HEIGHT = "photoHeight";
     private static final String KEY_PAINT_CONFIGS = "paintConfigs";
+    private static final String KEY_THUMBNAIL_URL = "thumnbnail_url";
 
     public void setOriginalPhotoFile(ParseFile file) {
         put(KEY_ORIGINAL_PHOTO, file);
@@ -69,6 +70,14 @@ public class Review extends ParseObject {
 
     public String getAuthor() {
         return getString(KEY_AUTHOR);
+    }
+
+    public void setThumnnailUrl(String url) {
+        put(KEY_THUMBNAIL_URL, url);
+    }
+
+    public String getThumbnailUrl() {
+        return getString(KEY_THUMBNAIL_URL);
     }
 
     public void setPaintConfigs(ArrayList<ParseShapeConfig> paintConfigs) {

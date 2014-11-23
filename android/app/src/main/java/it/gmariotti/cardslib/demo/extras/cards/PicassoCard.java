@@ -19,21 +19,18 @@
 package it.gmariotti.cardslib.demo.extras.cards;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
-import java.net.URI;
-import java.net.URL;
-
-import jp.caliconography.one_liners.R;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardThumbnail;
+import jp.caliconography.one_liners.R;
 
 /**
  * This class provides a simple card with Thumbnail loaded with built-in method and Picasso library
@@ -46,6 +43,7 @@ public class PicassoCard extends Card {
     protected String mTitle;
     protected String mSecondaryTitle;
     protected int count;
+    private Bitmap mThumbnailBitmap;
 
     public PicassoCard(Context context, Uri thumbnailUri) {
         this(context, R.layout.carddemo_extra_picasso_inner_content, thumbnailUri);
@@ -89,10 +87,14 @@ public class PicassoCard extends Card {
 
     }
 
+    public Bitmap getThumbnailBitmap() {
+        return mThumbnailBitmap;
+    }
+
     /**
      * CardThumbnail which uses Picasso Library.
      * If you use an external library you have to provide your login inside #setupInnerViewElements.
-     *
+     * <p/>
      * This method is called before built-in method.
      * If {@link it.gmariotti.cardslib.library.internal.CardThumbnail#isExternalUsage()} is false it uses the built-in method.
      */

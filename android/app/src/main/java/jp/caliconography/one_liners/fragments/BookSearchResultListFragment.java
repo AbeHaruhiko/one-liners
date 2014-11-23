@@ -20,7 +20,6 @@ package jp.caliconography.one_liners.fragments;
 
 import android.app.Activity;
 import android.app.FragmentManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -36,16 +35,17 @@ import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 
-import it.gmariotti.cardslib.demo.extras.cards.PicassoCard;
 import it.gmariotti.cardslib.demo.extras.fragment.BaseListFragment;
 import it.gmariotti.cardslib.demo.extras.staggered.data.ServerDatabase;
 import it.gmariotti.cardslib.library.internal.Card;
 import it.gmariotti.cardslib.library.internal.CardArrayAdapter;
+import it.gmariotti.cardslib.library.internal.CardThumbnail;
 import it.gmariotti.cardslib.library.view.CardListView;
 import jp.caliconography.one_liners.R;
 import jp.caliconography.one_liners.activities.BookDetailActivity;
 import jp.caliconography.one_liners.event.BookSearchCompletedEvent;
 import jp.caliconography.one_liners.model.BookSearchResult;
+import jp.caliconography.one_liners.model.SearchResultCard;
 import jp.caliconography.one_liners.model.parseobject.Review;
 import jp.caliconography.one_liners.services.RakutenBooksTotalSearchClient;
 import jp.caliconography.one_liners.util.BusHolder;
@@ -180,19 +180,32 @@ public class BookSearchResultListFragment extends BaseListFragment {
     private ArrayList<Card> initCard(BookSearchResult bookSearchResult) {
 
         ArrayList<Card> cards = new ArrayList<Card>();
-        for (BookSearchResult.ItemHolder itemHolder : bookSearchResult.Items) {
+        for (final BookSearchResult.ItemHolder itemHolder : bookSearchResult.Items) {
 
-            PicassoCard card = new PicassoCard(this.getActivity(), Uri.parse(itemHolder.Item.mediumImageUrl.toString()));
+//            PicassoCard card = new PicassoCard(this.getActivity(), Uri.parse(itemHolder.Item.mediumImageUrl.toString()));
+            SearchResultCard card = new SearchResultCard(getActivity());
+
+            // title
+            card.setTitle(itemHolder.Item.title);
+
+            // author
+            card.setAuthor(itemHolder.Item.author + " / " + itemHolder.Item.publisherName);
+
+            // thumbnail
+            CardThumbnail thumbnail = new CardThumbnail(getActivity());
+            thumbnail.setUrlResource(itemHolder.Item.mediumImageUrl.toString());
+            card.addCardThumbnail(thumbnail);
+
+            // click listener
             card.setOnClickListener(new Card.OnCardClickListener() {
 
                 @Override
                 public void onClick(Card card, View view) {
-                    PicassoCard picassoCard = (PicassoCard) card;
-                    addSearchResultToReviewAndReturn(picassoCard.getTitle(), picassoCard.getSecondaryTitle());
+                    SearchResultCard searchResultCard = (SearchResultCard) card;
+                    searchResultCard.getCardThumbnail().getUrlResource();
+                    addSearchResultToReviewAndReturn(searchResultCard.getTitle(), searchResultCard.getAuthor(), searchResultCard.getCardThumbnail().getUrlResource());
                 }
             });
-            card.setTitle(itemHolder.Item.title);
-            card.setSecondaryTitle(itemHolder.Item.author + " / " + itemHolder.Item.publisherName);
 
             cards.add(card);
         }
@@ -211,10 +224,11 @@ public class BookSearchResultListFragment extends BaseListFragment {
         }
     }
 
-    private void addSearchResultToReviewAndReturn(String title, String author) {
+    private void addSearchResultToReviewAndReturn(String title, String author, String thumbnailUrl) {
         Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
         review.setTitle(title);
         review.setAuthor(author);
+        review.setThumnnailUrl(thumbnailUrl);
         FragmentManager fm = getActivity().getFragmentManager();
         fm.popBackStack(BookDetailFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }

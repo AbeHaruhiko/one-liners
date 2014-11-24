@@ -19,6 +19,7 @@ public class RakutenBooksTotalSearchClient {
 
     private static final String RAKUTEN_API_ENDPOINT = "https://app.rakuten.co.jp/";
     public static final String APP_ID = "1014192012049542780";
+    public static final String AFFILIATE_ID = "131621ea.e59e426d.131621eb.5f01452e";
     public static final String BOOK_GENRE_ID_BOOK = "000";
     public static final String FORMAT_JSON = "json";
 
@@ -53,6 +54,7 @@ public class RakutenBooksTotalSearchClient {
     private Map<String, String> buildParamMap(String queryText) {
         Map<String, String> paramMap = new HashMap<String, String>();
         paramMap.put("applicationId", APP_ID);
+        paramMap.put("affiliateId", AFFILIATE_ID);
         paramMap.put("format", FORMAT_JSON);
         paramMap.put("booksGenreId", BOOK_GENRE_ID_BOOK);
         paramMap.put("keyword", queryText);

@@ -189,7 +189,7 @@ public class BookSearchResultListFragment extends BaseListFragment {
             card.setTitle(itemHolder.Item.title);
 
             // author
-            card.setAuthor(itemHolder.Item.author + " / " + itemHolder.Item.publisherName);
+            card.setAuthor(itemHolder.Item.getAuthorAndPublisher());
 
             // thumbnail
             CardThumbnail thumbnail = new CardThumbnail(getActivity());
@@ -201,9 +201,7 @@ public class BookSearchResultListFragment extends BaseListFragment {
 
                 @Override
                 public void onClick(Card card, View view) {
-                    SearchResultCard searchResultCard = (SearchResultCard) card;
-                    searchResultCard.getCardThumbnail().getUrlResource();
-                    addSearchResultToReviewAndReturn(searchResultCard.getTitle(), searchResultCard.getAuthor(), searchResultCard.getCardThumbnail().getUrlResource());
+                    addSearchResultToReviewAndReturn(itemHolder.Item);
                 }
             });
 
@@ -224,11 +222,12 @@ public class BookSearchResultListFragment extends BaseListFragment {
         }
     }
 
-    private void addSearchResultToReviewAndReturn(String title, String author, String thumbnailUrl) {
+    private void addSearchResultToReviewAndReturn(BookSearchResult.ItemHolder.ItemProperties item) {
         Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
-        review.setTitle(title);
-        review.setAuthor(author);
-        review.setThumnnailUrl(thumbnailUrl);
+        review.setTitle(item.title);
+        review.setAuthor(item.getAuthorAndPublisher());
+        review.setThumnnailUrl(item.mediumImageUrl.toString());
+        review.setAffiliateUrl(item.affiliateUrl.toString());
         FragmentManager fm = getActivity().getFragmentManager();
         fm.popBackStack(BookDetailFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }

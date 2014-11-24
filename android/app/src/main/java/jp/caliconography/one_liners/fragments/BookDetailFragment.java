@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.view.LayoutInflater;
@@ -300,5 +301,10 @@ public class BookDetailFragment extends Fragment {
         transaction.replace(R.id.book_detail_container, bookSearchResultListFragment);
         transaction.addToBackStack(TAG);
         transaction.commit();
+    }
+
+    @OnClick(R.id.move_to_rakuten)
+    void onClickRakutenBtn() {
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(((BookDetailActivity) getActivity()).getCurrentReview().getAffiliateUrl())));
     }
 }

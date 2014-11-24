@@ -19,6 +19,13 @@ public class BookSearchResult {
             public URI itemUrl;
             public URI smallImageUrl;
             public URI mediumImageUrl;
+            public URI affiliateUrl;
+
+            public String getAuthorAndPublisher() {
+                return author
+                        + ((author.isEmpty() || publisherName.isEmpty()) ? "" : " / ")
+                        + publisherName;
+            }
         }
     }
 }

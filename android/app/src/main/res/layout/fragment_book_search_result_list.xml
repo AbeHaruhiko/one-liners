@@ -56,7 +56,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/book_search_result_list"
-            card:list_card_layout_resourceID="@layout/native_list_card_thumbnail_layout" />
+            card:list_card_layout_resourceID="@layout/native_list_card_thumbnail_layout_for_search_result" />
 
     </FrameLayout>
 

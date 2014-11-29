@@ -19,6 +19,7 @@ public class BookSearchResult {
             public URI itemUrl;
             public URI smallImageUrl;
             public URI mediumImageUrl;
+            public URI largeImageUrl;
             public URI affiliateUrl;
 
             public String getAuthorAndPublisher() {

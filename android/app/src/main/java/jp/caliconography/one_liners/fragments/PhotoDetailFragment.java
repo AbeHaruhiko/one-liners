@@ -285,9 +285,11 @@ public class PhotoDetailFragment extends Fragment {
 
     @OnTouch(R.id.photo)
     boolean onTouchPhoto(View view, MotionEvent motionEvent) {
-        mScaleGestureDetector.onTouchEvent(motionEvent);
-        mTranslationBy1FingerGestureDetector.onTouch(view, motionEvent);
-        mTranslationBy2FingerGestureDetector.onTouch(view, motionEvent);
+        if (mBitmap != null) {
+            mScaleGestureDetector.onTouchEvent(motionEvent);
+            mTranslationBy1FingerGestureDetector.onTouch(view, motionEvent);
+            mTranslationBy2FingerGestureDetector.onTouch(view, motionEvent);
+        }
 
         return true;
     }

@@ -305,6 +305,8 @@ public class BookDetailFragment extends Fragment {
 
     @OnClick(R.id.move_to_rakuten)
     void onClickRakutenBtn() {
-        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(((BookDetailActivity) getActivity()).getCurrentReview().getAffiliateUrl())));
+        if (((BookDetailActivity) getActivity()).getCurrentReview().getAffiliateUrl() != null) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(((BookDetailActivity) getActivity()).getCurrentReview().getAffiliateUrl())));
+        }
     }
 }

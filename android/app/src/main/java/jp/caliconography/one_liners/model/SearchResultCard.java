@@ -38,7 +38,7 @@ public class SearchResultCard extends Card {
     protected String mAuthor;
 
     public SearchResultCard(Context context) {
-        this(context, R.layout.carddemo_extra_picasso_inner_content);
+        this(context, R.layout.card_inner_layout_for_search_result);
     }
 
     public SearchResultCard(Context context, int innerLayout) {

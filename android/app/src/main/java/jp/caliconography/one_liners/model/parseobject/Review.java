@@ -1,5 +1,7 @@
 package jp.caliconography.one_liners.model.parseobject;
 
+import android.widget.RelativeLayout;
+
 import com.parse.ParseClassName;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -24,6 +26,7 @@ public class Review extends ParseObject {
     private static final String KEY_PAINT_CONFIGS = "paintConfigs";
     private static final String KEY_THUMBNAIL_URL = "thumnbnail_url";
     private static final String KEY_AFFILIATE_URL = "affiliate_url";
+    private static final String KEY_QUOTE_MARK_POSITION = "quote_mark_position";
 
     public void setOriginalPhotoFile(ParseFile file) {
         put(KEY_ORIGINAL_PHOTO, file);
@@ -89,6 +92,14 @@ public class Review extends ParseObject {
         return getString(KEY_AFFILIATE_URL);
     }
 
+    public void setQuoteMarkPosition(QuoteMarkPosition position) {
+        put(KEY_QUOTE_MARK_POSITION, position.getPositionInt());
+    }
+
+    public QuoteMarkPosition getQuoteMarkPosition() {
+        return QuoteMarkPosition.valueOf(getInt(KEY_QUOTE_MARK_POSITION));
+    }
+
     public void setPaintConfigs(ArrayList<ParseShapeConfig> paintConfigs) {
         put(KEY_PAINT_CONFIGS, paintConfigs);
     }
@@ -108,5 +119,30 @@ public class Review extends ParseObject {
 //        PUBLIC,
 //        PRIVATE;
 //    }
+
+    public enum QuoteMarkPosition {
+        LEFT(RelativeLayout.ALIGN_LEFT),
+        RIGHT(RelativeLayout.ALIGN_RIGHT);
+
+        private int position;
+
+        QuoteMarkPosition(final int position) {
+            this.position = position;
+        }
+
+        public int getPositionInt() {
+            return position;
+        }
+
+        public static QuoteMarkPosition valueOf(int positionInt) {
+            for (QuoteMarkPosition position : values()) {
+                if (position.getPositionInt() == positionInt) {
+                    return position;
+                }
+            }
+            // getIntで0が返ってきた場合（＝このReviewが未保存の場合）デフォルト値
+            return RIGHT;
+        }
+    }
 
 }

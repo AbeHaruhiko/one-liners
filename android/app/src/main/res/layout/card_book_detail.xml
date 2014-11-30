@@ -123,4 +123,14 @@
         android:layout_alignRight="@+id/txt_review"
         android:layout_alignEnd="@+id/txt_review" />
 
+    <ImageView
+        android:layout_width="@dimen/quote_mark_width"
+        android:layout_height="@dimen/quote_mark_height"
+        android:id="@+id/quote"
+        android:layout_alignTop="@+id/book_photo"
+        android:layout_alignRight="@+id/book_photo"
+        android:layout_margin="16dp"
+        android:src="@drawable/quote"
+        android:scaleType="fitStart" />
+
 </RelativeLayout>

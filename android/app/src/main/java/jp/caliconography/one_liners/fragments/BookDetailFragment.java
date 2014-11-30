@@ -16,6 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -75,6 +77,8 @@ public class BookDetailFragment extends Fragment {
     TextView mTxtAuthor;
     @InjectView(R.id.book_thumbnail)
     DynamicHeightPicassoImageView mThumbnail;
+    @InjectView(R.id.quote)
+    ImageView mQuoteMark;
 
     private Bitmap mPhotoBitmap;
     private MenuItem mMenuDelete;
@@ -269,7 +273,27 @@ public class BookDetailFragment extends Fragment {
             });
         }
 
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mQuoteMark.getLayoutParams();
+        if (review.getQuoteMarkPosition() == Review.QuoteMarkPosition.LEFT) {
+            putQuoteMarkLeft(review, layoutParams);
+        } else if (review.getQuoteMarkPosition() == Review.QuoteMarkPosition.RIGHT) {
+            putQuoteMarkRight(review, layoutParams);
+        }
+        mQuoteMark.setLayoutParams(layoutParams);
+
         setMenuItemVisibility();
+    }
+
+    private void putQuoteMarkLeft(Review review, RelativeLayout.LayoutParams layoutParams) {
+        layoutParams.addRule(RelativeLayout.ALIGN_LEFT, R.id.book_photo);
+        layoutParams.addRule(RelativeLayout.ALIGN_RIGHT, 0);
+        review.setQuoteMarkPosition(Review.QuoteMarkPosition.LEFT);
+    }
+
+    private void putQuoteMarkRight(Review review, RelativeLayout.LayoutParams layoutParams) {
+        layoutParams.addRule(RelativeLayout.ALIGN_RIGHT, R.id.book_photo);
+        layoutParams.addRule(RelativeLayout.ALIGN_LEFT, 0);
+        review.setQuoteMarkPosition(Review.QuoteMarkPosition.RIGHT);
     }
 
     private void setMenuItemVisibility() {
@@ -344,5 +368,20 @@ public class BookDetailFragment extends Fragment {
                     })
                     .show(getFragmentManager());
         }
+    }
+
+    @OnClick(R.id.quote)
+    void onClickQuoteMark(final View view) {
+        Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
+
+        if (review.getQuoteMarkPosition() == Review.QuoteMarkPosition.LEFT) {
+            // いま左にある
+            putQuoteMarkRight(review, layoutParams);
+        } else if (review.getQuoteMarkPosition() == Review.QuoteMarkPosition.RIGHT) {
+            // いま右にある
+            putQuoteMarkLeft(review, layoutParams);
+        }
+        view.setLayoutParams(layoutParams);
     }
 }

@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +28,7 @@ import com.parse.SaveCallback;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import jp.caliconography.one_liners.R;
 import jp.caliconography.one_liners.activities.BookDetailActivity;
@@ -57,6 +59,7 @@ public class BookDetailFragment extends Fragment {
     private static final int REQ_CODE_BOOK_SEARCH = 0;
     private static final int REQ_CODE_PHOTO_DETAIL = 1;
     public static final int DELETE_DIALOG_LISTENER_ID = 0;
+    public static final int SHARE_DIALOG_LISTENER_ID = 0;
     /**
      * The dummy content this fragment is presenting.
      */
@@ -72,6 +75,7 @@ public class BookDetailFragment extends Fragment {
     TextView mTxtAuthor;
     @InjectView(R.id.book_thumbnail)
     DynamicHeightPicassoImageView mThumbnail;
+
     private Bitmap mPhotoBitmap;
     private MenuItem mMenuDelete;
     private MenuItem mMenuSave;
@@ -307,6 +311,38 @@ public class BookDetailFragment extends Fragment {
     void onClickRakutenBtn() {
         if (((BookDetailActivity) getActivity()).getCurrentReview().getAffiliateUrl() != null) {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(((BookDetailActivity) getActivity()).getCurrentReview().getAffiliateUrl())));
+        }
+    }
+
+    @OnCheckedChanged(R.id.swc_share_scope)
+    void onShareScopeCheckedChanged(final CompoundButton buttonView, boolean isChecked) {
+        if (isChecked == true) {
+
+            DialogFragment
+                    .newInstance(true)
+                    .setTitle(R.string.dialog_title_confirm)
+                    .setMessage(R.string.dialog_confirm_message_share_public)
+                    .setPositiveButtonText(R.string.dialog_posigive_button_text)
+                    .setNegativeButtonText(R.string.dialog_negative_button_text)
+                    .setListener(SHARE_DIALOG_LISTENER_ID, new DialogFragment.IDialogFragmentListener() {
+
+                        @Override
+                        public void onEvent(int id, int event) {
+                            switch (event) {
+
+                                case DialogFragment.IDialogFragmentListener.ON_POSITIVE_BUTTON_CLICKED:
+                                    break;
+
+                                case DialogFragment.IDialogFragmentListener.ON_NEGATIVE_BUTTON_CLICKED:
+                                case DialogFragment.IDialogFragmentListener.ON_NEUTRAL_BUTTON_CLICKED:
+                                case DialogFragment.IDialogFragmentListener.ON_CLOSE_BUTTON_CLICKED:
+                                case DialogFragment.IDialogFragmentListener.ON_CANCEL:
+                                    buttonView.setChecked(false);
+                                    break;
+                            }
+                        }
+                    })
+                    .show(getFragmentManager());
         }
     }
 }

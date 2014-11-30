@@ -14,6 +14,7 @@
     <string name="dialog_posigive_button_text">OK</string>
     <string name="dialog_negative_button_text">Cancel</string>
     <string name="dialog_confirm_message_overwrite_photo">現在の画像は破棄されます。\nよろしいですか？</string>
+    <string name="dialog_confirm_message_share_public">公開すると他のユーザーがあなたの投稿を閲覧できます。\nよろしいですか？</string>
     <!--<string name="drawing_service_url">http://10.0.3.2:9000</string>-->
 
 </resources>

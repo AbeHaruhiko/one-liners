@@ -52,7 +52,7 @@
                 style="@style/card.native.card_thumbnail_outer_layout"
                 android:id="@+id/card_thumbnail_layout"
                 android:layout_width="wrap_content"
-                card:card_thumbnail_layout_resourceID="@layout/native_base_thumbnail_layout"
+                card:card_thumbnail_layout_resourceID="@layout/native_base_thumbnail_layout_for_search_result"
                 android:layout_height="match_parent" />
 
             <!-- Main Content View -->

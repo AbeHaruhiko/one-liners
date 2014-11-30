@@ -171,8 +171,8 @@
         <item name="android:layout_width">@dimen/card_thumbnail_width</item>
         <item name="android:layout_height">@dimen/card_thumbnail_height</item>
         <item name="android:layout_gravity">center</item>
-        <item name="android:gravity">center</item>
-        <item name="android:scaleType">centerCrop</item>
+        <!--<item name="android:gravity"></item>-->
+        <!--<item name="android:scaleType"></item>-->
     </style>
 
 </resources>

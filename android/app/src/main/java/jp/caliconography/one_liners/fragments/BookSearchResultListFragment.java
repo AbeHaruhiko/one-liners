@@ -226,7 +226,7 @@ public class BookSearchResultListFragment extends BaseListFragment {
         Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
         review.setTitle(item.title);
         review.setAuthor(item.getAuthorAndPublisher());
-        review.setThumnnailUrl(item.mediumImageUrl.toString());
+        review.setThumnnailUrl(item.largeImageUrl.toString());
         review.setAffiliateUrl(item.affiliateUrl.toString());
         FragmentManager fm = getActivity().getFragmentManager();
         fm.popBackStack(BookDetailFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);

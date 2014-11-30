@@ -19,3 +19,9 @@
 <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/card_thumbnail_image"
     style="@style/card.native.card_thumbnail_image" />
+
+    <!--<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"--><!--android:layout_width="85dp"--><!--android:layout_height="wrap_content"--><!--android:layout_alignParentLeft="true"--><!--android:layout_alignParentStart="false"--><!--android:id="@+id/frameLayout">-->
+
+    <!--<view--><!--android:layout_width="match_parent"--><!--android:layout_height="wrap_content"--><!--class="jp.caliconography.one_liners.widget.DynamicHeightPicassoImageView"--><!--android:id="@+id/book_thumbnail"--><!--android:cropToPadding="false" />-->
+
+    <!--</FrameLayout>-->

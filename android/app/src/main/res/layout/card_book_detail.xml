@@ -28,7 +28,7 @@
         android:id="@+id/relativeLayout">
 
         <FrameLayout
-            android:layout_width="85dp"
+            android:layout_width="84dp"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="false"

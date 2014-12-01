@@ -44,8 +44,10 @@ public class ReviewAdapter extends ParseQueryAdapter<Review> {
             convertView = View.inflate(getContext(), R.layout.carddemo_extras_staggered_card, null);
 
             ParseFile photoFile = review.getParseFile(Review.KEY_PHOTO);
-            if (photoFile != null) {
-                DynamicHeightParseImageView photoView = (DynamicHeightParseImageView) convertView.findViewById(R.id.card_thumbnail_image);
+        DynamicHeightParseImageView photoView = (DynamicHeightParseImageView) convertView.findViewById(R.id.card_thumbnail_image);
+        if (photoFile == null) {
+            photoView.setVisibility(View.INVISIBLE);
+        } else {
                 photoView.setHeightRatio(1d * review.getPhotoFileWidth() / review.getPhotoFileHeight());
                 photoView.setParseFile(photoFile);
                 photoView.loadInBackground();

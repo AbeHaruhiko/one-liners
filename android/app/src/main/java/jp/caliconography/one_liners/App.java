@@ -25,7 +25,7 @@ public class App extends Application {
 //        ParseObject.registerSubclass(ParseShapeConfig.class);
         ParseObject.registerSubclass(ParseLineConfig.class);
 
-        Parse.enableLocalDatastore(getApplicationContext());
+//        Parse.enableLocalDatastore(getApplicationContext());
         Parse.initialize(this, PARSE_APPLICATION_ID, PARSE_CLIENT_KEY);
         ParseUser.enableAutomaticUser();
         ParseUser.getCurrentUser().saveInBackground();

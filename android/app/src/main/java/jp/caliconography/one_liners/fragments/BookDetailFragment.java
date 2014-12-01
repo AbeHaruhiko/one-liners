@@ -139,6 +139,39 @@ public class BookDetailFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
+
+            final Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
+            if (review.isDirty()) {
+                // 変更されている場合
+
+                DialogFragment
+                        .newInstance(true)
+                        .setTitle(R.string.dialog_title_confirm)
+                        .setMessage(R.string.dialog_confirm_message_review_is_dirty)
+                        .setPositiveButtonText(R.string.dialog_posigive_button_text)
+                        .setNegativeButtonText(R.string.dialog_negative_button_text)
+                        .setListener(DELETE_DIALOG_LISTENER_ID, new DialogFragment.IDialogFragmentListener() {
+
+                            @Override
+                            public void onEvent(int id, int event) {
+                                switch (event) {
+
+                                    case DialogFragment.IDialogFragmentListener.ON_POSITIVE_BUTTON_CLICKED:
+                                        saveReviewAndReturnToBookList(review);
+                                        break;
+
+                                    case DialogFragment.IDialogFragmentListener.ON_NEGATIVE_BUTTON_CLICKED:
+                                    case DialogFragment.IDialogFragmentListener.ON_NEUTRAL_BUTTON_CLICKED:
+                                    case DialogFragment.IDialogFragmentListener.ON_CLOSE_BUTTON_CLICKED:
+                                    case DialogFragment.IDialogFragmentListener.ON_CANCEL:
+                                        NavUtils.navigateUpTo(getActivity(), new Intent(getActivity(), BookListActivity.class));
+                                        break;
+                                }
+                            }
+                        })
+                        .show(getFragmentManager());
+
+            }
             // This ID represents the Home or Up button. In the case of this
             // activity, the Up button is shown. Use NavUtils to allow users
             // to navigate up one level in the application structure. For
@@ -146,7 +179,7 @@ public class BookDetailFragment extends Fragment {
             //
             // http://developer.android.com/design/patterns/navigation.html#up-vs-back
             //
-            NavUtils.navigateUpTo(this.getActivity(), new Intent(this.getActivity(), BookListActivity.class));
+//            NavUtils.navigateUpTo(this.getActivity(), new Intent(this.getActivity(), BookListActivity.class));
             return true;
         } else if (id == R.id.save_book) {
 
@@ -164,22 +197,7 @@ public class BookDetailFragment extends Fragment {
             // TODO: 入力チェック
 
             Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
-            review.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(ParseException e) {
-                    if (e == null) {
-                        Activity bookDetailActivity = getActivity();
-                        bookDetailActivity.setResult(Activity.RESULT_OK);
-                        bookDetailActivity.finish();
-                    } else {
-                        // TODO: エラーメッセージ表示が仮
-                        Toast.makeText(
-                                getActivity().getApplicationContext(),
-                                "Error saving: " + e.getMessage(),
-                                Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
+            saveReviewAndReturnToBookList(review);
 
             return true;
         } else if (id == R.id.delete_book) {
@@ -212,6 +230,25 @@ public class BookDetailFragment extends Fragment {
 
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void saveReviewAndReturnToBookList(Review review) {
+        review.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if (e == null) {
+                    Activity bookDetailActivity = getActivity();
+                    bookDetailActivity.setResult(Activity.RESULT_OK);
+                    bookDetailActivity.finish();
+                } else {
+                    // TODO: エラーメッセージ表示が仮
+                    Toast.makeText(
+                            getActivity().getApplicationContext(),
+                            "Error saving: " + e.getMessage(),
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void deleteReview() {

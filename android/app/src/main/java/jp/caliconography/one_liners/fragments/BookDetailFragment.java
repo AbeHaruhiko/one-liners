@@ -147,7 +147,7 @@ public class BookDetailFragment extends Fragment {
                 DialogFragment
                         .newInstance(true)
                         .setTitle(R.string.dialog_title_confirm)
-                        .setMessage(R.string.dialog_confirm_message_review_is_dirty)
+                        .setMessage(String.format(getResources().getString(R.string.dialog_confirm_message_review_is_dirty), getResources().getString(R.string.dialog_negative_button_text)))
                         .setPositiveButtonText(R.string.dialog_posigive_button_text)
                         .setNegativeButtonText(R.string.dialog_negative_button_text)
                         .setListener(DELETE_DIALOG_LISTENER_ID, new DialogFragment.IDialogFragmentListener() {

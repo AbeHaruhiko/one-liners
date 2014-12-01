@@ -15,7 +15,7 @@
     <string name="dialog_negative_button_text">Cancel</string>
     <string name="dialog_confirm_message_overwrite_photo">現在の画像は破棄されます。\nよろしいですか？</string>
     <string name="dialog_confirm_message_share_public">公開すると他のユーザーがあなたの投稿を閲覧できます。\nよろしいですか？</string>
-    <string name="dialog_confirm_message_review_is_dirty">変更したデータが保存されていません。\n保存しますか？</string>
+    <string name="dialog_confirm_message_review_is_dirty">変更したデータが保存されていません。\n保存しますか？\n%1$sを選ぶと保存せずに一覧に戻ります。</string>
     <!--<string name="drawing_service_url">http://10.0.3.2:9000</string>-->
 
 </resources>

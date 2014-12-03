@@ -54,10 +54,14 @@ public class DynamicHeightParseImageView extends ParseImageView {
             throw new IllegalStateException("layout_width must be match_parent");
         }
 
-        int width = MeasureSpec.getSize(widthMeasureSpec);
-        // Honor aspect ratio for height but no larger than 2x width.
-        int height = Math.min((int) (width / mHeightRatio), width * 2);
-        heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
+        if (mHeightRatio == 0) {
+            heightMeasureSpec = 1;
+        } else {
+            int width = MeasureSpec.getSize(widthMeasureSpec);
+            // Honor aspect ratio for height but no larger than 2x width.
+            int height = Math.min((int) (width / mHeightRatio), width * 2);
+            heightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.EXACTLY);
+        }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
         //Load the image

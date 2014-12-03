@@ -599,6 +599,11 @@ public class PhotoDetailFragment extends Fragment {
 
         } else if (id == R.id.save_photo) {
 
+            // 写真があるか判定
+            if (mBitmap == null) {
+                return false;
+            }
+
             if (Utils.isOffline(getActivity())) {
                 // TODO: エラーメッセージ表示が仮
                 Toast.makeText(

@@ -3,7 +3,6 @@ package jp.caliconography.one_liners.activities;
 import android.app.Activity;
 import android.os.Bundle;
 
-import com.parse.ParseException;
 import com.parse.ParseObject;
 
 import jp.caliconography.one_liners.R;
@@ -56,11 +55,6 @@ public class BookDetailActivity extends Activity {
 
         if (getIntent().getStringExtra(Review.KEY_OBJECT_ID) != null) {
             mReview = ParseObject.createWithoutData(Review.class, getIntent().getStringExtra(Review.KEY_OBJECT_ID));
-            try {
-                mReview.fetchIfNeeded();
-            } catch (ParseException e) {
-                // do nothing
-            }
         }
     }
 

@@ -27,6 +27,7 @@ public class Review extends ParseObject {
     private static final String KEY_THUMBNAIL_URL = "thumnbnail_url";
     private static final String KEY_AFFILIATE_URL = "affiliate_url";
     private static final String KEY_QUOTE_MARK_POSITION = "quote_mark_position";
+    private static final String KEY_REVIEW_TEXT = "review";
 
     public void setOriginalPhotoFile(ParseFile file) {
         put(KEY_ORIGINAL_PHOTO, file);
@@ -74,6 +75,14 @@ public class Review extends ParseObject {
 
     public String getAuthor() {
         return getString(KEY_AUTHOR);
+    }
+
+    public void setReviewText(String review) {
+        put(KEY_REVIEW_TEXT, review);
+    }
+
+    public String getReviewText() {
+        return getString(KEY_REVIEW_TEXT);
     }
 
     public void setThumnnailUrl(String url) {

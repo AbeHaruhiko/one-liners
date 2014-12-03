@@ -22,10 +22,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.DeleteCallback;
+import com.parse.GetCallback;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseImageView;
+import com.parse.ParseObject;
 import com.parse.SaveCallback;
 
 import butterknife.ButterKnife;
@@ -75,6 +77,8 @@ public class BookDetailFragment extends Fragment {
     TextView mTxtTitle;
     @InjectView(R.id.txt_author)
     TextView mTxtAuthor;
+    @InjectView(R.id.txt_review)
+    TextView mTextReview;
     @InjectView(R.id.book_thumbnail)
     DynamicHeightPicassoImageView mThumbnail;
     @InjectView(R.id.quote)
@@ -233,6 +237,9 @@ public class BookDetailFragment extends Fragment {
     }
 
     private void saveReviewAndReturnToBookList(Review review) {
+
+        // 入力したreviewを保存
+        review.setReviewText(mTextReview.getText().toString());
         review.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {
@@ -292,33 +299,44 @@ public class BookDetailFragment extends Fragment {
     }
 
     private void resetReview() {
-        Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
+        final Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
 
-        mTxtTitle.setText(review.getTitle());
-        mTxtAuthor.setText(review.getAuthor());
-        mThumbnail.loadImage(review.getThumbnailUrl());
+        showProgressBar();
 
-        ParseFile photoFile = review.getPhotoFile();
-        mBookPhoto.setParseFile(photoFile);
-        if (photoFile != null) {
-            mBookPhoto.loadInBackground(new GetDataCallback() {
-                @Override
-                public void done(byte[] data, ParseException e) {
-                    mBookPhoto.setVisibility(View.VISIBLE);
-                    mMenuDelete.setVisible(true);
+        review.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
+            @Override
+            public void done(ParseObject parseObject, ParseException e) {
+                hideProgressBar();
+
+                mTxtTitle.setText(review.getTitle());
+                mTxtAuthor.setText(review.getAuthor());
+                mTextReview.setText(review.getReviewText());
+                mThumbnail.loadImage(review.getThumbnailUrl());
+
+                ParseFile photoFile = review.getPhotoFile();
+                mBookPhoto.setParseFile(photoFile);
+                if (photoFile != null) {
+                    mBookPhoto.loadInBackground(new GetDataCallback() {
+                        @Override
+                        public void done(byte[] data, ParseException e) {
+                            mBookPhoto.setVisibility(View.VISIBLE);
+                            mMenuDelete.setVisible(true);
+                        }
+                    });
                 }
-            });
-        }
 
-        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mQuoteMark.getLayoutParams();
-        if (review.getQuoteMarkPosition() == Review.QuoteMarkPosition.LEFT) {
-            putQuoteMarkLeft(review, layoutParams);
-        } else if (review.getQuoteMarkPosition() == Review.QuoteMarkPosition.RIGHT) {
-            putQuoteMarkRight(review, layoutParams);
-        }
-        mQuoteMark.setLayoutParams(layoutParams);
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mQuoteMark.getLayoutParams();
+                if (review.getQuoteMarkPosition() == Review.QuoteMarkPosition.LEFT) {
+                    putQuoteMarkLeft(review, layoutParams);
+                } else if (review.getQuoteMarkPosition() == Review.QuoteMarkPosition.RIGHT) {
+                    putQuoteMarkRight(review, layoutParams);
+                }
+                mQuoteMark.setLayoutParams(layoutParams);
 
-        setMenuItemVisibility();
+                setMenuItemVisibility();
+            }
+        });
+
     }
 
     private void putQuoteMarkLeft(Review review, RelativeLayout.LayoutParams layoutParams) {
@@ -335,14 +353,18 @@ public class BookDetailFragment extends Fragment {
 
     private void setMenuItemVisibility() {
         Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
-        if (mMenuDelete != null) {
-            if (review.isEmpty()) {
-                mMenuDelete.setVisible(false);
-                mMenuSave.setVisible(false);
-            } else {
-                mMenuDelete.setVisible(true);
-                mMenuSave.setVisible(true);
-            }
+        if (!review.isDataAvailable()) {
+            return;
+        }
+        if (mMenuDelete == null) {
+            return;
+        }
+        if (review.isEmpty()) {
+            mMenuDelete.setVisible(false);
+            mMenuSave.setVisible(false);
+        } else {
+            mMenuDelete.setVisible(true);
+            mMenuSave.setVisible(true);
         }
     }
 

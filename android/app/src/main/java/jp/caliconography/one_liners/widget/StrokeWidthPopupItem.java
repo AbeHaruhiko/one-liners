@@ -16,6 +16,7 @@ public class StrokeWidthPopupItem extends PopupMenuItem<PaintConfig.StrokeWidth>
 
         GradientDrawable drawable = new GradientDrawable();
         drawable.setShape(GradientDrawable.RECTANGLE);
+        drawable.setCornerRadius(strokeWidth.getWidthInt() / 2);
         drawable.setColor(Color.GRAY);
         drawable.setSize(getResources().getDimensionPixelSize(R.dimen.popup_menu_item_width) * 3 / 4,
                 strokeWidth.getWidthInt());

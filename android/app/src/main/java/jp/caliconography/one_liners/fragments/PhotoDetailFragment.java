@@ -66,9 +66,9 @@ import jp.caliconography.one_liners.util.BusHolder;
 import jp.caliconography.one_liners.util.Utils;
 import jp.caliconography.one_liners.util.parse.ParseObjectAsyncProcResult;
 import jp.caliconography.one_liners.util.parse.ParseObjectAsyncUtil;
-import jp.caliconography.one_liners.widget.ColorPopupItem;
 import jp.caliconography.one_liners.widget.PopupMenu;
 import jp.caliconography.one_liners.widget.PopupMenuItem;
+import jp.caliconography.one_liners.widget.StrokeColorPopupItem;
 import jp.caliconography.one_liners.widget.StrokeWidthPopupItem;
 
 /**
@@ -222,10 +222,10 @@ public class PhotoDetailFragment extends Fragment {
 
     private void createColorPopupMenu() {
         ArrayList<PopupMenuItem> colorMenuItems = new ArrayList<PopupMenuItem>();
-        colorMenuItems.add(new ColorPopupItem(getActivity().getApplicationContext(), 1, PaintConfig.StrokeColor.RED, R.drawable.btn_oval_common_back));
-        colorMenuItems.add(new ColorPopupItem(getActivity().getApplicationContext(), 2, PaintConfig.StrokeColor.BLUE, R.drawable.btn_oval_common_back));
-        colorMenuItems.add(new ColorPopupItem(getActivity().getApplicationContext(), 3, PaintConfig.StrokeColor.GREEN, R.drawable.btn_oval_common_back));
-        colorMenuItems.add(new ColorPopupItem(getActivity().getApplicationContext(), 4, PaintConfig.StrokeColor.BLACK, R.drawable.btn_oval_common_back));
+        colorMenuItems.add(new StrokeColorPopupItem(getActivity().getApplicationContext(), 1, PaintConfig.StrokeColor.RED, R.drawable.btn_oval_common_back));
+        colorMenuItems.add(new StrokeColorPopupItem(getActivity().getApplicationContext(), 2, PaintConfig.StrokeColor.BLUE, R.drawable.btn_oval_common_back));
+        colorMenuItems.add(new StrokeColorPopupItem(getActivity().getApplicationContext(), 3, PaintConfig.StrokeColor.GREEN, R.drawable.btn_oval_common_back));
+        colorMenuItems.add(new StrokeColorPopupItem(getActivity().getApplicationContext(), 4, PaintConfig.StrokeColor.BLACK, R.drawable.btn_oval_common_back));
         mColorPopup.addItems(colorMenuItems);
     }
 
@@ -806,8 +806,8 @@ public class PhotoDetailFragment extends Fragment {
 
     @Subscribe
     public void onItemClicked(PopupMenuItemClickedEvent event) {
-        if (event.getItem() instanceof ColorPopupItem) {
-            mPaintConfig.setColor(((ColorPopupItem) event.getItem()).getValue());
+        if (event.getItem() instanceof StrokeColorPopupItem) {
+            mPaintConfig.setColor(((StrokeColorPopupItem) event.getItem()).getValue());
             mColorPopup.close();
         } else if (event.getItem() instanceof StrokeWidthPopupItem) {
             mPaintConfig.setStrokeWidth(((StrokeWidthPopupItem) event.getItem()).getValue());

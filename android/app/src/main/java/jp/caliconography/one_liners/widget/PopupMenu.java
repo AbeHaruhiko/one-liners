@@ -3,6 +3,7 @@ package jp.caliconography.one_liners.widget;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -116,5 +117,9 @@ public class PopupMenu extends FrameLayout {
             objectAnimator.start();
         }
         this.isOpened = false;
+    }
+
+    public void setDrawableToBaseButton(Drawable drawable) {
+        mBaseButton.setImageDrawable(drawable);
     }
 }

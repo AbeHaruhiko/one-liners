@@ -806,13 +806,17 @@ public class PhotoDetailFragment extends Fragment {
 
     @Subscribe
     public void onItemClicked(PopupMenuItemClickedEvent event) {
+        PopupMenu menu = null;
         if (event.getItem() instanceof StrokeColorPopupItem) {
             mPaintConfig.setColor(((StrokeColorPopupItem) event.getItem()).getValue());
-            mColorPopup.close();
+            menu = mColorPopup;
         } else if (event.getItem() instanceof StrokeWidthPopupItem) {
             mPaintConfig.setStrokeWidth(((StrokeWidthPopupItem) event.getItem()).getValue());
-            mStrokeWidthPopup.close();
+            menu = mStrokeWidthPopup;
         }
+        assert menu != null;
+        menu.setDrawableToBaseButton(((PopupMenuItem) event.getItem()).getDrawable());
+        menu.close();
     }
 
     private void returnToBookDetail() {

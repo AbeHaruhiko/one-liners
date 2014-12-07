@@ -18,6 +18,8 @@
         android:id="@+id/stroke_width_popup"
         android:layout_toEndOf="@+id/color_popup"
         one-liners:item_interval="100.0"
+        one-liners:item_height="@dimen/popup_menu_item_height"
+        one-liners:item_width="@dimen/popup_menu_item_width"
         android:layout_alignBottom="@+id/photo"
         android:layout_toRightOf="@+id/color_popup" />
 
@@ -52,6 +54,8 @@
         android:id="@+id/color_popup"
         android:layout_toEndOf="@+id/progress_container"
         one-liners:item_interval="100.0"
+        one-liners:item_height="@dimen/popup_menu_item_height"
+        one-liners:item_width="@dimen/popup_menu_item_width"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/progress_container" />
 

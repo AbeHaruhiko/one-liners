@@ -6,6 +6,7 @@ import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -51,16 +52,22 @@ public class PopupMenu extends FrameLayout {
     }
 
     private void init(Context context, AttributeSet attrs) {
+        mLayout = LayoutInflater.from(context).inflate(R.layout.popup_menu, this);
+        ButterKnife.inject(this, mLayout);
+
         if (attrs != null) {
             TypedArray attributes = context.obtainStyledAttributes(attrs, R.styleable.PopupMenu);
             mItemInterval = attributes.getFloat(R.styleable.PopupMenu_item_interval, ITEM_INTERVAL_DEFAULT_VALUE);
             mOpenDuration = attributes.getInt(R.styleable.PopupMenu_open_duration, OPEN_DURATION_DEFAULT_VALUE);
             mCloseDuration = attributes.getInt(R.styleable.PopupMenu_close_duration, CLOSE_DURATION_DEFAULT_VALUE);
+
+            ViewGroup.LayoutParams layoutParams = mBaseButton.getLayoutParams();
+            layoutParams.width = attributes.getDimensionPixelSize(R.styleable.PopupMenu_item_width, layoutParams.width);
+            layoutParams.height = attributes.getDimensionPixelSize(R.styleable.PopupMenu_item_height, layoutParams.height);
+            mBaseButton.setLayoutParams(layoutParams);
         }
 
-        mLayout = LayoutInflater.from(context).inflate(R.layout.popup_menu, this);
 
-        ButterKnife.inject(this, mLayout);
     }
 
     public PopupMenu(Context context, AttributeSet attrs, int defStyle) {
@@ -81,6 +88,12 @@ public class PopupMenu extends FrameLayout {
 
         FrameLayout frameLayout = (FrameLayout) this.findViewById(R.id.popup_menu_root);
         for (PopupMenuItem item : mItemList) {
+            // Baseの高さ・幅に合わせる。
+            ViewGroup.LayoutParams layoutParams = item.getLayoutParams();
+            layoutParams.width = mBaseButton.getLayoutParams().width;
+            layoutParams.height = mBaseButton.getLayoutParams().height;
+            item.setLayoutParams(layoutParams);
+
             frameLayout.addView(item);
         }
         mBaseButton.bringToFront();

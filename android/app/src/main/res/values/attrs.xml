@@ -4,6 +4,8 @@
         <attr name="customFont" format="string" />
     </declare-styleable>
     <declare-styleable name="PopupMenu">
+        <attr name="item_height" format="dimension" />
+        <attr name="item_width" format="dimension" />
         <attr name="item_interval" format="float" />
         <attr name="open_duration" format="integer" />
         <attr name="close_duration" format="integer" />

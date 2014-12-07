@@ -214,18 +214,18 @@ public class PhotoDetailFragment extends Fragment {
 
     private void createStrokeWidthPopupMenu() {
         ArrayList<PopupMenuItem> lineWidthMenuItems = new ArrayList<PopupMenuItem>();
-        lineWidthMenuItems.add(new StrokeWidthPopupItem(getActivity().getApplicationContext(), 1, PaintConfig.StrokeWidth.THIN, R.drawable.icon_reflection_heart_red));
-        lineWidthMenuItems.add(new StrokeWidthPopupItem(getActivity().getApplicationContext(), 2, PaintConfig.StrokeWidth.MID, R.drawable.icon_reflection_arrow_red));
-        lineWidthMenuItems.add(new StrokeWidthPopupItem(getActivity().getApplicationContext(), 3, PaintConfig.StrokeWidth.FAT, R.drawable.icon_reflection_arrow_red));
+        lineWidthMenuItems.add(new StrokeWidthPopupItem(getActivity().getApplicationContext(), 1, PaintConfig.StrokeWidth.THIN, R.drawable.btn_oval_common_back));
+        lineWidthMenuItems.add(new StrokeWidthPopupItem(getActivity().getApplicationContext(), 2, PaintConfig.StrokeWidth.MID, R.drawable.btn_oval_common_back));
+        lineWidthMenuItems.add(new StrokeWidthPopupItem(getActivity().getApplicationContext(), 3, PaintConfig.StrokeWidth.FAT, R.drawable.btn_oval_common_back));
         mStrokeWidthPopup.addItems(lineWidthMenuItems);
     }
 
     private void createColorPopupMenu() {
         ArrayList<PopupMenuItem> colorMenuItems = new ArrayList<PopupMenuItem>();
-        colorMenuItems.add(new ColorPopupItem(getActivity().getApplicationContext(), 1, PaintConfig.Color.RED, R.drawable.icon_reflection_heart_red));
-        colorMenuItems.add(new ColorPopupItem(getActivity().getApplicationContext(), 2, PaintConfig.Color.BLUE, R.drawable.icon_reflection_arrow_red));
-        colorMenuItems.add(new ColorPopupItem(getActivity().getApplicationContext(), 3, PaintConfig.Color.GREEN, R.drawable.icon_reflection_arrow_red));
-        colorMenuItems.add(new ColorPopupItem(getActivity().getApplicationContext(), 4, PaintConfig.Color.BLACK, R.drawable.icon_reflection_arrow_red));
+        colorMenuItems.add(new ColorPopupItem(getActivity().getApplicationContext(), 1, PaintConfig.StrokeColor.RED, R.drawable.btn_oval_common_back));
+        colorMenuItems.add(new ColorPopupItem(getActivity().getApplicationContext(), 2, PaintConfig.StrokeColor.BLUE, R.drawable.btn_oval_common_back));
+        colorMenuItems.add(new ColorPopupItem(getActivity().getApplicationContext(), 3, PaintConfig.StrokeColor.GREEN, R.drawable.btn_oval_common_back));
+        colorMenuItems.add(new ColorPopupItem(getActivity().getApplicationContext(), 4, PaintConfig.StrokeColor.BLACK, R.drawable.btn_oval_common_back));
         mColorPopup.addItems(colorMenuItems);
     }
 

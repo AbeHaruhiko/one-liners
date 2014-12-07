@@ -42,9 +42,9 @@
 
     <ImageButton
         android:id="@+id/popup_menu_base"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|left"
-        android:background="@drawable/icon_base" />
+        android:layout_width="@dimen/popup_menu_item_width"
+        android:layout_height="@dimen/popup_menu_item_height"
+        android:layout_gravity="bottom"
+        android:background="@drawable/btn_oval_common_back" />
 
 </FrameLayout>

@@ -5,16 +5,16 @@ package jp.caliconography.one_liners.model;
  */
 public class PaintConfig {
 
-    private Color mColor = Color.RED;
+    private StrokeColor mColor = StrokeColor.RED;
     private StrokeWidth mStrokeWidth = StrokeWidth.MID;
     private StrokeBorderWidth mStrokeBorderWidth = StrokeBorderWidth.MID;
     private ShapeType mShapeType = ShapeType.LINE;
 
-    public Color getColor() {
+    public StrokeColor getColor() {
         return mColor;
     }
 
-    public void setColor(Color color) {
+    public void setColor(StrokeColor color) {
         this.mColor = color;
     }
 
@@ -42,7 +42,7 @@ public class PaintConfig {
         this.mStrokeBorderWidth = strokeBorderWidth;
     }
 
-    public enum Color {
+    public enum StrokeColor {
         RED(android.graphics.Color.RED),
         GREEN(android.graphics.Color.GREEN),
         BLUE(android.graphics.Color.BLUE),
@@ -50,7 +50,7 @@ public class PaintConfig {
 
         private int color;
 
-        private Color(int color) {
+        private StrokeColor(int color) {
             this.color = color;
         }
 

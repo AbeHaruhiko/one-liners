@@ -321,22 +321,26 @@ public class BookDetailFragment extends Fragment {
                         public void done(byte[] data, ParseException e) {
                             mBookPhoto.setVisibility(View.VISIBLE);
                             mMenuDelete.setVisible(true);
+                            setQuoteMarkPosition(review);
                         }
                     });
                 }
-
-                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mQuoteMark.getLayoutParams();
-                if (review.getQuoteMarkPosition() == Review.QuoteMarkPosition.LEFT) {
-                    putQuoteMarkLeft(review, layoutParams);
-                } else if (review.getQuoteMarkPosition() == Review.QuoteMarkPosition.RIGHT) {
-                    putQuoteMarkRight(review, layoutParams);
-                }
-                mQuoteMark.setLayoutParams(layoutParams);
 
                 setMenuItemVisibility();
             }
         });
 
+    }
+
+    private void setQuoteMarkPosition(Review review) {
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mQuoteMark.getLayoutParams();
+        if (review.getQuoteMarkPosition() == Review.QuoteMarkPosition.LEFT) {
+            putQuoteMarkLeft(review, layoutParams);
+        } else if (review.getQuoteMarkPosition() == Review.QuoteMarkPosition.RIGHT) {
+            putQuoteMarkRight(review, layoutParams);
+        }
+        mQuoteMark.setLayoutParams(layoutParams);
+        mQuoteMark.setVisibility(View.VISIBLE);
     }
 
     private void putQuoteMarkLeft(Review review, RelativeLayout.LayoutParams layoutParams) {

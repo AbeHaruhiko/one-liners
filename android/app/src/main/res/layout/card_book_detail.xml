@@ -131,6 +131,7 @@
         android:layout_alignRight="@+id/book_photo"
         android:layout_margin="16dp"
         android:src="@drawable/quote"
-        android:scaleType="fitStart" />
+        android:scaleType="fitStart"
+        android:visibility="gone" />
 
 </RelativeLayout>

@@ -61,4 +61,24 @@
         android:layout_toRightOf="@+id/progress_container"
         android:layout_margin="8dp" />
 
+    <ImageButton
+        android:layout_width="@dimen/popup_menu_item_width"
+        android:layout_height="@dimen/popup_menu_item_height"
+        android:id="@+id/undo"
+        android:layout_toEndOf="@+id/stroke_width_popup"
+        android:background="@drawable/btn_oval_common_back"
+        android:layout_alignBottom="@+id/stroke_width_popup"
+        android:layout_toLeftOf="@+id/redo"
+        android:layout_toStartOf="@+id/redo" />
+
+    <ImageButton
+        android:layout_width="@dimen/popup_menu_item_width"
+        android:layout_height="@dimen/popup_menu_item_height"
+        android:id="@+id/redo"
+        android:layout_toEndOf="@+id/undo"
+        android:background="@drawable/btn_oval_common_back"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentRight="false"
+        android:layout_alignParentEnd="true" />
+
 </RelativeLayout>

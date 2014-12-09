@@ -1,0 +1,20 @@
+language: android
+
+env:
+  global:
+    - secure: "eKVF8/yPVE7QrMAbNjX+IsKBgfJLAFF5xsFtxvCkOAcOKUCP44OlQzGW6WhsmLbLJaclAr/hY+MA57i5fAnyJXQZ5RujHQsi3yiJ3A7NRWj+6W7tYsz2XM/BHAOsEQfd5+jUrOVHQ7Xz0mQAyubQ7bnDACA/JV68sq49i5720TQ="
+
+android:
+  components:
+    - build-tools-21.0.0
+    - android-21
+    - sysimg-21
+    - extra-android-support
+  licenses:
+    - android-sdk-license-bcbbd656
+
+script:
+  - ./gradlew assembleDebug
+
+after_success:
+  - curl -F "file=@./app/build/outputs/apk/app-debug-unaligned.apk" -F "token=${DEPLOYGATE_TOKEN}" -F "message=pushされました。" https://deploygate.com/api/users/AbeHaruhiko/apps

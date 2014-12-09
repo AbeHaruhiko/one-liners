@@ -32,8 +32,8 @@ public class ReviewAdapter extends ParseQueryAdapter<Review> {
                 return query;
             }
         });
-        setPlaceholder(context.getResources().getDrawable(R.drawable.photo_placeholder));
-        setObjectsPerPage(7);
+//        setPlaceholder(context.getResources().getDrawable(R.drawable.photo_placeholder));
+        setObjectsPerPage(4);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class ReviewAdapter extends ParseQueryAdapter<Review> {
         DynamicHeightParseImageView photoView = (DynamicHeightParseImageView) convertView.findViewById(R.id.card_thumbnail_image);
         if (photoFile == null) {
             photoView.setHeightRatio(0d);
-            photoView.setImageDrawable(getContext().getResources().getDrawable(R.drawable.transparent_dot));
+//            photoView.setImageDrawable(getContext().getResources().getDrawable(R.drawable.transparent_dot));
         } else {
                 photoView.setHeightRatio(1d * review.getPhotoFileWidth() / review.getPhotoFileHeight());
                 photoView.setParseFile(photoFile);

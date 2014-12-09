@@ -14,7 +14,8 @@ android:
     - android-sdk-license-bcbbd656
 
 script:
-  - ./android/gradlew assembleDebug
+  - cd ./android
+  - ./gradlew assembleDebug
 
 after_success:
   - curl -F "file=@./app/build/outputs/apk/app-debug-unaligned.apk" -F "token=${DEPLOYGATE_TOKEN}" -F "message=pushed." https://deploygate.com/api/users/AbeHaruhiko/apps

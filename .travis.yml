@@ -17,4 +17,4 @@ script:
   - ./android/gradlew assembleDebug
 
 after_success:
-  - curl -F "file=@./app/build/outputs/apk/app-debug-unaligned.apk" -F "token=${DEPLOYGATE_TOKEN}" -F "message=pushされました。" https://deploygate.com/api/users/AbeHaruhiko/apps
+  - curl -F "file=@./app/build/outputs/apk/app-debug-unaligned.apk" -F "token=${DEPLOYGATE_TOKEN}" -F "message=pushed." https://deploygate.com/api/users/AbeHaruhiko/apps

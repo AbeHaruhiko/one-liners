@@ -20,3 +20,6 @@ script:
 
 after_success:
   - curl -F "file=@./app/build/outputs/apk/app-debug-unaligned.apk" -F "token=${DEPLOYGATE_TOKEN}" -F "message=pushed." https://deploygate.com/api/users/AbeHaruhiko/apps
+
+notifications:
+  slack: caliconography:V9bwgYq75oCqFFNqNji8UQkc

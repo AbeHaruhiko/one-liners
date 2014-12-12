@@ -2,6 +2,8 @@ package jp.caliconography.one_liners.util.parse;
 
 import com.parse.DeleteCallback;
 import com.parse.FindCallback;
+import com.parse.GetCallback;
+import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -133,17 +135,16 @@ public class ParseObjectAsyncUtil {
     }
 */
 
-/*
     public static Task<ParseObject> fetchAsync(final ParseObject obj) {
         final Task<ParseObject>.TaskCompletionSource task = Task.<ParseObject>create();
         if (obj == null) {
             task.setResult(null);
         } else {
-            obj.refreshInBackground(new RefreshCallback() {
+            obj.fetchInBackground(new GetCallback() {
                 @Override
-                public void done(ParseObject ncmbObject, ParseException e) {
+                public void done(ParseObject parseObject, ParseException e) {
                     if (e == null) {
-                        task.setResult(ncmbObject);
+                        task.setResult(parseObject);
                     } else {
                         task.setError(e);
                     }
@@ -152,6 +153,24 @@ public class ParseObjectAsyncUtil {
         }
         return task.getTask();
     }
-*/
+
+    public static Task<byte[]> getDataAsync(final ParseFile obj) {
+        final Task<byte[]>.TaskCompletionSource task = Task.<byte[]>create();
+        if (obj == null) {
+            task.setResult(null);
+        } else {
+            obj.getDataInBackground(new GetDataCallback() {
+                @Override
+                public void done(byte[] bytes, ParseException e) {
+                    if (e == null) {
+                        task.setResult(bytes);
+                    } else {
+                        task.setError(e);
+                    }
+                }
+            });
+        }
+        return task.getTask();
+    }
 
 }

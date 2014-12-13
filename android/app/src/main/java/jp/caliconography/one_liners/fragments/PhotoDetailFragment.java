@@ -33,6 +33,7 @@ import android.widget.Toast;
 import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
+import com.parse.ParseObject;
 import com.parse.ProgressCallback;
 import com.squareup.otto.Subscribe;
 
@@ -41,7 +42,9 @@ import org.json.JSONException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import bolts.Capture;
 import bolts.Continuation;
 import bolts.Task;
 import butterknife.ButterKnife;
@@ -167,38 +170,21 @@ public class PhotoDetailFragment extends Fragment {
 
         // 保存済みのbitmapがあれば表示
         if (mReview.getPhotoFile() != null) {
+
+            // Taskのカウント（写真を取得するTask＋線情報を取得するTask）。最大2。
+            final AtomicInteger count = new AtomicInteger(1 + (mReview.getPaintConfigs().size() == 0 ? 0 : 1));
+
+            // 取得した写真を格納する変数
+            final Capture<byte[]> photoDataBytes = new Capture<byte[]>();
+
             mReview.getOriginalPhotoFile().getDataInBackground(new GetDataCallback() {
                 @Override
                 public void done(byte[] bytes, ParseException e) {
-                    mBitmap = Utils.getBitmapFromByteArray(bytes);
-                    while (!mSurfaceCreated) {
-                    }
 
-                    getScaleForFitBitmapToView();
+                    photoDataBytes.set(bytes);
 
-                    Canvas canvas = null;
-                    try {
-                        canvas = mSurfaceHolder.lockCanvas(null);
-                        if (canvas != null) {
-                            setPhotoBitmapToCanvas(canvas);
-
-                            // 線取得
-                            // TODO: fetch
-                            ArrayList<ParseShapeConfig> paintConfigs = mReview.getPaintConfigs();
-                            for (ParseShapeConfig config : paintConfigs) {
-                                try {
-                                    LineConfig lineConfig = new LineConfig((ParseLineConfig) config);
-                                    mLineConfigArray.add(lineConfig);
-                                } catch (JSONException e1) {
-                                    e1.printStackTrace();
-                                }
-                            }
-                            renderAllPath(canvas);
-                        }
-                    } finally {
-                        if (canvas != null) {
-                            mSurfaceHolder.unlockCanvasAndPost(canvas);
-                        }
+                    if (count.decrementAndGet() == 0) {
+                        drawAll(photoDataBytes.get());
                     }
                 }
             }, new ProgressCallback() {
@@ -207,9 +193,61 @@ public class PhotoDetailFragment extends Fragment {
 
                 }
             });
+
+            // 線をfetchするTaskのリストを作成
+            ArrayList<Task<ParseObject>> tasks = new ArrayList<Task<ParseObject>>();
+            final ArrayList<ParseShapeConfig> paintConfigs = mReview.getPaintConfigs();
+            for (ParseShapeConfig config : paintConfigs) {
+                tasks.add(ParseObjectAsyncUtil.fetchAsync(config));
+            }
+
+            // 線をfetchするTaskのリストの完了待ち合わせ。
+            Task.whenAll(tasks).onSuccess(new Continuation<Void, Void>() {
+                @Override
+                public Void then(Task<Void> task) throws Exception {
+                    if (count.decrementAndGet() == 0) {
+                        drawAll(photoDataBytes.get());
+                    }
+                    return null;
+                }
+            });
         }
 
         return rootView;
+    }
+
+    private void drawAll(byte[] photoData) {
+
+        mBitmap = Utils.getBitmapFromByteArray(photoData);
+        while (!mSurfaceCreated) {
+        }
+
+        getScaleForFitBitmapToView();
+
+        Canvas canvas = null;
+        try {
+            canvas = mSurfaceHolder.lockCanvas(null);
+            if (canvas != null) {
+                setPhotoBitmapToCanvas(canvas);
+
+                // 線取得
+                // TODO: fetch
+                ArrayList<ParseShapeConfig> paintConfigs = mReview.getPaintConfigs();
+                for (ParseShapeConfig config : paintConfigs) {
+                    try {
+                        LineConfig lineConfig = new LineConfig((ParseLineConfig) config);
+                        mLineConfigArray.add(lineConfig);
+                    } catch (JSONException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+                renderAllPath(canvas);
+            }
+        } finally {
+            if (canvas != null) {
+                mSurfaceHolder.unlockCanvasAndPost(canvas);
+            }
+        }
     }
 
     private void createStrokeWidthPopupMenu() {

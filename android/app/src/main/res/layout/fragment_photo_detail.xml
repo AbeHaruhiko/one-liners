@@ -61,22 +61,30 @@
         android:layout_toRightOf="@+id/progress_container"
         android:layout_margin="8dp" />
 
-    <ImageButton
+    <view xmlns:one-liners="http://schemas.android.com/apk/res-auto"
+        class="jp.caliconography.one_liners.widget.CustomFontButton"
         android:layout_width="@dimen/popup_menu_item_width"
         android:layout_height="@dimen/popup_menu_item_height"
         android:id="@+id/undo"
         android:background="@drawable/btn_oval_common_back"
         android:layout_alignBottom="@+id/photo"
         android:layout_alignRight="@+id/photo"
-        android:layout_margin="8dp" />
+        android:layout_margin="8dp"
+        android:textColor="@color/sysGray"
+        android:text="&#xf112;"
+        one-liners:customFont="fontawesome-webfont.ttf" />
 
-    <ImageButton
+    <view xmlns:one-liners="http://schemas.android.com/apk/res-auto"
+        class="jp.caliconography.one_liners.widget.CustomFontButton"
         android:layout_width="@dimen/popup_menu_item_width"
         android:layout_height="@dimen/popup_menu_item_height"
         android:id="@+id/redo"
         android:background="@drawable/btn_oval_common_back"
         android:layout_alignBottom="@+id/photo"
         android:layout_toLeftOf="@+id/undo"
-        android:layout_margin="8dp" />
+        android:layout_margin="8dp"
+        android:textColor="@color/sysGray"
+        android:text="&#xf064;"
+        one-liners:customFont="fontawesome-webfont.ttf" />
 
 </RelativeLayout>

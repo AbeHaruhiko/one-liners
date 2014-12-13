@@ -231,7 +231,6 @@ public class PhotoDetailFragment extends Fragment {
                 setPhotoBitmapToCanvas(canvas);
 
                 // 線取得
-                // TODO: fetch
                 ArrayList<ParseShapeConfig> paintConfigs = mReview.getPaintConfigs();
                 for (ParseShapeConfig config : paintConfigs) {
                     try {

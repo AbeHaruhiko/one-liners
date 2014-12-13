@@ -152,6 +152,8 @@ public class PhotoDetailFragment extends Fragment {
 
         ButterKnife.inject(this, rootView);
 
+        mPaint = new jp.caliconography.one_liners.model.Paint(true);
+
         // ポップアップメニューを構成
         createColorPopupMenu();
         createStrokeWidthPopupMenu();
@@ -164,9 +166,6 @@ public class PhotoDetailFragment extends Fragment {
         mScale = 1.0f;
 
         createGetsureDetectors();
-
-//        createDefaultPaint();
-        mPaint = new jp.caliconography.one_liners.model.Paint(true);
 
         // 保存済みのbitmapがあれば表示
         if (mReview.getPhotoFile() != null) {
@@ -250,11 +249,16 @@ public class PhotoDetailFragment extends Fragment {
     }
 
     private void createStrokeWidthPopupMenu() {
-        ArrayList<PopupMenuItem> lineWidthMenuItems = new ArrayList<PopupMenuItem>();
-        lineWidthMenuItems.add(new StrokeWidthPopupItem(getActivity().getApplicationContext(), 1, PaintConfig.StrokeWidth.THIN, R.drawable.btn_oval_common_back));
-        lineWidthMenuItems.add(new StrokeWidthPopupItem(getActivity().getApplicationContext(), 2, PaintConfig.StrokeWidth.MID, R.drawable.btn_oval_common_back));
-        lineWidthMenuItems.add(new StrokeWidthPopupItem(getActivity().getApplicationContext(), 3, PaintConfig.StrokeWidth.FAT, R.drawable.btn_oval_common_back));
-        mStrokeWidthPopup.addItems(lineWidthMenuItems);
+        ArrayList<PopupMenuItem> strokeWidthMenuItems = new ArrayList<PopupMenuItem>();
+        strokeWidthMenuItems.add(new StrokeWidthPopupItem(getActivity().getApplicationContext(), 1, PaintConfig.StrokeWidth.THIN, R.drawable.btn_oval_common_back));
+        strokeWidthMenuItems.add(new StrokeWidthPopupItem(getActivity().getApplicationContext(), 2, PaintConfig.StrokeWidth.MID, R.drawable.btn_oval_common_back));
+        strokeWidthMenuItems.add(new StrokeWidthPopupItem(getActivity().getApplicationContext(), 3, PaintConfig.StrokeWidth.FAT, R.drawable.btn_oval_common_back));
+        mStrokeWidthPopup.addItems(strokeWidthMenuItems);
+        for (PopupMenuItem item : strokeWidthMenuItems) {
+            if (item.getValue() == mPaintConfig.getStrokeWidth()) {
+                mStrokeWidthPopup.setDrawableToBaseButton(item.getDrawable());
+            }
+        }
     }
 
     private void createColorPopupMenu() {
@@ -264,6 +268,11 @@ public class PhotoDetailFragment extends Fragment {
         colorMenuItems.add(new StrokeColorPopupItem(getActivity().getApplicationContext(), 3, PaintConfig.StrokeColor.GREEN, R.drawable.btn_oval_common_back));
         colorMenuItems.add(new StrokeColorPopupItem(getActivity().getApplicationContext(), 4, PaintConfig.StrokeColor.BLACK, R.drawable.btn_oval_common_back));
         mColorPopup.addItems(colorMenuItems);
+        for (PopupMenuItem item : colorMenuItems) {
+            if (item.getValue() == mPaintConfig.getColor()) {
+                mColorPopup.setDrawableToBaseButton(item.getDrawable());
+            }
+        }
     }
 
     private void tryToSetPhotoBitmapToCanvas() {

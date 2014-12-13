@@ -72,6 +72,7 @@
         android:layout_margin="8dp"
         android:textColor="@color/sysGray"
         android:text="&#xf064;"
+        android:enabled="false"
         one-liners:customFont="fontawesome-webfont.ttf" />
 
     <view xmlns:one-liners="http://schemas.android.com/apk/res-auto"
@@ -85,6 +86,7 @@
         android:layout_margin="8dp"
         android:textColor="@color/sysGray"
         android:text="&#xf112;"
+        android:enabled="false"
         one-liners:customFont="fontawesome-webfont.ttf" />
 
 </RelativeLayout>

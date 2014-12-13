@@ -49,6 +49,7 @@ import bolts.Continuation;
 import bolts.Task;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import butterknife.OnTouch;
 import hugo.weaving.DebugLog;
 import jp.caliconography.one_liners.R;
@@ -69,6 +70,7 @@ import jp.caliconography.one_liners.util.BusHolder;
 import jp.caliconography.one_liners.util.Utils;
 import jp.caliconography.one_liners.util.parse.ParseObjectAsyncProcResult;
 import jp.caliconography.one_liners.util.parse.ParseObjectAsyncUtil;
+import jp.caliconography.one_liners.widget.CustomFontButton;
 import jp.caliconography.one_liners.widget.PopupMenu;
 import jp.caliconography.one_liners.widget.PopupMenuItem;
 import jp.caliconography.one_liners.widget.StrokeColorPopupItem;
@@ -102,12 +104,14 @@ public class PhotoDetailFragment extends Fragment {
     TextView mProgressText;
     @InjectView(R.id.photo)
     SurfaceView mPhotoView;
-    //    @InjectView(R.id.load_image)
-//    Button mBtnLoadImage;
     @InjectView(R.id.color_popup)
     PopupMenu mColorPopup;
     @InjectView(R.id.stroke_width_popup)
     PopupMenu mStrokeWidthPopup;
+    @InjectView(R.id.undo)
+    CustomFontButton mUndo;
+    @InjectView(R.id.redo)
+    CustomFontButton mRedo;
 
     private Uri mPictureUri;
     private SurfaceHolder mSurfaceHolder;
@@ -127,6 +131,7 @@ public class PhotoDetailFragment extends Fragment {
     private boolean mSurfaceCreated;
     private Paint mPaint;
     ArrayList<LineConfig> mLineConfigArray = new ArrayList<LineConfig>();
+    private int mLineConfigArrayCurrentPosition = -1;
     private Review mReview = null;
 
 
@@ -170,6 +175,9 @@ public class PhotoDetailFragment extends Fragment {
         // 保存済みのbitmapがあれば表示
         if (mReview.getPhotoFile() != null) {
 
+            // 線リストの現在位置
+            mLineConfigArrayCurrentPosition = mReview.getPaintConfigs().size() - 1;
+
             // Taskのカウント（写真を取得するTask＋線情報を取得するTask）。最大2。
             final AtomicInteger count = new AtomicInteger(1 + (mReview.getPaintConfigs().size() == 0 ? 0 : 1));
 
@@ -210,6 +218,10 @@ public class PhotoDetailFragment extends Fragment {
                     return null;
                 }
             });
+
+            if (paintConfigs.size() > 0) {
+                mUndo.setEnabled(true);
+            }
         }
 
         return rootView;
@@ -389,25 +401,29 @@ public class PhotoDetailFragment extends Fragment {
             mScale *= detector.getScaleFactor();
             Log.d(TAG, "mScale=" + Float.toString(mScale));
 
-            Canvas canvas = null;
-            try {
-                canvas = mSurfaceHolder.lockCanvas(null);
-
-                if (canvas != null) {
-                    setPhotoBitmapToCanvas(canvas);
-                    drawTempPath(canvas);
-                    Log.d(TAG, "______onScale______");
-                    renderAllPath(canvas);
-                }
-            } finally {
-                if (canvas != null) {
-                    mSurfaceHolder.unlockCanvasAndPost(canvas);
-                }
-            }
+            drawAll();
 
             return true;
         }
     };
+
+    private void drawAll() {
+        Canvas canvas = null;
+        try {
+            canvas = mSurfaceHolder.lockCanvas(null);
+
+            if (canvas != null) {
+                setPhotoBitmapToCanvas(canvas);
+                drawTempPath(canvas);
+                Log.d(TAG, "______onScale______");
+                renderAllPath(canvas);
+            }
+        } finally {
+            if (canvas != null) {
+                mSurfaceHolder.unlockCanvasAndPost(canvas);
+            }
+        }
+    }
 
     private final TranslationGestureListener mTranslationBy1FingerListener = new TranslationGestureListener() {
         @DebugLog
@@ -506,7 +522,8 @@ public class PhotoDetailFragment extends Fragment {
     };
 
     private void renderAllPath(Canvas canvas, boolean withTranslate, boolean withScale) {
-        for (LineConfig lineConfig : mLineConfigArray) {
+        for (int i = 0; i <= mLineConfigArrayCurrentPosition; i++) {
+            LineConfig lineConfig = mLineConfigArray.get(i);
             Path path = new Path();
 
             // 線の中点を原点(0, 0)へ配置。
@@ -812,7 +829,13 @@ public class PhotoDetailFragment extends Fragment {
         LineConfig lineConfig = drawPath(canvas, mPaintConfig.getColor().getColorInt());
         // TODO 点も描けるようにしたい。
         if (mOriginX != mCurrentX || mOriginY != mCurrentY) {
+            // 線をリストに追加するので現在位置より後ろはクリアして末尾に追加。
+            for (int i = mLineConfigArray.size() - 1; i > mLineConfigArrayCurrentPosition; i--) {
+                mLineConfigArray.remove(i);
+            }
             mLineConfigArray.add(lineConfig);
+            mLineConfigArrayCurrentPosition++;
+            mUndo.setEnabled(true);
         }
     }
 
@@ -863,6 +886,26 @@ public class PhotoDetailFragment extends Fragment {
         assert menu != null;
         menu.setDrawableToBaseButton(((PopupMenuItem) event.getItem()).getDrawable());
         menu.close();
+    }
+
+    @OnClick(R.id.undo)
+    public void onClickUndo() {
+        mLineConfigArrayCurrentPosition--;
+        drawAll();
+        if (mLineConfigArrayCurrentPosition == -1) {
+            mUndo.setEnabled(false);
+        }
+        mRedo.setEnabled(true);
+    }
+
+    @OnClick(R.id.redo)
+    public void onClickRedo() {
+        mLineConfigArrayCurrentPosition++;
+        drawAll();
+        if (mLineConfigArrayCurrentPosition == mLineConfigArray.size() - 1) {
+            mRedo.setEnabled(false);
+        }
+        mUndo.setEnabled(true);
     }
 
     private void returnToBookDetail() {

@@ -4,13 +4,13 @@
 package jp.caliconography.one_liners.fragments;
 
 import android.app.Dialog;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.Window;
@@ -25,7 +25,7 @@ import jp.caliconography.one_liners.R;
  * Customize to use android.app.DialogFragment
  * by abe on 2014/11/17.
  */
-public class DialogFragment extends android.app.DialogFragment implements OnClickListener {
+public class DialogFragment extends android.support.v4.app.DialogFragment implements OnClickListener {
 
     // flags
     public static final int NO_POSITIVE_BUTTON = 1 << 0;
@@ -244,8 +244,8 @@ public class DialogFragment extends android.app.DialogFragment implements OnClic
 
         if (dismissFlag) { // dismiss a dialog
             Fragment fragment = getFragmentManager().findFragmentByTag(TAG);
-            if (fragment instanceof android.app.DialogFragment) {
-                android.app.DialogFragment dialogFragment = (android.app.DialogFragment) fragment;
+            if (fragment instanceof DialogFragment) {
+                DialogFragment dialogFragment = (DialogFragment) fragment;
                 dialogFragment.dismiss();
                 getFragmentManager().beginTransaction().remove(fragment).commit();
                 dismissFlag = false;

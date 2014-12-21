@@ -1,12 +1,12 @@
 package jp.caliconography.one_liners.fragments;
 
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NavUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -173,8 +173,7 @@ public class BookDetailFragment extends Fragment {
                                 }
                             }
                         })
-                        .show(getFragmentManager());
-
+                        .show(getActivity().getSupportFragmentManager());
             }
             // This ID represents the Home or Up button. In the case of this
             // activity, the Up button is shown. Use NavUtils to allow users
@@ -376,7 +375,7 @@ public class BookDetailFragment extends Fragment {
     void onClickBookPhoto() {
 
         Fragment photoDetailFragment = new PhotoDetailFragment();
-        FragmentTransaction transaction = getActivity().getFragmentManager()
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager()
                 .beginTransaction();
         transaction.replace(R.id.book_detail_container, photoDetailFragment);
         transaction.addToBackStack(TAG);
@@ -387,7 +386,7 @@ public class BookDetailFragment extends Fragment {
     void onClickSearchBook() {
 
         Fragment bookSearchResultListFragment = new BookSearchResultListFragment();
-        FragmentTransaction transaction = getActivity().getFragmentManager()
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager()
                 .beginTransaction();
         transaction.replace(R.id.book_detail_container, bookSearchResultListFragment);
         transaction.addToBackStack(TAG);

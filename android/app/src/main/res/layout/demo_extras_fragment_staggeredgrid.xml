@@ -23,6 +23,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:minHeight="50dp"
+        android:background="@android:color/holo_blue_light" />
+
     <LinearLayout
         android:id="@+id/carddemo_progressContainer"
         android:orientation="vertical"

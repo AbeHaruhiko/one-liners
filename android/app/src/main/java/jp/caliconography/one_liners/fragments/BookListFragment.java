@@ -21,6 +21,8 @@ package jp.caliconography.one_liners.fragments;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,6 +36,8 @@ import com.parse.ParseQueryAdapter;
 
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import it.gmariotti.cardslib.demo.extras.fragment.BaseListFragment;
 import it.gmariotti.cardslib.library.extra.staggeredgrid.view.CardGridStaggeredView;
 import jp.caliconography.one_liners.R;
@@ -60,6 +64,9 @@ public class BookListFragment extends BaseListFragment {
         super();
     }
 
+    @InjectView(R.id.toolbar)
+    Toolbar mToolBar;
+
     @Override
     public int getTitleResourceId() {
         return R.string.carddemo_extras_title_staggered;
@@ -76,6 +83,9 @@ public class BookListFragment extends BaseListFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.demo_extras_fragment_staggeredgrid, container, false);
+
+        ButterKnife.inject(this, root);
+
         setupListFragment(root);
         return root;
     }
@@ -88,6 +98,9 @@ public class BookListFragment extends BaseListFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        ((ActionBarActivity) getActivity()).setSupportActionBar(mToolBar);
+        mToolBar.setTitle(getTitleResourceId());
 
         hideList(false);
 

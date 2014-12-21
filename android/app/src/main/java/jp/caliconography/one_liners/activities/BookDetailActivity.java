@@ -1,7 +1,7 @@
 package jp.caliconography.one_liners.activities;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 
 import com.parse.ParseObject;
 
@@ -19,7 +19,7 @@ import jp.caliconography.one_liners.model.parseobject.Review;
  * This activity is mostly just a 'shell' activity containing nothing
  * more than a {@link jp.caliconography.one_liners.fragments.BookDetailFragment}.
  */
-public class BookDetailActivity extends Activity {
+public class BookDetailActivity extends ActionBarActivity {
 
     private Review mReview = new Review();
 
@@ -48,7 +48,7 @@ public class BookDetailActivity extends Activity {
                     getIntent().getStringExtra(BookDetailFragment.ARG_ITEM_ID));
             BookDetailFragment fragment = new BookDetailFragment();
             fragment.setArguments(arguments);
-            getFragmentManager().beginTransaction()
+            getSupportFragmentManager().beginTransaction()
                     .add(R.id.book_detail_container, fragment)
                     .commit();
         }

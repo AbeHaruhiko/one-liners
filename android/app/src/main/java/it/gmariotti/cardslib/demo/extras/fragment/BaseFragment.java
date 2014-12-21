@@ -18,8 +18,8 @@
 package it.gmariotti.cardslib.demo.extras.fragment;
 
 
-import android.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.NavUtils;
 import android.view.MenuItem;
 
@@ -46,7 +46,6 @@ public abstract class BaseFragment extends Fragment {
     protected void setTitle() {
         if (getActivity() != null) {
             getActivity().setTitle(getTitleResourceId());
-            getActivity().getActionBar().setTitle(getTitleResourceId());
         }
     }
 

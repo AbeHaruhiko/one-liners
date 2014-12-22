@@ -2,9 +2,12 @@ package jp.caliconography.one_liners.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 
 import com.parse.ParseObject;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import jp.caliconography.one_liners.R;
 import jp.caliconography.one_liners.fragments.BookDetailFragment;
 import jp.caliconography.one_liners.model.parseobject.Review;
@@ -23,13 +26,21 @@ public class BookDetailActivity extends ActionBarActivity {
 
     private Review mReview = new Review();
 
+    @InjectView(R.id.toolbar)
+    Toolbar mToolBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_detail);
 
+        ButterKnife.inject(this);
+
+        ((ActionBarActivity) this).setSupportActionBar(mToolBar);
+        mToolBar.setTitle(getResources().getString(R.string.title_book_detail));
+
         // Show the Up button in the action bar.
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         // savedInstanceState is non-null when there is fragment state
         // saved from previous configurations of this activity

@@ -235,6 +235,12 @@ public class BookDetailFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+    }
+
     private void saveReviewAndReturnToBookList(Review review) {
 
         // 入力したreviewを保存

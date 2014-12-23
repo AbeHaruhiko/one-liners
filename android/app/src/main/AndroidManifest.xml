@@ -27,23 +27,7 @@
             android:parentActivityName=".activities.BookListActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".bookListActivity" />
-        </activity>
-        <activity
-            android:name=".activities.PhotoDetailActivity"
-            android:label="@string/title_photo_detail"
-            android:parentActivityName=".activities.BookDetailActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".BookDetailActivity" />
-        </activity>
-        <activity
-            android:name=".activities.BookSearchResultListActivity"
-            android:label="@string/title_book_detail"
-            android:parentActivityName=".activities.BookDetailActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".BookDetailActivity" />
+                android:value=".activities.BookListActivity" />
         </activity>
     </application>
 

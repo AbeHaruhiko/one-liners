@@ -19,8 +19,8 @@
 package jp.caliconography.one_liners.fragments;
 
 import android.app.Activity;
-import android.app.FragmentManager;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
@@ -160,7 +160,7 @@ public class BookSearchResultListFragment extends BaseListFragment {
         int id = item.getItemId();
         if (id == android.R.id.home) {
 
-            FragmentManager fm = getActivity().getFragmentManager();
+            FragmentManager fm = getActivity().getSupportFragmentManager();
             fm.popBackStack(BookDetailFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
             return true;
         }
@@ -229,7 +229,7 @@ public class BookSearchResultListFragment extends BaseListFragment {
         review.setAuthor(item.getAuthorAndPublisher());
         review.setThumnnailUrl(item.largeImageUrl.toString());
         review.setAffiliateUrl(item.affiliateUrl.toString());
-        FragmentManager fm = getActivity().getFragmentManager();
+        FragmentManager fm = getActivity().getSupportFragmentManager();
         fm.popBackStack(BookDetailFragment.TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
     }
 

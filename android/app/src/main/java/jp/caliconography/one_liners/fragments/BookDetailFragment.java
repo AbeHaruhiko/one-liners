@@ -152,8 +152,8 @@ public class BookDetailFragment extends Fragment {
                         .newInstance(true)
                         .setTitle(R.string.dialog_title_confirm)
                         .setMessage(String.format(getResources().getString(R.string.dialog_confirm_message_review_is_dirty), getResources().getString(R.string.dialog_negative_button_text)))
-                        .setPositiveButtonText(R.string.dialog_posigive_button_text)
-                        .setNegativeButtonText(R.string.dialog_negative_button_text)
+                        .setPositiveButtonText(R.string.dialog_posigive_button_text_save)
+                        .setNegativeButtonText(R.string.dialog_negative_button_text_dont_save)
                         .setListener(DELETE_DIALOG_LISTENER_ID, new DialogFragment.IDialogFragmentListener() {
 
                             @Override
@@ -174,6 +174,8 @@ public class BookDetailFragment extends Fragment {
                             }
                         })
                         .show(getActivity().getSupportFragmentManager());
+            } else {
+                NavUtils.navigateUpTo(getActivity(), new Intent(getActivity(), BookListActivity.class));
             }
             // This ID represents the Home or Up button. In the case of this
             // activity, the Up button is shown. Use NavUtils to allow users

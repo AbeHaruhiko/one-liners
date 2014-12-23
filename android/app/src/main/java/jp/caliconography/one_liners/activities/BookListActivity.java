@@ -2,7 +2,10 @@ package jp.caliconography.one_liners.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 import jp.caliconography.one_liners.R;
 import jp.caliconography.one_liners.fragments.BookListFragment;
 
@@ -25,18 +28,29 @@ import jp.caliconography.one_liners.fragments.BookListFragment;
  */
 public class BookListActivity extends ActionBarActivity {
 
+    @InjectView(R.id.toolbar)
+    Toolbar mToolBar;
+
+    public Toolbar getToolBar() {
+        return mToolBar;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         // support libraryでandroid.R.id.contentを使うときのクラッシュに対応
-        setContentView(R.layout.dummy_framelayout);
+        setContentView(R.layout.activity_book_list);
+
+        ButterKnife.inject(this);
+
+        setSupportActionBar(mToolBar);
 
         final android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
 
         if (fm.findFragmentById(android.R.id.content) == null) {
             final BookListFragment fragment = new BookListFragment();
-            fm.beginTransaction().add(R.id.dummy, fragment).commit();
+            fm.beginTransaction().add(R.id.book_list_container, fragment).commit();
 //            fm.beginTransaction().add(android.R.id.content, fragment).commit();
         }
     }

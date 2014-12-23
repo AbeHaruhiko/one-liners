@@ -21,13 +21,14 @@ package jp.caliconography.one_liners.fragments;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.os.Bundle;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SearchView;
 
 import com.nhaarman.listviewanimations.appearance.AnimationAdapter;
 import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
@@ -129,7 +130,7 @@ public class BookSearchResultListFragment extends BaseListFragment {
 
         // SearchViewを取得する
         MenuItem menuItem = menu.findItem(R.id.search_view);
-        final SearchView searchView = (SearchView) menuItem.getActionView();
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(menuItem);
         searchView.setQueryHint(getString(R.string.book_search_query_hint));
         searchView.setIconified(false);
 

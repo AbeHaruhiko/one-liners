@@ -19,16 +19,9 @@
   -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:card="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:minHeight="50dp"
-        android:background="@android:color/holo_blue_light" />
+    xmlns:card="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:id="@+id/carddemo_progressContainer"
@@ -39,10 +32,10 @@
         android:gravity="center"
         android:layout_alignParentBottom="true">
 
-    <ProgressBar
+        <ProgressBar
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -50,7 +43,7 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text=""
             android:paddingTop="4dip"
-            android:singleLine="true"/>
+            android:singleLine="true" />
 
     </LinearLayout>
 
@@ -69,7 +62,7 @@
             card:grid_paddingRight="8dp"
             card:grid_paddingLeft="8dp"
             card:list_card_layout_resourceID="@layout/carddemo_extras_staggered_card"
-            android:id="@+id/carddemo_extras_grid_stag"/>
+            android:id="@+id/carddemo_extras_grid_stag" />
 
 
         <TextView
@@ -78,10 +71,9 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:textAppearance="?android:textAppearanceMedium"
-            android:text="No data..."/>
+            android:text="No data..." />
 
-        <com.melnykov.fab.FloatingActionButton
-            xmlns:fab="http://schemas.android.com/apk/res-auto"
+        <com.melnykov.fab.FloatingActionButton xmlns:fab="http://schemas.android.com/apk/res-auto"
             android:id="@+id/button_floating_action"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -89,7 +81,7 @@
             android:layout_margin="16dp"
             android:src="@drawable/ic_action_content_new"
             fab:fab_colorNormal="@android:color/holo_red_dark"
-            fab:fab_colorPressed="@android:color/holo_red_light"/>
+            fab:fab_colorPressed="@android:color/holo_red_light" />
 
     </FrameLayout>
 

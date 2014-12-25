@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -163,8 +164,10 @@ public class PhotoDetailFragment extends Fragment {
         createColorPopupMenu();
         createStrokeWidthPopupMenu();
 
+
         mSurfaceHolder = mPhotoView.getHolder();
         mSurfaceHolder.addCallback(mSurfaceHolderCallback);
+        mSurfaceHolder.setFormat(PixelFormat.TRANSLUCENT);
 
         mMatrix = new Matrix();
 

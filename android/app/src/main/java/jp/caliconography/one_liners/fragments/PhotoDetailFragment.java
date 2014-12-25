@@ -414,8 +414,6 @@ public class PhotoDetailFragment extends Fragment {
 
             if (canvas != null) {
                 setPhotoBitmapToCanvas(canvas);
-                drawTempPath(canvas);
-                Log.d(TAG, "______onScale______");
                 renderAllPath(canvas);
             }
         } finally {

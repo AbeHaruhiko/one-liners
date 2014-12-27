@@ -260,7 +260,7 @@ public class BookDetailFragment extends Fragment {
     private void saveReviewAndReturnToBookList(Review review) {
 
         // 入力したreviewを保存
-        review.setReviewText(mTextReview.getText().toString());
+//        review.setReviewText(mTextReview.getText().toString());
         review.saveInBackground(new SaveCallback() {
             @Override
             public void done(ParseException e) {

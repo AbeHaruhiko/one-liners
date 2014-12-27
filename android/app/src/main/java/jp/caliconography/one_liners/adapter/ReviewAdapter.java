@@ -30,11 +30,6 @@ public class ReviewAdapter extends ParseQueryAdapter<Review> {
                 ParseQuery query = new ParseQuery(Review.class);
 //                query.whereEqualTo(Review.KEY_SHARE_SCOPE, Review.ShareScope.PUBLIC.getScopeInt());
                 query.orderByDescending(Review.KEY_CREATEDAT);
-//
-//                ParseQuery mine = new ParseQuery(Review.class);
-//                mine.whereEqualTo()
-//                mine.whereEqualTo(Review.KEY_SHARE_SCOPE, Review.ShareScope.PRIVATE.getScopeInt());
-//                mine.orderByDescending(Review.KEY_CREATEDAT);
                 return query;
             }
         });
@@ -46,36 +41,36 @@ public class ReviewAdapter extends ParseQueryAdapter<Review> {
     public View getItemView(Review review, View convertView, ViewGroup parent) {
 
 //        if (convertView == null) {
-            // recycle poolにviewがなかった場合。
-            convertView = View.inflate(getContext(), R.layout.carddemo_extras_staggered_card, null);
+        // recycle poolにviewがなかった場合。
+        convertView = View.inflate(getContext(), R.layout.carddemo_extras_staggered_card, null);
 
-            ParseFile photoFile = review.getParseFile(Review.KEY_PHOTO);
+        ParseFile photoFile = review.getParseFile(Review.KEY_PHOTO);
         DynamicHeightParseImageView photoView = (DynamicHeightParseImageView) convertView.findViewById(R.id.card_thumbnail_image);
         if (photoFile == null) {
             photoView.setHeightRatio(0d);
             photoView.setImageDrawable(getContext().getResources().getDrawable(R.drawable.transparent_dot));
         } else {
-                photoView.setHeightRatio(1d * review.getPhotoFileWidth() / review.getPhotoFileHeight());
-                photoView.setParseFile(photoFile);
-                photoView.loadInBackground();
-            }
+            photoView.setHeightRatio(1d * review.getPhotoFileWidth() / review.getPhotoFileHeight());
+            photoView.setParseFile(photoFile);
+            photoView.loadInBackground();
+        }
 
-            // カードのコンテンツ部分
-            FrameLayout mainContent = (FrameLayout) convertView.findViewById(R.id.card_main_content_layout);
+        // カードのコンテンツ部分
+        FrameLayout mainContent = (FrameLayout) convertView.findViewById(R.id.card_main_content_layout);
 
-            // レイアウトを読み込んで、FrameLayoutにセットする。
-            View innerContent = View.inflate(getContext(), R.layout.carddemo_extras_staggered_inner_main, mainContent);
+        // レイアウトを読み込んで、FrameLayoutにセットする。
+        View innerContent = View.inflate(getContext(), R.layout.carddemo_extras_staggered_inner_main, mainContent);
 
-            TextView titleTextView = (TextView) convertView.findViewById(R.id.carddemo_staggered_inner_title);
-            titleTextView.setText(review.getTitle());
+        TextView titleTextView = (TextView) convertView.findViewById(R.id.carddemo_staggered_inner_title);
+        titleTextView.setText(review.getTitle());
 
-            TextView authorTextView = (TextView) convertView.findViewById(R.id.carddemo_staggered_inner_subtitle);
-            authorTextView.setText(review.getAuthor());
+        TextView authorTextView = (TextView) convertView.findViewById(R.id.carddemo_staggered_inner_subtitle);
+        authorTextView.setText(review.getAuthor());
 
-            // フェイドインアニメーション
-            ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(convertView, ALPHA, TRANSPARENT, OPAQUE);
-            objectAnimator.setDuration(FADEIN_DURATION);
-            objectAnimator.start();
+        // フェイドインアニメーション
+        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(convertView, ALPHA, TRANSPARENT, OPAQUE);
+        objectAnimator.setDuration(FADEIN_DURATION);
+        objectAnimator.start();
 //        }
 
 //        super.getItemView(review, convertView, parent);

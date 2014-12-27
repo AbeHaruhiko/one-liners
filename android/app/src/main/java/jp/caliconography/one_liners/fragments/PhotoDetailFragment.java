@@ -10,7 +10,6 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PixelFormat;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -92,7 +91,7 @@ public class PhotoDetailFragment extends Fragment {
     public static final String ARG_ITEM_ID = "item_id";
     public static final int IMAGE_CHOOSER_RESULTCODE = 0;
     static final String TAG = PhotoDetailFragment.class.getSimpleName();
-    public static final int MAX_PHOTO_HEIGHT = 1200;
+    public static final int MAX_PHOTO_HEIGHT = 800;
     private static final int NEW_PHOTO_DIALOG_LISTENER_ID = 0;
     /**
      * The dummy content this fragment is presenting.
@@ -167,7 +166,6 @@ public class PhotoDetailFragment extends Fragment {
 
         mSurfaceHolder = mPhotoView.getHolder();
         mSurfaceHolder.addCallback(mSurfaceHolderCallback);
-        mSurfaceHolder.setFormat(PixelFormat.TRANSLUCENT);
 
         mMatrix = new Matrix();
 
@@ -757,24 +755,50 @@ public class PhotoDetailFragment extends Fragment {
 
     private Bitmap getBitmapFromLocalFile(Intent intent) {
         // 戻り値からInputStreamを取得
-        InputStream in = null;
+        InputStream inputStream = null;
         Bitmap bitmap = null;
         // 読み込む際のオプション
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inMutable = true;       // このbitmapをオフスクリーンバッファにしたい。= これを引数にcanvasを生成したい。mutableでないとnew Canvas(bitmap)で例外
+        BitmapFactory.Options imageOptions = new BitmapFactory.Options();
+        imageOptions.inMutable = true;       // このbitmapをオフスクリーンバッファにしたい。= これを引数にcanvasを生成したい。mutableでないとnew Canvas(bitmap)で例外
         try {
             Uri result = (intent == null) ? mPictureUri : intent.getData();
 
-            in = getActivity().getContentResolver().openInputStream(result);
+            inputStream = getActivity().getContentResolver().openInputStream(result);
             // Bitmapの取得
-            bitmap = BitmapFactory.decodeStream(in, null, options);
+
+            // 画像サイズ情報を取得する
+            imageOptions.inJustDecodeBounds = true;
+            BitmapFactory.decodeStream(inputStream, null, imageOptions);
+            float imageScaleWidth = (float) imageOptions.outWidth / MAX_PHOTO_HEIGHT;
+            float imageScaleHeight = (float) imageOptions.outHeight / MAX_PHOTO_HEIGHT;
+
+            // もしも、縮小できるサイズならば、縮小して読み込む
+            if (imageScaleWidth > 2 && imageScaleHeight > 2) {
+                imageOptions.inJustDecodeBounds = false;
+
+                // 縦横、小さい方に縮小するスケールを合わせる
+                int imageScale = (int) Math.floor((imageScaleWidth > imageScaleHeight ? imageScaleHeight : imageScaleWidth));
+
+                // inSampleSizeには2のべき上が入るべきなので、imageScaleに最も近く、かつそれ以下の2のべき上の数を探す
+                for (int i = 2; i <= imageScale; i *= 2) {
+                    imageOptions.inSampleSize = i;
+                }
+
+                inputStream = getActivity().getContentResolver().openInputStream(result);
+                bitmap = BitmapFactory.decodeStream(inputStream, null, imageOptions);
+            } else {
+                bitmap = BitmapFactory.decodeStream(inputStream);
+            }
+
+
+//            bitmap = BitmapFactory.decodeStream(inputStream, null, imageOptions);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
 
-            if (in != null) {
+            if (inputStream != null) {
                 try {
-                    in.close();
+                    inputStream.close();
                 } catch (IOException e) {
                 }
             }
@@ -792,7 +816,7 @@ public class PhotoDetailFragment extends Fragment {
             mMatrix.postTranslate(mTranslateX, mTranslateY);
         }
 
-        canvas.drawColor(Color.WHITE);       // 画像部分はmatrixで縮小されるので余白ができる。余白部分を白で表示させるための処理。
+        canvas.drawColor(Color.GRAY);       // 画像部分はmatrixで縮小されるので余白ができる。余白部分を白で表示させるための処理。
         canvas.drawBitmap(mBitmap, mMatrix, null);
     }
 

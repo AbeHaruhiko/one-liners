@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,7 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
-import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
@@ -30,11 +31,11 @@ import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseImageView;
 import com.parse.ParseObject;
+import com.parse.ParseUser;
 import com.parse.SaveCallback;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import jp.caliconography.one_liners.R;
 import jp.caliconography.one_liners.activities.BookDetailActivity;
@@ -87,6 +88,8 @@ public class BookDetailFragment extends Fragment {
     ImageView mQuoteMark;
     @InjectView(R.id.swc_share_scope)
     Switch mShareScope;
+    @InjectView(R.id.btn_search_book)
+    ImageButton mSearchBookButton;
 
     private Bitmap mPhotoBitmap;
     private MenuItem mMenuDelete;
@@ -150,6 +153,12 @@ public class BookDetailFragment extends Fragment {
 
             final Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
             if (review.isDirty()) {
+
+                for (String key : review.keySet()) {
+                    if (review.isDirty(key)) {
+                        Log.d(TAG, "dirty: " + key);
+                    }
+                }
                 // 変更されている場合
 
                 DialogFragment
@@ -319,6 +328,14 @@ public class BookDetailFragment extends Fragment {
             public void done(ParseObject parseObject, ParseException e) {
                 hideProgressBar();
 
+                if (!review.getACL().getWriteAccess(ParseUser.getCurrentUser())) {
+                    // 書き込み権限がない
+
+                    mSearchBookButton.setEnabled(false);
+                    mShareScope.setEnabled(false);
+                    mTextReview.setEnabled(false);
+                }
+
                 mTxtTitle.setText(review.getTitle());
                 mTxtAuthor.setText(review.getAuthor());
                 mTextReview.setText(review.getReviewText());
@@ -358,13 +375,11 @@ public class BookDetailFragment extends Fragment {
     private void putQuoteMarkLeft(Review review, RelativeLayout.LayoutParams layoutParams) {
         layoutParams.addRule(RelativeLayout.ALIGN_LEFT, R.id.book_photo);
         layoutParams.addRule(RelativeLayout.ALIGN_RIGHT, 0);
-        review.setQuoteMarkPosition(Review.QuoteMarkPosition.LEFT);
     }
 
     private void putQuoteMarkRight(Review review, RelativeLayout.LayoutParams layoutParams) {
         layoutParams.addRule(RelativeLayout.ALIGN_RIGHT, R.id.book_photo);
         layoutParams.addRule(RelativeLayout.ALIGN_LEFT, 0);
-        review.setQuoteMarkPosition(Review.QuoteMarkPosition.RIGHT);
     }
 
     private void setMenuItemVisibility() {
@@ -378,6 +393,10 @@ public class BookDetailFragment extends Fragment {
         if (review.isEmpty()) {
             mMenuDelete.setVisible(false);
             mMenuSave.setVisible(false);
+        }
+        if (review.getACL().getWriteAccess(ParseUser.getCurrentUser())) {
+            mMenuDelete.setVisible(true);
+            mMenuSave.setVisible(true);
         } else {
             mMenuDelete.setVisible(true);
             mMenuSave.setVisible(true);
@@ -413,16 +432,11 @@ public class BookDetailFragment extends Fragment {
         }
     }
 
-    @OnCheckedChanged(R.id.swc_share_scope)
-    void onShareScopeCheckedChanged(final CompoundButton buttonView, boolean isChecked) {
-        Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
-        ParseACL acl = new ParseACL();
-        acl.setPublicReadAccess(isChecked);
-        review.setACL(acl);
-    }
-
     @OnClick(R.id.swc_share_scope)
     void onClickShareScope(final Switch view) {
+
+        final Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
+
         if (view.isChecked()) {
 
             DialogFragment
@@ -438,8 +452,11 @@ public class BookDetailFragment extends Fragment {
                             switch (event) {
 
                                 case DialogFragment.IDialogFragmentListener.ON_POSITIVE_BUTTON_CLICKED:
-                                    Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
-                                    review.setShareScope(Review.ShareScope.PUBLIC);
+//                                    review.setShareScope(Review.ShareScope.PUBLIC);
+                                    ParseACL acl = new ParseACL();
+                                    acl.setPublicReadAccess(view.isChecked());
+                                    review.setACL(acl);
+
                                     break;
 
                                 case DialogFragment.IDialogFragmentListener.ON_NEGATIVE_BUTTON_CLICKED:
@@ -452,6 +469,11 @@ public class BookDetailFragment extends Fragment {
                         }
                     })
                     .show(getFragmentManager());
+
+        } else {
+            ParseACL acl = new ParseACL();
+            acl.setPublicReadAccess(view.isChecked());
+            review.setACL(acl);
         }
     }
 
@@ -463,9 +485,11 @@ public class BookDetailFragment extends Fragment {
         if (review.getQuoteMarkPosition() == Review.QuoteMarkPosition.LEFT) {
             // いま左にある
             putQuoteMarkRight(review, layoutParams);
+            review.setQuoteMarkPosition(Review.QuoteMarkPosition.RIGHT);
         } else if (review.getQuoteMarkPosition() == Review.QuoteMarkPosition.RIGHT) {
             // いま右にある
             putQuoteMarkLeft(review, layoutParams);
+            review.setQuoteMarkPosition(Review.QuoteMarkPosition.LEFT);
         }
         view.setLayoutParams(layoutParams);
     }

@@ -179,8 +179,8 @@ public class PhotoDetailFragment extends Fragment {
             // 線リストの現在位置
             mLineConfigArrayCurrentPosition = mReview.getPaintConfigs().size() - 1;
 
-            // Taskのカウント（写真を取得するTask＋線情報を取得するTask）。最大2。
-            final AtomicInteger count = new AtomicInteger(1 + (mReview.getPaintConfigs().size() == 0 ? 0 : 1));
+            // Taskのカウント（写真を取得するTask＋線情報を取得するTask）。2。
+            final AtomicInteger count = new AtomicInteger(2);
 
             // 取得した写真を格納する変数
             final Capture<byte[]> photoDataBytes = new Capture<byte[]>();
@@ -209,16 +209,22 @@ public class PhotoDetailFragment extends Fragment {
                 tasks.add(ParseObjectAsyncUtil.fetchAsync(config));
             }
 
-            // 線をfetchするTaskのリストの完了待ち合わせ。
-            Task.whenAll(tasks).onSuccess(new Continuation<Void, Void>() {
-                @Override
-                public Void then(Task<Void> task) throws Exception {
-                    if (count.decrementAndGet() == 0) {
-                        drawAll(photoDataBytes.get());
-                    }
-                    return null;
+            if (tasks.size() == 0) {
+                if (count.decrementAndGet() == 0) {
+                    drawAll(photoDataBytes.get());
                 }
-            });
+            } else {
+                // 線をfetchするTaskのリストの完了待ち合わせ。
+                Task.whenAll(tasks).onSuccess(new Continuation<Void, Void>() {
+                    @Override
+                    public Void then(Task<Void> task) throws Exception {
+                        if (count.decrementAndGet() == 0) {
+                            drawAll(photoDataBytes.get());
+                        }
+                        return null;
+                    }
+                });
+            }
 
             if (paintConfigs.size() > 0) {
                 mUndo.setEnabled(true);

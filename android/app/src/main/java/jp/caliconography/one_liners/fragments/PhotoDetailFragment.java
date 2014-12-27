@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -229,6 +230,8 @@ public class PhotoDetailFragment extends Fragment {
 
     private void drawAll(byte[] photoData) {
 
+        mPhotoView.setVisibility(View.VISIBLE);
+
         mBitmap = Utils.getBitmapFromByteArray(photoData);
         while (!mSurfaceCreated) {
         }
@@ -288,6 +291,7 @@ public class PhotoDetailFragment extends Fragment {
     }
 
     private void tryToSetPhotoBitmapToCanvas() {
+        mPhotoView.setVisibility(View.VISIBLE);
         if (mSurfaceCreated) {
             getScaleForFitBitmapToView();
 
@@ -761,7 +765,34 @@ public class PhotoDetailFragment extends Fragment {
 
             inputStream = getActivity().getContentResolver().openInputStream(result);
             // Bitmapの取得
-            return Utils.getShrinkedBitmap(inputStream, MAX_PHOTO_HEIGHT);
+            BitmapFactory.Options imageOptions = new BitmapFactory.Options();
+            imageOptions.inMutable = true;       // このbitmapをオフスクリーンバッファにしたい。= これを引数にcanvasを生成したい。mutableでないとnew Canvas(bitmap)で例外
+
+            // 画像サイズ情報を取得する
+            imageOptions.inJustDecodeBounds = true;
+            BitmapFactory.decodeStream(inputStream, null, imageOptions);
+            float imageScaleWidth = (float) imageOptions.outWidth / MAX_PHOTO_HEIGHT;
+            float imageScaleHeight = (float) imageOptions.outHeight / MAX_PHOTO_HEIGHT;
+
+            // decodeStreamで一度読み込み終わっているので再取得
+            inputStream = getActivity().getContentResolver().openInputStream(result);
+
+            // もしも、縮小できるサイズならば、縮小して読み込む
+            if (imageScaleWidth > 2 && imageScaleHeight > 2) {
+                imageOptions.inJustDecodeBounds = false;
+
+                // 縦横、小さい方に縮小するスケールを合わせる
+                int imageScale = (int) Math.floor((imageScaleWidth > imageScaleHeight ? imageScaleHeight : imageScaleWidth));
+
+                // inSampleSizeには2のべき上が入るべきなので、imageScaleに最も近く、かつそれ以下の2のべき上の数を探す
+                for (int i = 2; i <= imageScale; i *= 2) {
+                    imageOptions.inSampleSize = i;
+                }
+
+                return BitmapFactory.decodeStream(inputStream, null, imageOptions);
+            } else {
+                return BitmapFactory.decodeStream(inputStream);
+            }
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -787,8 +818,10 @@ public class PhotoDetailFragment extends Fragment {
             mMatrix.postTranslate(mTranslateX, mTranslateY);
         }
 
-        canvas.drawColor(Color.GRAY);       // 画像部分はmatrixで縮小されるので余白ができる。余白部分を白で表示させるための処理。
+        canvas.drawColor(Color.parseColor("#efefef"));       // 画像部分はmatrixで縮小されるので余白ができる。余白部分を白で表示させるための処理。
         canvas.drawBitmap(mBitmap, mMatrix, null);
+
+        mPhotoView.setVisibility(View.VISIBLE);
     }
 
     private void setPhotoBitmapToCanvas(Canvas canvas) {

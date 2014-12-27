@@ -14,7 +14,6 @@ import android.view.View;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.InputStream;
 
 /**
  * Created by abeharuhiko on 2014/08/14.
@@ -39,36 +38,6 @@ public class Utils {
         Bitmap bitmap = scaleDownBitmap(cache, 300, context);
         view.setDrawingCacheEnabled(false);
         return bitmap;
-    }
-
-    public static Bitmap getShrinkedBitmap(InputStream inputStream, int maxHeight) {
-
-        BitmapFactory.Options imageOptions = new BitmapFactory.Options();
-        imageOptions.inMutable = true;       // このbitmapをオフスクリーンバッファにしたい。= これを引数にcanvasを生成したい。mutableでないとnew Canvas(bitmap)で例外
-
-        // 画像サイズ情報を取得する
-        imageOptions.inJustDecodeBounds = true;
-        BitmapFactory.decodeStream(inputStream, null, imageOptions);
-        float imageScaleWidth = (float) imageOptions.outWidth / maxHeight;
-        float imageScaleHeight = (float) imageOptions.outHeight / maxHeight;
-
-        // もしも、縮小できるサイズならば、縮小して読み込む
-        if (imageScaleWidth > 2 && imageScaleHeight > 2) {
-            imageOptions.inJustDecodeBounds = false;
-
-            // 縦横、小さい方に縮小するスケールを合わせる
-            int imageScale = (int) Math.floor((imageScaleWidth > imageScaleHeight ? imageScaleHeight : imageScaleWidth));
-
-            // inSampleSizeには2のべき上が入るべきなので、imageScaleに最も近く、かつそれ以下の2のべき上の数を探す
-            for (int i = 2; i <= imageScale; i *= 2) {
-                imageOptions.inSampleSize = i;
-            }
-
-//                inputStream = getActivity().getContentResolver().openInputStream(result);
-            return BitmapFactory.decodeStream(inputStream, null, imageOptions);
-        } else {
-            return BitmapFactory.decodeStream(inputStream);
-        }
     }
 
     public static Bitmap scaleDownBitmap(Bitmap bitmap, int newHeight, Context context) {

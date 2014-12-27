@@ -28,7 +28,13 @@ public class ReviewAdapter extends ParseQueryAdapter<Review> {
                 // Here we can configure a ParseQuery to display
                 // only top-rated meals.
                 ParseQuery query = new ParseQuery(Review.class);
+//                query.whereEqualTo(Review.KEY_SHARE_SCOPE, Review.ShareScope.PUBLIC.getScopeInt());
                 query.orderByDescending(Review.KEY_CREATEDAT);
+//
+//                ParseQuery mine = new ParseQuery(Review.class);
+//                mine.whereEqualTo()
+//                mine.whereEqualTo(Review.KEY_SHARE_SCOPE, Review.ShareScope.PRIVATE.getScopeInt());
+//                mine.orderByDescending(Review.KEY_CREATEDAT);
                 return query;
             }
         });

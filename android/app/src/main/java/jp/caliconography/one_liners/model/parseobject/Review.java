@@ -20,7 +20,7 @@ public class Review extends ParseObject {
     public static final String KEY_ORIGINAL_PHOTO = "original_photo";
     public static final String KEY_TITLE = "title";
     public static final String KEY_AUTHOR = "author";
-    //    private static final String KEY_SHARE_SCOPE = "shareScope";
+    public static final String KEY_SHARE_SCOPE = "shareScope";
     public static final String KEY_PHOTO_WIDTH = "photoWidth";
     private static final String KEY_PHOTO_HEIGHT = "photoHeight";
     private static final String KEY_PAINT_CONFIGS = "paintConfigs";
@@ -120,14 +120,47 @@ public class Review extends ParseObject {
     public boolean isEmpty() {
         return (getTitle() == null && getAuthor() == null && getPhotoFile() == null);
     }
-//    public void setShareScope(ShareScope scope) {
-//        put(KEY_SHARE_SCOPE, scope);
-//    }
-//
-//    public enum ShareScope {
-//        PUBLIC,
-//        PRIVATE;
-//    }
+
+    public void setShareScope(ShareScope scope) {
+        put(KEY_SHARE_SCOPE, scope.getScopeInt());
+    }
+
+    public ShareScope getShareScope() {
+        return ShareScope.valueOf(getInt(KEY_SHARE_SCOPE));
+    }
+
+    public enum ShareScope {
+        PUBLIC(1),
+        PRIVATE(0);
+
+        private int scope;
+
+        ShareScope(final int scope) {
+            this.scope = scope;
+        }
+
+        public int getScopeInt() {
+            return scope;
+        }
+
+        public boolean isPublic() {
+            if (scope == PUBLIC.getScopeInt()) {
+                return true;
+            }
+            return false;
+        }
+
+        public static ShareScope valueOf(int scopeInt) {
+            for (ShareScope scope : values()) {
+                if (scope.getScopeInt() == scopeInt) {
+                    return scope;
+                }
+            }
+            // getIntで0が返ってきた場合（＝このReviewが未保存の場合）デフォルト値
+            return PRIVATE;
+        }
+
+    }
 
     public enum QuoteMarkPosition {
         LEFT(RelativeLayout.ALIGN_LEFT),

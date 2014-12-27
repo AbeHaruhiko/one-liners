@@ -18,12 +18,14 @@ import android.view.animation.AnimationUtils;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.DeleteCallback;
 import com.parse.GetCallback;
 import com.parse.GetDataCallback;
+import com.parse.ParseACL;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseImageView;
@@ -83,6 +85,8 @@ public class BookDetailFragment extends Fragment {
     DynamicHeightPicassoImageView mThumbnail;
     @InjectView(R.id.quote)
     ImageView mQuoteMark;
+    @InjectView(R.id.swc_share_scope)
+    Switch mShareScope;
 
     private Bitmap mPhotoBitmap;
     private MenuItem mMenuDelete;
@@ -318,6 +322,7 @@ public class BookDetailFragment extends Fragment {
                 mTxtTitle.setText(review.getTitle());
                 mTxtAuthor.setText(review.getAuthor());
                 mTextReview.setText(review.getReviewText());
+                mShareScope.setChecked(review.getShareScope().isPublic());
                 mThumbnail.loadImage(review.getThumbnailUrl());
 
                 ParseFile photoFile = review.getPhotoFile();
@@ -410,7 +415,15 @@ public class BookDetailFragment extends Fragment {
 
     @OnCheckedChanged(R.id.swc_share_scope)
     void onShareScopeCheckedChanged(final CompoundButton buttonView, boolean isChecked) {
-        if (isChecked == true) {
+        Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
+        ParseACL acl = new ParseACL();
+        acl.setPublicReadAccess(isChecked);
+        review.setACL(acl);
+    }
+
+    @OnClick(R.id.swc_share_scope)
+    void onClickShareScope(final Switch view) {
+        if (view.isChecked()) {
 
             DialogFragment
                     .newInstance(true)
@@ -425,13 +438,15 @@ public class BookDetailFragment extends Fragment {
                             switch (event) {
 
                                 case DialogFragment.IDialogFragmentListener.ON_POSITIVE_BUTTON_CLICKED:
+                                    Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
+                                    review.setShareScope(Review.ShareScope.PUBLIC);
                                     break;
 
                                 case DialogFragment.IDialogFragmentListener.ON_NEGATIVE_BUTTON_CLICKED:
                                 case DialogFragment.IDialogFragmentListener.ON_NEUTRAL_BUTTON_CLICKED:
                                 case DialogFragment.IDialogFragmentListener.ON_CLOSE_BUTTON_CLICKED:
                                 case DialogFragment.IDialogFragmentListener.ON_CANCEL:
-                                    buttonView.setChecked(false);
+                                    view.setChecked(false);
                                     break;
                             }
                         }

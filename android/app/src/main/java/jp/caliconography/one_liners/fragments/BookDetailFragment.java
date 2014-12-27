@@ -37,6 +37,7 @@ import com.parse.SaveCallback;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 import jp.caliconography.one_liners.R;
 import jp.caliconography.one_liners.activities.BookDetailActivity;
 import jp.caliconography.one_liners.activities.BookListActivity;
@@ -398,8 +399,8 @@ public class BookDetailFragment extends Fragment {
             mMenuDelete.setVisible(true);
             mMenuSave.setVisible(true);
         } else {
-            mMenuDelete.setVisible(true);
-            mMenuSave.setVisible(true);
+            mMenuDelete.setVisible(false);
+            mMenuSave.setVisible(false);
         }
     }
 
@@ -492,5 +493,12 @@ public class BookDetailFragment extends Fragment {
             review.setQuoteMarkPosition(Review.QuoteMarkPosition.LEFT);
         }
         view.setLayoutParams(layoutParams);
+    }
+
+    @OnTextChanged(R.id.txt_review)
+    void OnReviewTextChanged(CharSequence text) {
+
+        Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
+        review.setReviewText(text.toString());
     }
 }

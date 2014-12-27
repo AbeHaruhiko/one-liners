@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -756,42 +755,14 @@ public class PhotoDetailFragment extends Fragment {
     private Bitmap getBitmapFromLocalFile(Intent intent) {
         // 戻り値からInputStreamを取得
         InputStream inputStream = null;
-        Bitmap bitmap = null;
-        // 読み込む際のオプション
-        BitmapFactory.Options imageOptions = new BitmapFactory.Options();
-        imageOptions.inMutable = true;       // このbitmapをオフスクリーンバッファにしたい。= これを引数にcanvasを生成したい。mutableでないとnew Canvas(bitmap)で例外
+
         try {
             Uri result = (intent == null) ? mPictureUri : intent.getData();
 
             inputStream = getActivity().getContentResolver().openInputStream(result);
             // Bitmapの取得
+            return Utils.getShrinkedBitmap(inputStream, MAX_PHOTO_HEIGHT);
 
-            // 画像サイズ情報を取得する
-            imageOptions.inJustDecodeBounds = true;
-            BitmapFactory.decodeStream(inputStream, null, imageOptions);
-            float imageScaleWidth = (float) imageOptions.outWidth / MAX_PHOTO_HEIGHT;
-            float imageScaleHeight = (float) imageOptions.outHeight / MAX_PHOTO_HEIGHT;
-
-            // もしも、縮小できるサイズならば、縮小して読み込む
-            if (imageScaleWidth > 2 && imageScaleHeight > 2) {
-                imageOptions.inJustDecodeBounds = false;
-
-                // 縦横、小さい方に縮小するスケールを合わせる
-                int imageScale = (int) Math.floor((imageScaleWidth > imageScaleHeight ? imageScaleHeight : imageScaleWidth));
-
-                // inSampleSizeには2のべき上が入るべきなので、imageScaleに最も近く、かつそれ以下の2のべき上の数を探す
-                for (int i = 2; i <= imageScale; i *= 2) {
-                    imageOptions.inSampleSize = i;
-                }
-
-                inputStream = getActivity().getContentResolver().openInputStream(result);
-                bitmap = BitmapFactory.decodeStream(inputStream, null, imageOptions);
-            } else {
-                bitmap = BitmapFactory.decodeStream(inputStream);
-            }
-
-
-//            bitmap = BitmapFactory.decodeStream(inputStream, null, imageOptions);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -803,7 +774,7 @@ public class PhotoDetailFragment extends Fragment {
                 }
             }
         }
-        return bitmap;
+        return null;
     }
 
     private void setPhotoBitmapToCanvas(Canvas canvas, boolean withTranslate, boolean withScale) {

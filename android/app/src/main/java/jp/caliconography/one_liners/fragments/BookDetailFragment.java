@@ -455,7 +455,9 @@ public class BookDetailFragment extends Fragment {
                                 case DialogFragment.IDialogFragmentListener.ON_POSITIVE_BUTTON_CLICKED:
 //                                    review.setShareScope(Review.ShareScope.PUBLIC);
                                     ParseACL acl = new ParseACL();
-                                    acl.setPublicReadAccess(view.isChecked());
+                                    acl.setPublicReadAccess(true);
+                                    acl.setWriteAccess(ParseUser.getCurrentUser(), true);
+                                    acl.setReadAccess(ParseUser.getCurrentUser(), true);
                                     review.setACL(acl);
 
                                     break;
@@ -473,7 +475,9 @@ public class BookDetailFragment extends Fragment {
 
         } else {
             ParseACL acl = new ParseACL();
-            acl.setPublicReadAccess(view.isChecked());
+            acl.setPublicReadAccess(false);
+            acl.setWriteAccess(ParseUser.getCurrentUser(), true);
+            acl.setReadAccess(ParseUser.getCurrentUser(), true);
             review.setACL(acl);
         }
     }

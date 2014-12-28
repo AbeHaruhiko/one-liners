@@ -45,6 +45,6 @@
         android:layout_width="@dimen/popup_menu_item_width"
         android:layout_height="@dimen/popup_menu_item_height"
         android:layout_gravity="bottom"
-        android:background="@drawable/btn_oval_common_back" />
+        android:background="@drawable/btn_ring_common_back" />
 
 </FrameLayout>

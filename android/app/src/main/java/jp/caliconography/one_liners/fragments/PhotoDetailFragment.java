@@ -271,9 +271,9 @@ public class PhotoDetailFragment extends Fragment {
 
     private void createStrokeWidthPopupMenu() {
         ArrayList<PopupMenuItem> strokeWidthMenuItems = new ArrayList<PopupMenuItem>();
-        strokeWidthMenuItems.add(new StrokeWidthPopupItem(getActivity().getApplicationContext(), 1, PaintConfig.StrokeWidth.THIN, R.drawable.btn_oval_common_back));
-        strokeWidthMenuItems.add(new StrokeWidthPopupItem(getActivity().getApplicationContext(), 2, PaintConfig.StrokeWidth.MID, R.drawable.btn_oval_common_back));
-        strokeWidthMenuItems.add(new StrokeWidthPopupItem(getActivity().getApplicationContext(), 3, PaintConfig.StrokeWidth.FAT, R.drawable.btn_oval_common_back));
+        strokeWidthMenuItems.add(new StrokeWidthPopupItem(getActivity().getApplicationContext(), 1, PaintConfig.StrokeWidth.THIN, R.drawable.btn_ring_common_back));
+        strokeWidthMenuItems.add(new StrokeWidthPopupItem(getActivity().getApplicationContext(), 2, PaintConfig.StrokeWidth.MID, R.drawable.btn_ring_common_back));
+        strokeWidthMenuItems.add(new StrokeWidthPopupItem(getActivity().getApplicationContext(), 3, PaintConfig.StrokeWidth.FAT, R.drawable.btn_ring_common_back));
         mStrokeWidthPopup.addItems(strokeWidthMenuItems);
         for (PopupMenuItem item : strokeWidthMenuItems) {
             if (item.getValue() == mPaintConfig.getStrokeWidth()) {
@@ -284,10 +284,10 @@ public class PhotoDetailFragment extends Fragment {
 
     private void createColorPopupMenu() {
         ArrayList<PopupMenuItem> colorMenuItems = new ArrayList<PopupMenuItem>();
-        colorMenuItems.add(new StrokeColorPopupItem(getActivity().getApplicationContext(), 1, PaintConfig.StrokeColor.RED, R.drawable.btn_oval_common_back));
-        colorMenuItems.add(new StrokeColorPopupItem(getActivity().getApplicationContext(), 2, PaintConfig.StrokeColor.BLUE, R.drawable.btn_oval_common_back));
-        colorMenuItems.add(new StrokeColorPopupItem(getActivity().getApplicationContext(), 3, PaintConfig.StrokeColor.GREEN, R.drawable.btn_oval_common_back));
-        colorMenuItems.add(new StrokeColorPopupItem(getActivity().getApplicationContext(), 4, PaintConfig.StrokeColor.BLACK, R.drawable.btn_oval_common_back));
+        colorMenuItems.add(new StrokeColorPopupItem(getActivity().getApplicationContext(), 1, PaintConfig.StrokeColor.RED, R.drawable.btn_ring_common_back));
+        colorMenuItems.add(new StrokeColorPopupItem(getActivity().getApplicationContext(), 2, PaintConfig.StrokeColor.BLUE, R.drawable.btn_ring_common_back));
+        colorMenuItems.add(new StrokeColorPopupItem(getActivity().getApplicationContext(), 3, PaintConfig.StrokeColor.GREEN, R.drawable.btn_ring_common_back));
+        colorMenuItems.add(new StrokeColorPopupItem(getActivity().getApplicationContext(), 4, PaintConfig.StrokeColor.BLACK, R.drawable.btn_ring_common_back));
         mColorPopup.addItems(colorMenuItems);
         for (PopupMenuItem item : colorMenuItems) {
             if (item.getValue() == mPaintConfig.getColor()) {

@@ -73,7 +73,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
-            android:background="@drawable/btn_oval_common_back"
+            android:background="@drawable/btn_ring_common_back"
             android:padding="4dp"
             android:src="@drawable/ic_action_search"
             android:layout_alignParentTop="true"

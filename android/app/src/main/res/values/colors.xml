@@ -23,4 +23,8 @@
     <color name="list_item_pressed">#1A000000</color>
 
     <color name="btn_common_stroke">#faaa</color>
+
+    <color name="primary">#4CAF50</color>
+    <color name="primary_dark">#388E3C</color>
+    <color name="accent">#FFD740</color>
 </resources>

@@ -122,4 +122,11 @@ public class Utils {
     public static boolean isOffline(Context context) {
         return !isOnline(context);
     }
+
+    public static String nullToEmpty(CharSequence target) {
+        if (target == null) {
+            return "";
+        }
+        return target.toString();
+    }
 }

@@ -504,8 +504,11 @@ public class BookDetailFragment extends Fragment {
     void OnReviewTextChanged(CharSequence text) {
 
         Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
-        if (!review.getReviewText().equals(text.toString())) {
-            review.setReviewText(text.toString());
+        String saved = Utils.nullToEmpty(review.getReviewText());
+        String input = Utils.nullToEmpty(text);
+
+        if (!saved.equals(input)) {
+            review.setReviewText(input);
         }
     }
 }

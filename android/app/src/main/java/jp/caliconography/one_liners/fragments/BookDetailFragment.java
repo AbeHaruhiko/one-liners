@@ -125,6 +125,8 @@ public class BookDetailFragment extends Fragment {
         ButterKnife.inject(this, rootView);
         mBookPhoto.setPlaceholder(getActivity().getResources().getDrawable(R.drawable.photo_placeholder));
 
+        resetReview();
+
         return rootView;
     }
 
@@ -315,7 +317,6 @@ public class BookDetailFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        resetReview();
 
     }
 
@@ -340,7 +341,7 @@ public class BookDetailFragment extends Fragment {
                 mTxtTitle.setText(review.getTitle());
                 mTxtAuthor.setText(review.getAuthor());
                 mTextReview.setText(review.getReviewText());
-                mShareScope.setChecked(review.getShareScope().isPublic());
+                mShareScope.setChecked(review.getACL().getPublicReadAccess());
                 mThumbnail.loadImage(review.getThumbnailUrl());
 
                 ParseFile photoFile = review.getPhotoFile();
@@ -503,6 +504,8 @@ public class BookDetailFragment extends Fragment {
     void OnReviewTextChanged(CharSequence text) {
 
         Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
-        review.setReviewText(text.toString());
+        if (!review.getReviewText().equals(text.toString())) {
+            review.setReviewText(text.toString());
+        }
     }
 }

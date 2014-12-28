@@ -7,6 +7,7 @@
     <color name="yellow">#fffffbae</color>
     <color name="red">#fff10800</color>
 
+    <!-- android API で定義されている色 -->
     <color name="sysBlack">#FF000000</color>
     <color name="sysBlue">#FF0000FF</color>
     <color name="sysCyan">#FF00FFFF</color>
@@ -22,8 +23,10 @@
 
     <color name="list_item_pressed">#1A000000</color>
 
+    <!-- custom drawable -->
     <color name="btn_common_stroke">#faaa</color>
 
+    <!-- pallet -->
     <color name="primary">#4CAF50</color>
     <color name="primary_dark">#388E3C</color>
     <color name="accent">#FFD740</color>

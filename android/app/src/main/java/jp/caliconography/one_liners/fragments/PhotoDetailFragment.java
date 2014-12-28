@@ -380,6 +380,7 @@ public class PhotoDetailFragment extends Fragment {
             } finally {
                 if (canvas != null) {
                     mSurfaceHolder.unlockCanvasAndPost(canvas);
+//                    mSurfaceHolder.unlockCanvasAndPost(null);
                 }
             }
         }

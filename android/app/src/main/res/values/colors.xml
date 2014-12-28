@@ -30,4 +30,5 @@
     <color name="primary">#4CAF50</color>
     <color name="primary_dark">#388E3C</color>
     <color name="accent">#FFD740</color>
+    <color name="accent_pressed">#FFE57F</color>
 </resources>

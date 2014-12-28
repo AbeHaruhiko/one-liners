@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:paddingBottom="16dp">
@@ -111,7 +112,7 @@
         android:layout_alignRight="@+id/relativeLayout"
         android:layout_alignEnd="@+id/relativeLayout" />
 
-    <Switch
+    <android.support.v7.widget.SwitchCompat
         android:id="@+id/swc_share_scope"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -122,7 +123,8 @@
         android:textOn="公開"
         android:textOff="自分のみ"
         android:layout_alignRight="@+id/txt_review"
-        android:layout_alignEnd="@+id/txt_review" />
+        android:layout_alignEnd="@+id/txt_review"
+        app:switchPadding="8dp" />
 
     <ImageView
         android:layout_width="@dimen/quote_mark_width"

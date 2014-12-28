@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NavUtils;
+import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,7 +20,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -88,7 +88,7 @@ public class BookDetailFragment extends Fragment {
     @InjectView(R.id.quote)
     ImageView mQuoteMark;
     @InjectView(R.id.swc_share_scope)
-    Switch mShareScope;
+    SwitchCompat mShareScope;
     @InjectView(R.id.btn_search_book)
     ImageButton mSearchBookButton;
 
@@ -435,7 +435,7 @@ public class BookDetailFragment extends Fragment {
     }
 
     @OnClick(R.id.swc_share_scope)
-    void onClickShareScope(final Switch view) {
+    void onClickShareScope(final SwitchCompat view) {
 
         final Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
 

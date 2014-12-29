@@ -18,7 +18,9 @@ public abstract class PopupMenuItem<T> extends ImageButton {
 
     public PopupMenuItem(Context context) {
         super(context);
-        setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM));
+        setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT, Gravity.BOTTOM));
+        setAdjustViewBounds(true);
+        setScaleType(ScaleType.CENTER);
     }
 
     public PopupMenuItem(Context context, int id, T value, int imageResourceId) {

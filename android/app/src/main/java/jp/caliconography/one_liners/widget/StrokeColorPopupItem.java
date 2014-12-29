@@ -14,17 +14,14 @@ public class StrokeColorPopupItem extends PopupMenuItem<PaintConfig.StrokeColor>
         super(context, id, color, imageResourceId);
 
 
-//        setImageResource(R.drawable.btn_oval_common_front);
-
         GradientDrawable drawable = new GradientDrawable();
         drawable.setStroke(1, R.color.btn_common_stroke);
         drawable.setShape(GradientDrawable.OVAL);
         drawable.setColor(color.getColorInt());
-        drawable.setSize(getResources().getDimensionPixelSize(R.dimen.popup_menu_item_width),
-                getResources().getDimensionPixelSize(R.dimen.popup_menu_item_height));
+        // -2が一番ピッタリ（4.1.1）。backgroundのstroke分なのか？？
+        drawable.setSize(getResources().getDimensionPixelSize(R.dimen.popup_menu_item_width) - 2,
+                getResources().getDimensionPixelSize(R.dimen.popup_menu_item_height) - 2);
 
-//        this.setBackground(drawable);
         this.setImageDrawable(drawable);
-//        this.setScaleType(ScaleType.CENTER);
     }
 }

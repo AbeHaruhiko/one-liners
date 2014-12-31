@@ -455,12 +455,7 @@ public class BookDetailFragment extends Fragment {
                             switch (event) {
 
                                 case DialogFragment.IDialogFragmentListener.ON_POSITIVE_BUTTON_CLICKED:
-                                    ParseACL acl = new ParseACL(ParseUser.getCurrentUser());
-                                    acl.setPublicReadAccess(true);
-                                    mReview.setACL(acl);
-                                    for (ParseShapeConfig config : mReview.getPaintConfigs()) {
-                                        config.setACL(acl);
-                                    }
+                                    setPublicReadAccessToReview();
 
                                     break;
 
@@ -476,9 +471,16 @@ public class BookDetailFragment extends Fragment {
                     .show(getFragmentManager());
 
         } else {
-            ParseACL acl = new ParseACL(ParseUser.getCurrentUser());
-            acl.setPublicReadAccess(true);
-            mReview.setACL(acl);
+            setPublicReadAccessToReview();
+        }
+    }
+
+    private void setPublicReadAccessToReview() {
+        ParseACL acl = new ParseACL(ParseUser.getCurrentUser());
+        acl.setPublicReadAccess(true);
+        mReview.setACL(acl);
+        for (ParseShapeConfig config : mReview.getPaintConfigs()) {
+            config.setACL(acl);
         }
     }
 

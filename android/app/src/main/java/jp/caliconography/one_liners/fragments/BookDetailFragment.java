@@ -42,6 +42,7 @@ import jp.caliconography.one_liners.R;
 import jp.caliconography.one_liners.activities.BookDetailActivity;
 import jp.caliconography.one_liners.activities.BookListActivity;
 import jp.caliconography.one_liners.dummy.DummyContent;
+import jp.caliconography.one_liners.model.parseobject.ParseShapeConfig;
 import jp.caliconography.one_liners.model.parseobject.Review;
 import jp.caliconography.one_liners.util.Utils;
 import jp.caliconography.one_liners.widget.DynamicHeightPicassoImageView;
@@ -95,6 +96,7 @@ public class BookDetailFragment extends Fragment {
     private Bitmap mPhotoBitmap;
     private MenuItem mMenuDelete;
     private MenuItem mMenuSave;
+    private Review mReview;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -125,8 +127,6 @@ public class BookDetailFragment extends Fragment {
         ButterKnife.inject(this, rootView);
         mBookPhoto.setPlaceholder(getActivity().getResources().getDrawable(R.drawable.photo_placeholder));
 
-        resetReview();
-
         return rootView;
     }
 
@@ -154,11 +154,10 @@ public class BookDetailFragment extends Fragment {
         int id = item.getItemId();
         if (id == android.R.id.home) {
 
-            final Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
-            if (review.isDirty()) {
+            if (mReview.isDirty()) {
 
-                for (String key : review.keySet()) {
-                    if (review.isDirty(key)) {
+                for (String key : mReview.keySet()) {
+                    if (mReview.isDirty(key)) {
                         Log.d(TAG, "dirty: " + key);
                     }
                 }
@@ -177,7 +176,7 @@ public class BookDetailFragment extends Fragment {
                                 switch (event) {
 
                                     case DialogFragment.IDialogFragmentListener.ON_POSITIVE_BUTTON_CLICKED:
-                                        saveReviewAndReturnToBookList(review);
+                                        saveReviewAndReturnToBookList(mReview);
                                         break;
 
                                     case DialogFragment.IDialogFragmentListener.ON_NEGATIVE_BUTTON_CLICKED:
@@ -257,6 +256,8 @@ public class BookDetailFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        mReview = ((BookDetailActivity) getActivity()).getCurrentReview();
+        resetReview();
     }
 
     private void saveReviewAndReturnToBookList(Review review) {
@@ -321,16 +322,15 @@ public class BookDetailFragment extends Fragment {
     }
 
     private void resetReview() {
-        final Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
 
         showProgressBar();
 
-        review.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
+        mReview.fetchIfNeededInBackground(new GetCallback<ParseObject>() {
             @Override
             public void done(ParseObject parseObject, ParseException e) {
                 hideProgressBar();
 
-                if (!review.getACL().getWriteAccess(ParseUser.getCurrentUser())) {
+                if (!mReview.getACL().getWriteAccess(ParseUser.getCurrentUser())) {
                     // 書き込み権限がない
 
                     mSearchBookButton.setEnabled(false);
@@ -338,13 +338,13 @@ public class BookDetailFragment extends Fragment {
                     mTextReview.setEnabled(false);
                 }
 
-                mTxtTitle.setText(review.getTitle());
-                mTxtAuthor.setText(review.getAuthor());
-                mTextReview.setText(review.getReviewText());
-                mShareScope.setChecked(review.getACL().getPublicReadAccess());
-                mThumbnail.loadImage(review.getThumbnailUrl());
+                mTxtTitle.setText(mReview.getTitle());
+                mTxtAuthor.setText(mReview.getAuthor());
+                mTextReview.setText(mReview.getReviewText());
+                mShareScope.setChecked(mReview.getACL().getPublicReadAccess());
+                mThumbnail.loadImage(mReview.getThumbnailUrl());
 
-                ParseFile photoFile = review.getPhotoFile();
+                ParseFile photoFile = mReview.getPhotoFile();
                 mBookPhoto.setParseFile(photoFile);
                 if (photoFile != null) {
                     mBookPhoto.loadInBackground(new GetDataCallback() {
@@ -352,7 +352,7 @@ public class BookDetailFragment extends Fragment {
                         public void done(byte[] data, ParseException e) {
                             mBookPhoto.setVisibility(View.VISIBLE);
                             mMenuDelete.setVisible(true);
-                            setQuoteMarkPosition(review);
+                            setQuoteMarkPosition(mReview);
                         }
                     });
                 }
@@ -385,18 +385,18 @@ public class BookDetailFragment extends Fragment {
     }
 
     private void setMenuItemVisibility() {
-        Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
-        if (!review.isDataAvailable()) {
+
+        if (!mReview.isDataAvailable()) {
             return;
         }
         if (mMenuDelete == null) {
             return;
         }
-        if (review.isEmpty()) {
+        if (mReview.isEmpty()) {
             mMenuDelete.setVisible(false);
             mMenuSave.setVisible(false);
         }
-        if (review.getACL().getWriteAccess(ParseUser.getCurrentUser())) {
+        if (mReview.getACL().getWriteAccess(ParseUser.getCurrentUser())) {
             mMenuDelete.setVisible(true);
             mMenuSave.setVisible(true);
         } else {
@@ -408,12 +408,15 @@ public class BookDetailFragment extends Fragment {
     @OnClick(R.id.book_photo)
     void onClickBookPhoto() {
 
-        Fragment photoDetailFragment = new PhotoDetailFragment();
-        FragmentTransaction transaction = getActivity().getSupportFragmentManager()
-                .beginTransaction();
-        transaction.replace(R.id.book_detail_container, photoDetailFragment);
-        transaction.addToBackStack(TAG);
-        transaction.commit();
+        if (mReview.isDataAvailable()) {
+            // fetchが完了していたら(isDataAvailable)
+            Fragment photoDetailFragment = new PhotoDetailFragment();
+            FragmentTransaction transaction = getActivity().getSupportFragmentManager()
+                    .beginTransaction();
+            transaction.replace(R.id.book_detail_container, photoDetailFragment);
+            transaction.addToBackStack(TAG);
+            transaction.commit();
+        }
     }
 
     @OnClick(R.id.btn_search_book)
@@ -429,15 +432,13 @@ public class BookDetailFragment extends Fragment {
 
     @OnClick(R.id.move_to_rakuten)
     void onClickRakutenBtn() {
-        if (((BookDetailActivity) getActivity()).getCurrentReview().getAffiliateUrl() != null) {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(((BookDetailActivity) getActivity()).getCurrentReview().getAffiliateUrl())));
+        if (mReview.getAffiliateUrl() != null) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(mReview.getAffiliateUrl())));
         }
     }
 
     @OnClick(R.id.swc_share_scope)
     void onClickShareScope(final SwitchCompat view) {
-
-        final Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
 
         if (view.isChecked()) {
 
@@ -454,12 +455,12 @@ public class BookDetailFragment extends Fragment {
                             switch (event) {
 
                                 case DialogFragment.IDialogFragmentListener.ON_POSITIVE_BUTTON_CLICKED:
-//                                    review.setShareScope(Review.ShareScope.PUBLIC);
-                                    ParseACL acl = new ParseACL();
+                                    ParseACL acl = new ParseACL(ParseUser.getCurrentUser());
                                     acl.setPublicReadAccess(true);
-                                    acl.setWriteAccess(ParseUser.getCurrentUser(), true);
-                                    acl.setReadAccess(ParseUser.getCurrentUser(), true);
-                                    review.setACL(acl);
+                                    mReview.setACL(acl);
+                                    for (ParseShapeConfig config : mReview.getPaintConfigs()) {
+                                        config.setACL(acl);
+                                    }
 
                                     break;
 
@@ -475,27 +476,25 @@ public class BookDetailFragment extends Fragment {
                     .show(getFragmentManager());
 
         } else {
-            ParseACL acl = new ParseACL();
-            acl.setPublicReadAccess(false);
-            acl.setWriteAccess(ParseUser.getCurrentUser(), true);
-            acl.setReadAccess(ParseUser.getCurrentUser(), true);
-            review.setACL(acl);
+            ParseACL acl = new ParseACL(ParseUser.getCurrentUser());
+            acl.setPublicReadAccess(true);
+            mReview.setACL(acl);
         }
     }
 
     @OnClick(R.id.quote)
     void onClickQuoteMark(final View view) {
-        Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
+
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
 
-        if (review.getQuoteMarkPosition() == Review.QuoteMarkPosition.LEFT) {
+        if (mReview.getQuoteMarkPosition() == Review.QuoteMarkPosition.LEFT) {
             // いま左にある
-            putQuoteMarkRight(review, layoutParams);
-            review.setQuoteMarkPosition(Review.QuoteMarkPosition.RIGHT);
-        } else if (review.getQuoteMarkPosition() == Review.QuoteMarkPosition.RIGHT) {
+            putQuoteMarkRight(mReview, layoutParams);
+            mReview.setQuoteMarkPosition(Review.QuoteMarkPosition.RIGHT);
+        } else if (mReview.getQuoteMarkPosition() == Review.QuoteMarkPosition.RIGHT) {
             // いま右にある
-            putQuoteMarkLeft(review, layoutParams);
-            review.setQuoteMarkPosition(Review.QuoteMarkPosition.LEFT);
+            putQuoteMarkLeft(mReview, layoutParams);
+            mReview.setQuoteMarkPosition(Review.QuoteMarkPosition.LEFT);
         }
         view.setLayoutParams(layoutParams);
     }
@@ -503,12 +502,11 @@ public class BookDetailFragment extends Fragment {
     @OnTextChanged(R.id.txt_review)
     void OnReviewTextChanged(CharSequence text) {
 
-        Review review = ((BookDetailActivity) getActivity()).getCurrentReview();
-        String saved = Utils.nullToEmpty(review.getReviewText());
+        String saved = Utils.nullToEmpty(mReview.getReviewText());
         String input = Utils.nullToEmpty(text);
 
         if (!saved.equals(input)) {
-            review.setReviewText(input);
+            mReview.setReviewText(input);
         }
     }
 }

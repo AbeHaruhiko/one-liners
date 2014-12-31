@@ -34,6 +34,7 @@ import com.parse.GetDataCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
+import com.parse.ParseUser;
 import com.parse.ProgressCallback;
 import com.squareup.otto.Subscribe;
 
@@ -79,7 +80,7 @@ import jp.caliconography.one_liners.widget.StrokeWidthPopupItem;
 /**
  * A fragment representing a single book detail screen.
  * This fragment is either contained in a {@link jp.caliconography.one_liners.activities.BookListActivity}
- * in two-pane mode (on tablets) or a {@link jp.caliconography.one_liners.activities.PhotoDetailActivity}
+ * in two-pane mode (on tablets) or a {@link jp.caliconography.one_liners.activities.BookDetailActivity}
  * on handsets.
  */
 public class PhotoDetailFragment extends Fragment {
@@ -112,6 +113,10 @@ public class PhotoDetailFragment extends Fragment {
     CustomFontButton mUndo;
     @InjectView(R.id.redo)
     CustomFontButton mRedo;
+
+    private MenuItem mMenuSave;
+    private MenuItem mMenuAddPhoto;
+
 
     private Uri mPictureUri;
     private SurfaceHolder mSurfaceHolder;
@@ -215,9 +220,12 @@ public class PhotoDetailFragment extends Fragment {
                 }
             } else {
                 // 線をfetchするTaskのリストの完了待ち合わせ。
-                Task.whenAll(tasks).onSuccess(new Continuation<Void, Void>() {
+                Task.whenAll(tasks).continueWith(new Continuation<Void, Void>() {
                     @Override
                     public Void then(Task<Void> task) throws Exception {
+                        if (task.isFaulted()) {
+                            return null;
+                        }
                         if (count.decrementAndGet() == 0) {
                             drawAll(photoDataBytes.get());
                         }
@@ -230,6 +238,8 @@ public class PhotoDetailFragment extends Fragment {
                 mUndo.setEnabled(true);
             }
         }
+
+        setButtonVisibility();
 
         return rootView;
     }
@@ -256,15 +266,19 @@ public class PhotoDetailFragment extends Fragment {
                     try {
                         LineConfig lineConfig = new LineConfig((ParseLineConfig) config);
                         mLineConfigArray.add(lineConfig);
-                    } catch (JSONException e1) {
-                        e1.printStackTrace();
+                    } catch (Exception e1) {
+                        Log.e(TAG, e1.getMessage(), e1);
                     }
                 }
                 renderAllPath(canvas);
             }
         } finally {
             if (canvas != null) {
-                mSurfaceHolder.unlockCanvasAndPost(canvas);
+                try {
+                    mSurfaceHolder.unlockCanvasAndPost(canvas);
+                } catch (Exception e) {
+                    Log.e(TAG, e.getMessage(), e);
+                }
             }
         }
     }
@@ -309,7 +323,11 @@ public class PhotoDetailFragment extends Fragment {
                 }
             } finally {
                 if (canvas != null) {
-                    mSurfaceHolder.unlockCanvasAndPost(canvas);
+                    try {
+                        mSurfaceHolder.unlockCanvasAndPost(canvas);
+                    } catch (Exception e) {
+                        Log.e(TAG, e.getMessage(), e);
+                    }
                 }
             }
         }
@@ -379,8 +397,11 @@ public class PhotoDetailFragment extends Fragment {
                 }
             } finally {
                 if (canvas != null) {
-                    mSurfaceHolder.unlockCanvasAndPost(canvas);
-//                    mSurfaceHolder.unlockCanvasAndPost(null);
+                    try {
+                        mSurfaceHolder.unlockCanvasAndPost(canvas);
+                    } catch (Exception e) {
+                        Log.e(TAG, e.getMessage(), e);
+                    }
                 }
             }
         }
@@ -429,7 +450,11 @@ public class PhotoDetailFragment extends Fragment {
             }
         } finally {
             if (canvas != null) {
-                mSurfaceHolder.unlockCanvasAndPost(canvas);
+                try {
+                    mSurfaceHolder.unlockCanvasAndPost(canvas);
+                } catch (Exception e) {
+                    Log.e(TAG, e.getMessage(), e);
+                }
             }
         }
     }
@@ -450,7 +475,11 @@ public class PhotoDetailFragment extends Fragment {
                 }
             } finally {
                 if (canvas != null) {
-                    mSurfaceHolder.unlockCanvasAndPost(canvas);
+                    try {
+                        mSurfaceHolder.unlockCanvasAndPost(canvas);
+                    } catch (Exception e) {
+                        Log.e(TAG, e.getMessage(), e);
+                    }
                 }
             }
         }
@@ -482,7 +511,11 @@ public class PhotoDetailFragment extends Fragment {
                 }
             } finally {
                 if (canvas != null) {
-                    mSurfaceHolder.unlockCanvasAndPost(canvas);
+                    try {
+                        mSurfaceHolder.unlockCanvasAndPost(canvas);
+                    } catch (Exception e) {
+                        Log.e(TAG, e.getMessage(), e);
+                    }
                 }
             }
 
@@ -523,7 +556,11 @@ public class PhotoDetailFragment extends Fragment {
                 }
             } finally {
                 if (canvas != null) {
-                    mSurfaceHolder.unlockCanvasAndPost(canvas);
+                    try {
+                        mSurfaceHolder.unlockCanvasAndPost(canvas);
+                    } catch (Exception e) {
+                        Log.e(TAG, e.getMessage(), e);
+                    }
                 }
             }
 
@@ -544,7 +581,11 @@ public class PhotoDetailFragment extends Fragment {
             Paint paint = new Paint(lineConfig.getPaint());
             paint.setStrokeWidth(lineConfig.getPaint().getUnScaledStrokeWidth().getWidthInt() * (withScale ? mScale : 1));
 
-            canvas.drawPath(path, paint);
+            try {
+                canvas.drawPath(path, paint);
+            } catch (Throwable e) {
+                Log.e(TAG, e.getMessage(), e);
+            }
 
             path.reset();
 
@@ -959,5 +1000,28 @@ public class PhotoDetailFragment extends Fragment {
         mReview.setPhotoFile(photoFile);
         mReview.setPhotoFileWidth(mBitmap.getWidth());
         mReview.setPhotoFileHeight(mBitmap.getHeight());
+    }
+
+    private void setButtonVisibility() {
+        if (!mReview.isDataAvailable()) {
+            return;
+        }
+        if (mReview.isEmpty()) {
+            mColorPopup.setVisibility(View.INVISIBLE);
+            mStrokeWidthPopup.setVisibility(View.INVISIBLE);
+            mRedo.setVisibility(View.INVISIBLE);
+            mUndo.setVisibility(View.INVISIBLE);
+        }
+        if (mReview.getACL().getWriteAccess(ParseUser.getCurrentUser())) {
+            mColorPopup.setVisibility(View.VISIBLE);
+            mStrokeWidthPopup.setVisibility(View.VISIBLE);
+            mRedo.setVisibility(View.VISIBLE);
+            mUndo.setVisibility(View.VISIBLE);
+        } else {
+            mColorPopup.setVisibility(View.INVISIBLE);
+            mStrokeWidthPopup.setVisibility(View.INVISIBLE);
+            mRedo.setVisibility(View.INVISIBLE);
+            mUndo.setVisibility(View.INVISIBLE);
+        }
     }
 }

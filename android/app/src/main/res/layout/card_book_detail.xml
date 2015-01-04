@@ -81,7 +81,7 @@
             android:layout_alignRight="@+id/frameLayout" />
 
         <ImageButton
-            android:layout_width="128dp"
+            android:layout_width="100dp"
             android:layout_height="32dp"
             android:id="@+id/move_to_rakuten"
             android:layout_below="@+id/txt_author"

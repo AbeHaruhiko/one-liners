@@ -12,6 +12,8 @@ android {
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
@@ -21,11 +23,6 @@ android {
     }
     packagingOptions {
         exclude 'LICENSE.txt'
-    }
-    sourceSets {
-        main {
-            manifest.srcFile 'src/androidTest/AndroidManifest.xml'
-        }
     }
 }
 

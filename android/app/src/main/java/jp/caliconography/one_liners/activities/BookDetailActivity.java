@@ -64,6 +64,9 @@ public class BookDetailActivity extends ActionBarActivity {
                     .commit();
         }
 
+        if (getIntent() == null) {
+            return;
+        }
         if (getIntent().getStringExtra(Review.KEY_OBJECT_ID) != null) {
             mReview = ParseObject.createWithoutData(Review.class, getIntent().getStringExtra(Review.KEY_OBJECT_ID));
         }

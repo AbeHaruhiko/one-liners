@@ -40,7 +40,8 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
-        android:layout_marginLeft="5dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
         android:textSize="@dimen/abc_text_size_caption_material"
         android:id="@+id/carddemo_staggered_inner_subtitle" />
 

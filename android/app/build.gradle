@@ -27,7 +27,7 @@ dependencies {
     compile 'com.android.support:support-v4:21.+'
 
     // toolbar etc.
-    compile "com.android.support:appcompat-v7:21.0.+"
+    compile "com.android.support:appcompat-v7:21.+"
 
     // grid
 //    compile 'com.etsy.android.grid:library:1.0.5'

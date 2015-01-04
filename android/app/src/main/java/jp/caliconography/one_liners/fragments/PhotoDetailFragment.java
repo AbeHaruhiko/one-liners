@@ -11,7 +11,9 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -52,7 +54,6 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
 import butterknife.OnTouch;
-import hugo.weaving.DebugLog;
 import jp.caliconography.one_liners.R;
 import jp.caliconography.one_liners.activities.BookDetailActivity;
 import jp.caliconography.one_liners.dummy.DummyContent;
@@ -254,33 +255,42 @@ public class PhotoDetailFragment extends Fragment {
 
         getScaleForFitBitmapToView();
 
-        Canvas canvas = null;
-        try {
-            canvas = mSurfaceHolder.lockCanvas(null);
-            if (canvas != null) {
-                setPhotoBitmapToCanvas(canvas);
+        // Android 4.3でクラッシュするのを防ぐため、500ms待機。
+        // 4.3以外は0ms。
+        // https://code.google.com/p/android/issues/detail?id=58385
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Canvas canvas = null;
+                try {
+                    canvas = mSurfaceHolder.lockCanvas(null);
+                    if (canvas != null) {
+                        setPhotoBitmapToCanvas(canvas);
 
-                // 線取得
-                ArrayList<ParseShapeConfig> paintConfigs = mReview.getPaintConfigs();
-                for (ParseShapeConfig config : paintConfigs) {
-                    try {
-                        LineConfig lineConfig = new LineConfig((ParseLineConfig) config);
-                        mLineConfigArray.add(lineConfig);
-                    } catch (Exception e1) {
-                        Log.e(TAG, e1.getMessage(), e1);
+                        // 線取得
+                        ArrayList<ParseShapeConfig> paintConfigs = mReview.getPaintConfigs();
+                        for (ParseShapeConfig config : paintConfigs) {
+                            try {
+                                LineConfig lineConfig = new LineConfig((ParseLineConfig) config);
+                                mLineConfigArray.add(lineConfig);
+                            } catch (Exception e1) {
+                                Log.e(TAG, e1.getMessage(), e1);
+                            }
+                        }
+                        renderAllPath(canvas);
+                    }
+                } finally {
+                    if (canvas != null) {
+                        try {
+                            mSurfaceHolder.unlockCanvasAndPost(canvas);
+                        } catch (Exception e) {
+                            Log.e(TAG, e.getMessage(), e);
+                        }
                     }
                 }
-                renderAllPath(canvas);
             }
-        } finally {
-            if (canvas != null) {
-                try {
-                    mSurfaceHolder.unlockCanvasAndPost(canvas);
-                } catch (Exception e) {
-                    Log.e(TAG, e.getMessage(), e);
-                }
-            }
-        }
+        }, Build.VERSION.SDK_INT == Build.VERSION_CODES.JELLY_BEAN_MR2 ? 500 : 0);
+
     }
 
     private void createStrokeWidthPopupMenu() {
@@ -406,7 +416,6 @@ public class PhotoDetailFragment extends Fragment {
             }
         }
 
-        @DebugLog
         @Override
         public void surfaceChanged(SurfaceHolder surfaceHolder, int format, int width, int height) {
         }
@@ -460,7 +469,6 @@ public class PhotoDetailFragment extends Fragment {
     }
 
     private final TranslationGestureListener mTranslationBy1FingerListener = new TranslationGestureListener() {
-        @DebugLog
         @Override
         public void onTranslationEnd(TranslationGestureDetector detector) {
             // 線確定
@@ -484,7 +492,6 @@ public class PhotoDetailFragment extends Fragment {
             }
         }
 
-        @DebugLog
         @Override
         public void onTranslationBegin(TranslationGestureDetector detector) {
 
@@ -493,7 +500,6 @@ public class PhotoDetailFragment extends Fragment {
             mCurrentY = mOriginY = oneFingerDetector.getY();
         }
 
-        @DebugLog
         @Override
         public void onTranslation(TranslationGestureDetector detector) {
             TranslationBy1FingerGestureDetector oneFingerDetector = (TranslationBy1FingerGestureDetector) detector;
@@ -523,7 +529,6 @@ public class PhotoDetailFragment extends Fragment {
     };
 
     private final TranslationGestureListener mTranslationBy2FingerListener = new TranslationGestureListener() {
-        @DebugLog
         @Override
         public void onTranslationEnd(TranslationGestureDetector detector) {
         }
@@ -535,7 +540,6 @@ public class PhotoDetailFragment extends Fragment {
             mPrevY = twoFingerDetector.getFocusY();
         }
 
-        @DebugLog
         @Override
         public void onTranslation(TranslationGestureDetector detector) {
             TranslationBy2FingerGestureDetector twoFingerDetector = (TranslationBy2FingerGestureDetector) detector;
@@ -567,10 +571,10 @@ public class PhotoDetailFragment extends Fragment {
         }
     };
 
-    private void renderAllPath(Canvas canvas, boolean withTranslate, boolean withScale) {
+    private void renderAllPath(final Canvas canvas, boolean withTranslate, boolean withScale) {
         for (int i = 0; i <= mLineConfigArrayCurrentPosition; i++) {
             LineConfig lineConfig = mLineConfigArray.get(i);
-            Path path = new Path();
+            final Path path = new Path();
 
             // 線の中点を原点(0, 0)へ配置。
             setLineOnOrigin(lineConfig, path);
@@ -578,14 +582,10 @@ public class PhotoDetailFragment extends Fragment {
             path.transform(buildMatrixForPanZoom(lineConfig, withTranslate, withScale));
 
             // 各Path用のPaintを生成（line.getPaint().setStrokeWidth()すると累乗になってしまうため。
-            Paint paint = new Paint(lineConfig.getPaint());
+            final Paint paint = new Paint(lineConfig.getPaint());
             paint.setStrokeWidth(lineConfig.getPaint().getUnScaledStrokeWidth().getWidthInt() * (withScale ? mScale : 1));
 
-            try {
-                canvas.drawPath(path, paint);
-            } catch (Throwable e) {
-                Log.e(TAG, e.getMessage(), e);
-            }
+            canvas.drawPath(path, paint);
 
             path.reset();
 

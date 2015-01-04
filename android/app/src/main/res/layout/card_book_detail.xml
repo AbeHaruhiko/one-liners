@@ -95,6 +95,34 @@
             android:layout_marginTop="4dp"
             android:layout_marginBottom="4dp" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="ページ"
+            android:id="@+id/lbl_page"
+            android:layout_below="@+id/txt_author"
+            android:layout_alignLeft="@+id/txt_author"
+            android:layout_alignStart="@+id/txt_author"
+            android:layout_alignBottom="@+id/txt_page"
+            android:gravity="bottom"
+            android:layout_marginLeft="4dp" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:ems="10"
+            android:id="@+id/txt_page"
+            android:layout_below="@+id/txt_author"
+            android:layout_toRightOf="@+id/lbl_page"
+            android:layout_toLeftOf="@+id/move_to_rakuten"
+            android:layout_toStartOf="@+id/move_to_rakuten"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:gravity="center_horizontal|bottom"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp" />
+
     </RelativeLayout>
 
     <EditText
@@ -110,7 +138,8 @@
         android:layout_alignStart="@+id/relativeLayout"
         android:layout_alignLeft="@+id/relativeLayout"
         android:layout_alignRight="@+id/relativeLayout"
-        android:layout_alignEnd="@+id/relativeLayout" />
+        android:layout_alignEnd="@+id/relativeLayout"
+        android:layout_marginTop="8dp" />
 
     <android.support.v7.widget.SwitchCompat
         android:id="@+id/swc_share_scope"

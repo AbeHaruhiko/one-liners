@@ -82,6 +82,8 @@ public class BookDetailFragment extends Fragment {
     TextView mTxtTitle;
     @InjectView(R.id.txt_author)
     TextView mTxtAuthor;
+    @InjectView(R.id.txt_page)
+    TextView mTxtPage;
     @InjectView(R.id.txt_review)
     TextView mTextReview;
     @InjectView(R.id.book_thumbnail)
@@ -336,10 +338,12 @@ public class BookDetailFragment extends Fragment {
                     mSearchBookButton.setEnabled(false);
                     mShareScope.setEnabled(false);
                     mTextReview.setEnabled(false);
+                    mTxtPage.setEnabled(false);
                 }
 
                 mTxtTitle.setText(mReview.getTitle());
                 mTxtAuthor.setText(mReview.getAuthor());
+                mTxtPage.setText(mReview.getPage());
                 mTextReview.setText(mReview.getReviewText());
                 mShareScope.setChecked(mReview.getACL().getPublicReadAccess());
                 mThumbnail.loadImage(mReview.getThumbnailUrl());
@@ -479,6 +483,9 @@ public class BookDetailFragment extends Fragment {
         ParseACL acl = new ParseACL(ParseUser.getCurrentUser());
         acl.setPublicReadAccess(true);
         mReview.setACL(acl);
+        if (mReview.getPaintConfigs() == null) {
+            return;
+        }
         for (ParseShapeConfig config : mReview.getPaintConfigs()) {
             config.setACL(acl);
         }
@@ -509,6 +516,17 @@ public class BookDetailFragment extends Fragment {
 
         if (!saved.equals(input)) {
             mReview.setReviewText(input);
+        }
+    }
+
+    @OnTextChanged(R.id.txt_page)
+    void OnPageTextChanged(CharSequence text) {
+
+        String saved = Utils.nullToEmpty(mReview.getPage());
+        String input = Utils.nullToEmpty(text);
+
+        if (!saved.equals(input)) {
+            mReview.setPage(input);
         }
     }
 }

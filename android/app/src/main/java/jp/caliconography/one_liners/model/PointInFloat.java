@@ -1,15 +1,14 @@
 package jp.caliconography.one_liners.model;
 
+import android.graphics.PointF;
+
 /**
  * Created by abeharuhiko on 2014/10/21.
  */
-public class PointInFloat {
-    public float x;
-    public float y;
+public class PointInFloat extends PointF {
 
     public PointInFloat(float x, float y) {
-        this.x = x;
-        this.y = y;
+        super(x, y);
     }
 
 
